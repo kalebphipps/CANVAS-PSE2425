@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "three": ["static/js/three.module.js"],
+      "three/addons/": ["static/js/three/examples/jsm/"],
+      "menu": ["static/js/menu.mjs"],
+      "compass": ["static/js/compass.mjs"],
+      "orbitControls": [
+        "static/js/three/examples/jsm/controls/OrbitControls.js"
+      ],
+      "transformControls": [
+        "static/js/three/examples/jsm/controls/TransformControls.js"
+      ],
+      "commands": ["static/js/commands.mjs"],
+      "undoRedoHandler": ["static/js/undoRedoHandler.mjs"]
+    }
+  }
+}
