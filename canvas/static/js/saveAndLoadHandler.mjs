@@ -1,18 +1,23 @@
+import { Heliostat, Receiver, Lightsource } from "objects";
+import { Vector2 } from "three";
+
 /**
  * Handles saving and loading projects inside of CANVAS
  */
 export class SaveAndLoadHandler {
+  #base_api_url;
   /**
    * Creates a new handler
    * @param {Number} project_id - The id of the project
    */
   constructor(project_id) {
     this.project_id = project_id;
-    this.base_api_url = window.location.origin + "/api/";
+    this.#base_api_url = window.location.origin + "/api/";
   }
 
   /**
    * Returns a Json representation of the project defined by the project_id
+   * @returns {Promise<JSON>} - A JSON representation of the project
    */
   async getProjectData() {
     const url = this.base_api_url + "projects/" + this.project_id;
@@ -30,26 +35,68 @@ export class SaveAndLoadHandler {
   }
 
   // Object creation
-  async createHeliostat() {}
+  /**
+   * Creates a databank entry for the given heliostat
+   * @param {Heliostat} heliostat - Is the heliostat you want an entry for
+   */
+  async createHeliostat(heliostat) {}
 
-  async createReceiver() {}
+  /**
+   * Creates a databank entry for the given receiver
+   * @param {Receiver} receiver - Is the receiver you want an entry for
+   */
+  async createReceiver(receiver) {}
 
-  async createLightsource() {}
+  /**
+   * Creates a databank entry for the given lightsource
+   * @param {Lightsource} lightsource - Is the lightsource you want an entry for
+   */
+  async createLightsource(lightsource) {}
 
   // Object deletion
-  async deleteHeliostat(id) {}
+  /**
+   * Deletes the given heliostat from the backend
+   * @param {Heliostat} heliostat - Is the heliostat you want to delete
+   */
+  async deleteHeliostat(heliostat) {}
 
-  async deleteReceiver(id) {}
+  // Object deletion
+  /**
+   * Deletes the given receiver from the backend
+   * @param {Receiver} receiver - Is the receiver you want to delete
+   */
+  async deleteReceiver(receiver) {}
 
-  async deleteLightsource(id) {}
+  // Object deletion
+  /**
+   * Deletes the given lightsource from the backend
+   * @param {Lightsource} lightsource - Is the lightsource you want to delete
+   */
+  async deleteLightsource(lightsource) {}
 
   // Object updating
-  async updateHeliostat(id, changes) {}
+  /**
+   * Updates the given heliostat in the backend
+   * @param {Heliostat} heliostat - Is the updated heliostat from the frontend
+   */
+  async updateHeliostat(heliostat) {}
 
-  async updateReceiver(id, changes) {}
+  /**
+   * Updates the given receiver in the backend
+   * @param {Receiver} receiver - Is the updated receiver from the frontend
+   */
+  async updateReceiver(receiver) {}
 
-  async updateLightsource(id, changes) {}
+  /**
+   * Updates the given lightsource in the backend
+   * @param {Lightsource} lightsource - Is the updated lightsource from the frontend
+   */
+  async updateLightsource(lightsource) {}
 
   // Settings updating
-  async updateSettings(changes) {}
+  /**
+   * Updates the settings accroding to the given changes
+   * @param {String[]} change - A key value pair to specify the settings change.
+   */
+  async updateSettings(change) {}
 }
