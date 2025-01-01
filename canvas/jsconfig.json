@@ -13,7 +13,8 @@
         "static/js/three/examples/jsm/controls/TransformControls.js"
       ],
       "commands": ["static/js/commands.mjs"],
-      "undoRedoHandler": ["static/js/undoRedoHandler.mjs"]
+      "undoRedoHandler": ["static/js/undoRedoHandler.mjs"],
+      "objects": ["static/js/objects.mjs"]
     }
   }
 }
