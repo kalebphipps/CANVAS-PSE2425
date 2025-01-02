@@ -4,7 +4,7 @@
     "paths": {
       "three": ["static/js/three.module.js"],
       "three/addons/": ["static/js/three/examples/jsm/"],
-      "menu": ["static/js/menu.mjs"],
+      "navbar": ["static/js/navbar.mjs"],
       "compass": ["static/js/compass.mjs"],
       "orbitControls": [
         "static/js/three/examples/jsm/controls/OrbitControls.js"
@@ -14,7 +14,8 @@
       ],
       "commands": ["static/js/commands.mjs"],
       "undoRedoHandler": ["static/js/undoRedoHandler.mjs"],
-      "objects": ["static/js/objects.mjs"]
+      "objects": ["static/js/objects.mjs"],
+      "saveAndLoadHandler": ["static/js/saveAndLoadHandler.mjs"]
     }
   }
 }

@@ -5,14 +5,14 @@ import { Vector2 } from "three";
  * Handles saving and loading projects inside of CANVAS
  */
 export class SaveAndLoadHandler {
-  #base_api_url;
+  #baseApiUrl;
   /**
    * Creates a new handler
-   * @param {Number} project_id - The id of the project
+   * @param {Number} project_id The id of the project
    */
   constructor(project_id) {
-    this.project_id = project_id;
-    this.#base_api_url = window.location.origin + "/api/";
+    this.projectId = project_id;
+    this.#baseApiUrl = window.location.origin + "/api/";
   }
 
   /**
@@ -20,7 +20,7 @@ export class SaveAndLoadHandler {
    * @returns {Promise<JSON>} - A JSON representation of the project
    */
   async getProjectData() {
-    const url = this.base_api_url + "projects/" + this.project_id;
+    const url = this.#baseApiUrl + "projects/" + this.projectId;
     try {
       const response = await fetch(url);
       if (!response.ok) {

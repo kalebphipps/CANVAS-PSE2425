@@ -13,20 +13,20 @@
                 "three/addons/": "{% static 'js/three/examples/jsm/' %}",
                 "orbitControls": "{% static 'js/three/examples/jsm/controls/OrbitControls.js' %}",
                 "transformControls": "{% static 'js/three/examples/jsm/controls/TransformControls.js' %}",
-                "menu": "{% static 'js/menu.mjs' %}",
+                "navbar": "{% static 'js/menu.mjs' %}",
                 "compass": "{% static 'js/compass.mjs' %}",
                 "commands": "{% static 'js/commands.mjs' %}",
                 "undoRedoHandler": "{% static 'js/undoRedoHandler.mjs' %}",
-                "objects": "{% static 'js/objects.mjs' %}"
+                "objects": "{% static 'js/objects.mjs' %}",
+                "saveAndLoadHandler": "{% static 'js/saveAndLoadHandler.mjs' %}"
             }
         }
     </script>
     <script type="module">
         import { Editor } from "{% static 'js/editor.mjs' %}";
-        import { SaveAndLoadHandler } from "{% static 'js/saveAndLoadHandler.mjs' %}";
 
         window.addEventListener('DOMContentLoaded', (_) => {
-            new Editor();
+            new Editor(1);
         });
     </script>
 {% endblock %}
