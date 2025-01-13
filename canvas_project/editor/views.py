@@ -10,12 +10,17 @@ def editor(request, project_name):
     """
     Handles the editor view for a given project.
 
-    Attributes
+    Parameters
     ----------
     request : HttpRequest
-        The request the user send to get here
+        The request the user send to get here.
     project_name : str
-        The project_name specified as a url parameter
+        The project_name specified as a url parameter.
+
+    Returns
+    -------
+    HttpResponse
+        The editor page where the user can edit the project.
     """
 
     # Return 404 not found if user has no project with this id
@@ -32,12 +37,17 @@ def download(request, project_name):
     """
     Converts the specified project into a hdf5 file and downloads it.
 
-    Attributes
+    Parameters
     ----------
     request : HttpRequest
-        The request the user send to get here
+        The request the user send to get here.
     project_name : str
-        The project_name specified as a url parameter
+        The project_name specified as a url parameter.
+
+    Returns
+    -------
+    HttpResponse
+        FileResponse to download the hdf5 file.
     """
 
     # Placeholder for actual download functionality added later
@@ -46,10 +56,7 @@ def download(request, project_name):
     path = os.path.join(
         settings.BASE_DIR, "static/artist/test_scenario_alignment_optimization.h5"
     )
-    file = open(path, "rb")
-    response = FileResponse(file)
+    response = FileResponse(open(path, "rb"))
     response["Content-Type"] = "application/octet-stream"
-    response["Content-Disposition"] = (
-        f'attachment; filename="{project.name}.{file.name.split('.')[1]}"'
-    )
+    response["Content-Disposition"] = f'attachment; filename="{project.name}.h5"'
     return response
