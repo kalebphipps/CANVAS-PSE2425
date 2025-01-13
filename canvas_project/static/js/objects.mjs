@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import { Object3D } from "three";
 
+/**
+ *  Class that represents the Heliostat object
+ */
 export class Heliostat extends Object3D {
   /**
    *
@@ -21,6 +24,14 @@ export class Heliostat extends Object3D {
    */
   updateAimPoint(aimPoint) {
     this.aimPoint = aimPoint;
+  }
+
+  get apiID() {
+    return this._apiID;
+  }
+
+  set apiID(value) {
+    this._apiID = value;
   }
 
   getAimPoint() {
@@ -48,6 +59,9 @@ export class Heliostat extends Object3D {
   }
 }
 
+/**
+ * Class that represents the receiver object
+ */
 export class Receiver extends Object3D {
   /**
    *
@@ -162,6 +176,9 @@ export class Receiver extends Object3D {
   }
 }
 
+/**
+ * Class that represents the light source object
+ */
 export class LightSource extends Object3D {
   /**
    *
