@@ -161,3 +161,31 @@ export class Receiver extends Object3D {
     this.position.set(position.x, position.y, position.z);
   }
 }
+
+export class LightSource extends Object3D {
+  /**
+   *
+   * @param {Number} apiID the apiID of the light source
+   * @param {Number} numberOfRays the number of rays the light source has
+   * @param {String} lightSourceType the type of the light source
+   * @param {String} distributionType the type of the distribution
+   * @param {Number} distributionMean the mean of the distribution
+   * @param {Number} distributionCovariance the covariance of the distribution
+   */
+  constructor(
+    apiID,
+    numberOfRays,
+    lightSourceType,
+    distributionType,
+    distributionMean,
+    distributionCovariance
+  ) {
+    super();
+    this.apiID = apiID;
+    this.numberOfRays = numberOfRays;
+    this.lightSourceType = lightSourceType;
+    this.distributionType = distributionType;
+    this.distributionMean = distributionMean;
+    this.distributionCovariance = distributionCovariance;
+  }
+}
