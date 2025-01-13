@@ -51,7 +51,6 @@ export class Heliostat extends Object3D {
 export class Receiver extends Object3D {
   /**
    *
-   * @param {number} apiID the api id of the receiver to identify it
    * @param {String} towerType the type of the tower
    * @param {THREE.Vector3} normalVector the normal vector of the receiver
    * @param {Number} planeE the plane E of the receiver
@@ -62,7 +61,6 @@ export class Receiver extends Object3D {
    * @param {Number} curvatureU the curvature U of the receiver
    */
   constructor(
-    apiID,
     towerType,
     normalVector,
     planeE,
