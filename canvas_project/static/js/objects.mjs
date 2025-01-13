@@ -1,6 +1,53 @@
 import * as THREE from "three";
 import { Object3D } from "three";
 
+export class Heliostat extends Object3D {
+  /**
+   *
+   * @param {Vector3} aimPoint The Point the Heliostat is aiming at.
+   * @param {Number} numberOfFacets Number of Facets the Heliostat has.
+   * @param {String} kinematicType The type of kinematic the Heliostat has.
+   */
+
+  constructor(aimPoint, numberOfFacets, kinematicType) {
+    super();
+    this.aimPoint = aimPoint;
+    this.numberOfFacets = numberOfFacets;
+    this.kinematicType = kinematicType;
+  }
+  /**
+   * Updates the aimPoint of the Heliostat
+   * @param {Vector3} aimPoint
+   */
+  updateAimPoint(aimPoint) {
+    this.aimPoint = aimPoint;
+  }
+
+  getAimPoint() {
+    return this.aimPoint;
+  }
+
+  setAimPoint(aimPoint) {
+    this.aimPoint = aimPoint;
+  }
+
+  getNumberOfFacets() {
+    return this.numberOfFacets;
+  }
+
+  setNumberOfFacets(numberOfFacets) {
+    this.numberOfFacets = numberOfFacets;
+  }
+
+  getKinematicType() {
+    return this.kinematicType;
+  }
+
+  setKinematicType(kinematicType) {
+    this.kinematicType = kinematicType;
+  }
+}
+
 export class Receiver extends Object3D {
   /**
    *
