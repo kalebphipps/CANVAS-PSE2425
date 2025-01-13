@@ -5,57 +5,62 @@ import { Object3D } from "three";
  *  Class that represents the Heliostat object
  */
 export class Heliostat extends Object3D {
+  #apiID;
+  #aimPoint;
+  #numberOfFacets;
+  #kinematicType;
+
   /**
    *
-   * @param {Vector3} aimPoint The Point the Heliostat is aiming at.
+   * @param {THREE.Vector3} aimPoint The Point the Heliostat is aiming at.
    * @param {Number} numberOfFacets Number of Facets the Heliostat has.
    * @param {String} kinematicType The type of kinematic the Heliostat has.
    */
 
   constructor(aimPoint, numberOfFacets, kinematicType) {
     super();
-    this.aimPoint = aimPoint;
-    this.numberOfFacets = numberOfFacets;
-    this.kinematicType = kinematicType;
+    this.#aimPoint = aimPoint;
+    this.#numberOfFacets = numberOfFacets;
+    this.#kinematicType = kinematicType;
   }
   /**
    * Updates the aimPoint of the Heliostat
-   * @param {Vector3} aimPoint
+   * @param {THREE.Vector3} aimPoint
    */
   updateAimPoint(aimPoint) {
-    this.aimPoint = aimPoint;
+    this.#aimPoint = aimPoint;
   }
 
   get apiID() {
-    return this._apiID;
+    return this.#apiID;
   }
 
   set apiID(value) {
-    this._apiID = value;
+    this.#apiID = value;
   }
 
   getAimPoint() {
-    return this.aimPoint;
+    return this.#aimPoint;
   }
 
   setAimPoint(aimPoint) {
-    this.aimPoint = aimPoint;
+    this.#aimPoint = aimPoint;
   }
 
   getNumberOfFacets() {
-    return this.numberOfFacets;
+    return this.#numberOfFacets;
   }
 
   setNumberOfFacets(numberOfFacets) {
-    this.numberOfFacets = numberOfFacets;
+    this.#numberOfFacets = numberOfFacets;
   }
 
   getKinematicType() {
-    return this.kinematicType;
+    return this.#kinematicType;
   }
 
   setKinematicType(kinematicType) {
-    this.kinematicType = kinematicType;
+    this.#kinematicType = kinematicType;
   }
 }
 
@@ -63,6 +68,16 @@ export class Heliostat extends Object3D {
  * Class that represents the receiver object
  */
 export class Receiver extends Object3D {
+  #apiID;
+  #towerType;
+  #normalVector;
+  #planeE;
+  #planeU;
+  #resolutionE;
+  #resolutionU;
+  #curvatureE;
+  #curvatureU;
+
   /**
    *
    * @param {String} towerType the type of the tower
@@ -85,87 +100,87 @@ export class Receiver extends Object3D {
     curvatureU
   ) {
     super();
-    this.apiID = apiID;
-    this.towerType = towerType;
-    this.normalVector = normalVector;
-    this.planeE = planeE;
-    this.planeU = planeU;
-    this.resolutionE = resolutionE;
-    this.resolutionU = resolutionU;
-    this.curvatureE = curvatureE;
-    this.curvatureU = curvatureU;
+    this.#apiID = apiID;
+    this.#towerType = towerType;
+    this.#normalVector = normalVector;
+    this.#planeE = planeE;
+    this.#planeU = planeU;
+    this.#resolutionE = resolutionE;
+    this.#resolutionU = resolutionU;
+    this.#curvatureE = curvatureE;
+    this.#curvatureU = curvatureU;
   }
 
   get apiID() {
-    return this._apiID;
+    return this.#apiID;
   }
 
   set apiID(value) {
-    this._apiID = value;
+    this.#apiID = value;
   }
 
   get towerType() {
-    return this._towerType;
+    return this.#towerType;
   }
 
   set towerType(value) {
-    this._towerType = value;
+    this.#towerType = value;
   }
 
   get normalVector() {
-    return this._normalVector;
+    return this.#normalVector;
   }
 
   set normalVector(value) {
-    this._normalVector = value;
+    this.#normalVector = value;
   }
 
   get planeE() {
-    return this._planeE;
+    return this.#planeE;
   }
 
   set planeE(value) {
-    this._planeE = value;
+    this.#planeE = value;
   }
 
   get planeU() {
-    return this._planeU;
+    return this.#planeU;
   }
 
   set planeU(value) {
-    this._planeU = value;
+    this.#planeU = value;
   }
 
   get resolutionE() {
-    return this._resolutionE;
+    return this.#resolutionE;
   }
 
   set resolutionE(value) {
-    this._resolutionE = value;
+    this.#resolutionE = value;
   }
 
   get resolutionU() {
-    return this._resolutionU;
+    return this.#resolutionU;
   }
 
   set resolutionU(value) {
-    this._resolutionU = value;
+    this.#resolutionU = value;
   }
 
   get curvatureE() {
-    return this._curvatureE;
+    return this.#curvatureE;
   }
 
   set curvatureE(value) {
-    this._curvatureE = value;
+    this.#curvatureE = value;
   }
 
   get curvatureU() {
-    return this._curvatureU;
+    return this.#curvatureU;
   }
 
   set curvatureU(value) {
-    this._curvatureU = value;
+    this.#curvatureU = value;
   }
   /**
    *
@@ -180,6 +195,13 @@ export class Receiver extends Object3D {
  * Class that represents the light source object
  */
 export class LightSource extends Object3D {
+  #apiID;
+  #numberOfRays;
+  #lightSourceType;
+  #distributionType;
+  #distributionMean;
+  #distributionCovariance;
+
   /**
    *
    * @param {Number} apiID the apiID of the light source
@@ -198,11 +220,11 @@ export class LightSource extends Object3D {
     distributionCovariance
   ) {
     super();
-    this.apiID = apiID;
-    this.numberOfRays = numberOfRays;
-    this.lightSourceType = lightSourceType;
-    this.distributionType = distributionType;
-    this.distributionMean = distributionMean;
-    this.distributionCovariance = distributionCovariance;
+    this.#apiID = apiID;
+    this.#numberOfRays = numberOfRays;
+    this.#lightSourceType = lightSourceType;
+    this.#distributionType = distributionType;
+    this.#distributionMean = distributionMean;
+    this.#distributionCovariance = distributionCovariance;
   }
 }
