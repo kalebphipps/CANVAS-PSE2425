@@ -2,7 +2,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "three": ["static/js/three.module.js"]
+      "three": ["static/js/three.module.js"],
+      "inspector": ["static/js/inspector.js"],
+      "inspectorSelection": ["static/js/inspectorSelection.js"],
+      "heliostatSelection": ["static/js/heliostatSelection.js"],
+      "receiverSelection": ["static/js/receiverSelection.js"],
+      "lightSourceSelection": ["static/js/lightSourceSelection.js"]
     }
   }
 }
