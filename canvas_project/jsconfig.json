@@ -2,7 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "three": ["static/js/three.module.js"]
+      "three": ["static/js/three.module.js"],
+      "objects": ["static/js/object.mjs"]
     }
   }
 }
