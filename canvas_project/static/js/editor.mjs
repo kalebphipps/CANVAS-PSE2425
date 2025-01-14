@@ -182,5 +182,67 @@ export class Editor {
     this.#scene.add(this.#selectableGroup);
   }
 
-  async #loadProject() {}
+  async #loadProject() {
+    const projectJson = await this.#saveAndLoadHandler.getProjectData();
+
+    const heliostatList = projectJson["heliostats"];
+    const receiverList = projectJson["receivers"];
+    const lightsourceList = projectJson["lightsources"];
+    const settingsList = projectJson["settings"];
+
+    heliostatList.forEach((heliostat) => {
+      this.#selectableGroup.add(
+        new Heliostat(
+          heliostat.id,
+          new THREE.Vector3(
+            heliostat.position_x,
+            heliostat.position_y,
+            heliostat.position_z
+          ),
+          new THREE.Vector3(
+            heliostat.aimpoint_x,
+            heliostat.aimpoint_y,
+            heliostat.aimpoint_z
+          ),
+          heliostat.number_of_facets,
+          heliostat.kinematic_type
+        )
+      );
+    });
+
+    receiverList.forEach((receiver) => {
+      this.#selectableGroup.add(
+        new Receiver(
+          receiver.id,
+          new THREE.Vector3(
+            receiver.position_x,
+            receiver.position_y,
+            receiver.position_z
+          ),
+          new THREE.Vector3(
+            receiver.normal_x,
+            receiver.normal_y,
+            receiver.normal_z
+          ),
+          receiver.rotation_y,
+          receiver.curvature_e,
+          receiver.curvature_u,
+          receiver.plane_e,
+          receiver.plane_u,
+          receiver.resolution_e,
+          receiver.resolution_u
+        )
+      );
+    });
+
+    lightsourceList.forEach((lightsource) => {
+      this.#selectableGroup.add(new Lightsource(lightsource.id));
+    });
+
+    // set the settings
+    this.setShadows(settingsList["shadows"]);
+    this.setFog(settingsList["fog"]);
+
+    // TODO: Update settings also in UI --> wait till implemented
+  }
 }
