@@ -29,7 +29,9 @@
 {% endblock %}
 {% block body %}
     <!--settings modal-->
-    {% include "editor/settings.html" %}
+    {% include "settings.html" %}
+    <!--job interface modal-->
+    {% include "editor/jobInterface.html" %}
     <!-- keybindings modal -->
     <div class="modal modal-lg fade"
          id="keyboardModal"
@@ -105,11 +107,6 @@
                         Copyright © 2024 ARTIST Association
                     </p>
                     <div class="d-flex justify-content-center pt-3 pb-3">
-<<<<<<< HEAD
-                        <img class="about-logo px-3" src="{% static 'img/logo_kit.svg' %}">
-                    </img>
-                    <img class="about-logo px-3" src="{% static 'img/logo_dlr.svg' %}">
-=======
                         <img class="about-logo px-3"
                              height="auto"
                              width="auto"
@@ -121,7 +118,6 @@
                          width="auto"
                          alt="logo of the DLR"
                          src="{% static 'img/logo_dlr.svg' %}">
->>>>>>> ae6327f (updated editor.html and editor.css)
                 </img>
             </div>
         </div>
@@ -132,13 +128,9 @@
 <div class="container-fluid d-flex flex-column min-vh-100 p-0">
     <!-- navigation bar -->
     <nav class="navbar navbar-expand-sm navbar-light">
-<<<<<<< HEAD
-        <a class="navbar-brand mx-4" href="#">CANVAS Editor</a>
-=======
         <a class="navbar-brand ms-4" href="/projects">
             <div class="rounded-circle bg-primary" style="width: 32px; height: 32px"></div>
         </a>
->>>>>>> ae6327f (updated editor.html and editor.css)
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
                 <!-- file -->
@@ -158,17 +150,11 @@
                         </a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" id="import" href="#">
-<<<<<<< HEAD
-                            <i class="bi-file-earmark-arrow-up me-2"></i>Import
-                        </a>
-                        <a class="dropdown-item" id="export" href="#">
-=======
                             <i class="bi-file-earmark-arrow-up me-2"></i>Open
                         </a>
                         <a class="dropdown-item"
                            id="export"
                            href="{% url 'download' project_name %}">
->>>>>>> ae6327f (updated editor.html and editor.css)
                             <i class="bi-file-earmark-arrow-down me-2"></i>Export
                         </a>
                     </div>
@@ -248,61 +234,6 @@
     <!-- main editor pane -->
     <main class="d-flex flex-row flex-fill">
         <!-- canvas -->
-<<<<<<< HEAD
-        <div class="d-flex flex-column flex-fill bg-dark" id="canvas"></div>
-        <!-- sidebar -->
-        <div class="d-flex flex-column flex-shrink-0 border-left p-2" id="sidebar">
-            <!-- properties -->
-            <ul class="nav nav-underline  nav-fill mb-auto"
-                id="propertiesTab"
-                role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link link-body-emphasis active"
-                       data-bs-toggle="tab"
-                       aria-current="page"
-                       href="#">
-                        <i class="bi-box me-2"></i>Object</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link link-body-emphasis" data-bs-toggle="tab" href="#">
-                        <i class="bi-projector me-2"></i>Scene</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link link-body-emphasis" data-bs-toggle="tab" href="#">
-                        <i class="bi-kanban me-2"></i>Project</a>
-                </li>
-            </ul>
-            <hr>
-            <!-- user -->
-            <div class="dropup d-flex justify-content-end me-3">
-                <a class="dropdown-toggle d-flex align-items-center link-body-emphasis text-decoration-none"
-                   data-bs-toggle="dropdown"
-                   aria-expanded="false">
-                    <div class="rounded-circle bg-body-secondary me-3"
-                         style="width: 32px;
-                                height: 32px"></div>
-                    <strong class="me-2">User</strong>
-                </a>
-                <ul class="dropdown-menu text-small" style="">
-                    <li>
-                        <a class="dropdown-item" href="#">Settings</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">Profile</a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">Sign out</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </main>
-</div>
-{% endblock %}
-=======
         <div class="mb-2 mx-0 ms-2 overflow-hidden rounded-3 shadow position-relative"
              id="canvas">
             <!--mode selector-->
@@ -585,4 +516,3 @@
     </script>
 </div>
 {% endblock body %}
->>>>>>> ae6327f (updated editor.html and editor.css)
