@@ -18,8 +18,6 @@ from .serializers import (
     SettingsSerializer,
 )
 
-# Create your views here.
-
 
 class ProjectList(generics.ListCreateAPIView):
     """
@@ -82,3 +80,18 @@ class HeliostatList(generics.ListCreateAPIView):
         return Heliostat.objects.filter(
             project__id=project_id, project__owner=self.request.user
         )
+
+
+class HeliostatDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Creates a view to retrieve, edit or delete a specific heliostat, defined by the pk in the url.
+    """
+
+    serializer_class = HeliostatSerializer
+
+    # Accepted authentication classes and the needed permissions to access the API
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Heliostat.objects.filter(project__owner=self.request.user)
