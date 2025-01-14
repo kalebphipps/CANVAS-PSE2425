@@ -4,18 +4,18 @@ import { ViewHelper } from "compass";
 import { OrbitControls } from "orbitControls";
 import { TransformControls } from "transformControls";
 
-import { UndoRedoHandler } from "undoRedoHandler";
-import { SaveAndLoadHandler } from "saveAndLoadHandler";
-import { Navbar } from "navbar";
-import { Overview } from "overview";
-import { ModeSelector } from "modeSelector";
-import { Picker } from "picker";
-import { ProjectSettingManager } from "projectSettingManager";
-import { QuickSelector } from "quickSelector";
-import { JobInterface } from "jobInterface";
-import { Inspector } from "inspector";
+//import { UndoRedoHandler } from "undoRedoHandler";
+//import { SaveAndLoadHandler } from "saveAndLoadHandler";
+//import { Navbar } from "navbar";
+//import { Overview } from "overview";
+//import { ModeSelector } from "modeSelector";
+//import { Picker } from "picker";
+//import { ProjectSettingManager } from "projectSettingManager";
+//import { QuickSelector } from "quickSelector";
+//import { JobInterface } from "jobInterface";
+//import { Inspector } from "inspector";
 
-import { Heliostat, Receiver, Lightsource, Terrain } from "objects";
+import { Heliostat, Receiver, LightSource, Terrain } from "objects";
 
 let editorInstance = null;
 export class Editor {
@@ -54,20 +54,20 @@ export class Editor {
     this.#projectId = projectId;
 
     // initiate needed classes
-    this.#undoRedoHandler = new UndoRedoHandler();
-    this.#saveAndLoadHandler = new SaveAndLoadHandler(this.#projectId);
-    this.#navbar = new Navbar();
-    this.#picker = new Picker();
-    this.#overview = new Overview(this.#picker);
-    this.#modeSelector = new ModeSelector();
-    this.#projectSettingManager = new ProjectSettingManager();
-    this.#quickSelector = new QuickSelector();
-    this.#jobInterface = new JobInterface();
-    this.#inspector = new Inspector(this.#picker);
+    //this.#undoRedoHandler = new UndoRedoHandler();
+    //this.#saveAndLoadHandler = new SaveAndLoadHandler(this.#projectId);
+    //this.#navbar = new Navbar();
+    //this.#picker = new Picker();
+    //this.#overview = new Overview(this.#picker);
+    //this.#modeSelector = new ModeSelector();
+    //this.#projectSettingManager = new ProjectSettingManager();
+    //this.#quickSelector = new QuickSelector();
+    //this.#jobInterface = new JobInterface();
+    //this.#inspector = new Inspector(this.#picker);
 
     // initate ThreeJs scene
     this.#setUpScene();
-    this.#loadProject();
+    //this.#loadProject();
 
     window.addEventListener("resize", () => this.onWindowResize());
 
@@ -112,7 +112,7 @@ export class Editor {
     // since we render multiple times (scene and compass), we need to clear the renderer manually
     this.#renderer.autoClear = false;
     this.#renderer.shadowMap.enabled = true;
-    this.#renderer.setSize(this.#canvas.clientWidth, this.canvas.clientHeight);
+    this.#renderer.setSize(this.#canvas.clientWidth, this.#canvas.clientHeight);
     this.#canvas.appendChild(this.#renderer.domElement);
 
     //set up empty scene
@@ -236,7 +236,7 @@ export class Editor {
     });
 
     lightsourceList.forEach((lightsource) => {
-      this.#selectableGroup.add(new Lightsource(lightsource.id));
+      this.#selectableGroup.add(new LightSource(lightsource.id));
     });
 
     // set the settings
