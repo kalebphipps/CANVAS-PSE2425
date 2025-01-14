@@ -1,3 +1,12 @@
+from django.shortcuts import render
+
+from django.http import HttpResponse
+
+
+def editor(request):
+    return render(request, "editor/editor.html")
+
+
 from django.shortcuts import render, get_object_or_404
 from project_management.models import Project
 from django.http import FileResponse
