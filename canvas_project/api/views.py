@@ -31,5 +31,21 @@ class ProjectList(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        # Show only the projects the user owns
+        # Select only the projects the user owns
+        return Project.objects.filter(owner=self.request.user)
+
+
+class ProjectDetailList(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Creates a view to list a specific project, specified by the given pk in the url, where you can also delete the project.
+    """
+
+    serializer_class = ProjectDetailSerializer
+
+    # Accepted authentication classes and the needed permissions to access the API
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Select only the projects the user owns
         return Project.objects.filter(owner=self.request.user)
