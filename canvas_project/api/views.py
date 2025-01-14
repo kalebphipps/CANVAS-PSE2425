@@ -121,3 +121,18 @@ class ReceiverList(generics.ListCreateAPIView):
         return Receiver.objects.filter(
             project__id=project_id, project__owner=self.request.user
         )
+
+
+class ReceiverDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Creates a view of a specific receiver to retrieve, edit or delete it.
+    """
+
+    serializer_class = ReceiverSerializer
+
+    # Accepted authentication classes and the needed permissions to access the API
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Receiver.objects.filter(project__owner=self.request.user)
