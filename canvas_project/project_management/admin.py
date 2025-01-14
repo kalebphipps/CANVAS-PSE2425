@@ -1,4 +1,12 @@
 from django.contrib import admin
+from project_management.models import (
+    Project,
+    Heliostat,
+    Receiver,
+    Lightsource,
+    Settings,
+)
+
 
 # Regestering all models
 admin.site.register(Project)

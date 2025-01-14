@@ -8,6 +8,7 @@ class Project(models.Model):
     """
 
     name = models.CharField(max_length=300)
+    description = models.CharField(max_length=500)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
