@@ -55,7 +55,7 @@ export class Editor {
 
     // initiate needed classes
     this.#undoRedoHandler = new UndoRedoHandler();
-    this.#saveAndLoadHandler = new SaveAndLoadHandler(projectId);
+    this.#saveAndLoadHandler = new SaveAndLoadHandler(this.#projectId);
     this.#navbar = new Navbar();
     this.#picker = new Picker();
     this.#overview = new Overview(this.#picker);
