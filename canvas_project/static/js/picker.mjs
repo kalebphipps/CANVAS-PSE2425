@@ -36,16 +36,21 @@ export class Picker {
 
     // TODO: sigle pick selection
     pick(normalizedPosition, camera) {
+
+        this.itemSelectedEvent();
     }
 
     // TODO: Rectangular selection
     pickMultiSelection(start, end) {
+
+        this.itemSelectedEvent();
     }
 
 
     // TODO: Add objects to selection
     addToSelection(normalizedPosition) { 
-        
+
+        this.itemSelectedEvent();
     }
 
 
