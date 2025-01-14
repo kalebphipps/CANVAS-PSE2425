@@ -4,4 +4,4 @@ from django.http import HttpResponse
 
 
 def editor(request):
-    return render(request, 'editor/editor.html')
+    return render(request, "editor/editor.html")
