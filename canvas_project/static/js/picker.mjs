@@ -1,14 +1,32 @@
+import * as THREE from "three";
+import { ModeSelector } from "./modeSelector.mjs";      // TODO: correct path
+
+
 export class Picker {
+    #camera;
+    #transformControls;
+    #selectionBox;
+    #selectableGroup;
+    #modeSelector;
+    #selectedObjects;
+    #raycaster;
+
+    /**
+     * Creates a new Picker object
+     * @param {THREE.Camera} camera The camera to be used for raycasting
+     * @param {THREE.TransformControls} transformControls The transform controls to be used for selected objects
+     * @param {THREE.Box3Helper} selectionBox The selection box to be used for selected objects
+     * @param {THREE.Group} selectableGroup The group of objects to be selected
+     * @param {ModeSelector} modeSelector The mode selector to be used for selection mode
+     */
     constructor(camera, transformControls, selectionBox, selectableGroup, modeSelector) {
-        this.camera = camera;
-        this.transformControls = transformControls;
-        this.selectionBox = selectionBox;
-        this.selectableGroup = selectableGroup;
-        this.modeSelector = modeSelector;
-        this.selectedObjects = [];
-        this.raycaster = new THREE.Raycaster();
-        this.selectedObjects = [];
-        this.group = new THREE.Group();
+        this.#camera = camera;
+        this.#transformControls = transformControls;
+        this.#selectionBox = selectionBox;
+        this.#selectableGroup = selectableGroup;
+        this.#modeSelector = modeSelector;
+        this.#selectedObjects = [];
+        this.#raycaster = new THREE.Raycaster();
 
         // TODO: Event listener for click
         window.addEventListener("click", (event) => {  
@@ -23,12 +41,20 @@ export class Picker {
 
     }
 
+    /**
+     * Returns the list of selected objects
+     * @returns List of selected objects
+     */
     getSelectedObjects() {
-        return this.selectedObjects;
+        return this.#selectedObjects;
     }
 
+    /**
+     * Sets the list of selected objects
+     * @param {[]} objectList 
+     */
     setSelection(objectList) {
-        this.selectedObjects = objectList;
+        this.#selectedObjects = objectList;
         // TODO: mark all newly selected objects
 
         this.itemSelectedEvent();
@@ -54,10 +80,12 @@ export class Picker {
     }
 
 
-    // inform the inspector with "item selected" event
+    /**
+     * Inform the inspector that an item has been selected
+     */
     itemSelectedEvent() {
         const event = new CustomEvent("itemSelected", {
-            detail: { object: this.selectedObject },
+            detail: { object: this.#selectedObjects },
           });
           document.getElementById("inspector").dispatchEvent(event);
     }
