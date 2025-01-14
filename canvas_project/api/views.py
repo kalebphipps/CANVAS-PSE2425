@@ -177,3 +177,25 @@ class LightsourceDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Lightsource.objects.filter(project__owner=self.request.user)
+
+
+class SettingsDetail(generics.RetrieveUpdateAPIView):
+    """
+    Creates a view to list and update all settings.
+    """
+
+    serializer_class = SettingsSerializer
+
+    # Accepted authentication classes and the needed permissions to access the API
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    # Overwrite the default get_object function to not use the primary key, but select the settings object by the corresponding project
+    def get_object(self):
+        project_id = self.kwargs["project_id"]
+        queryset = self.get_queryset()
+        obj = generics.get_object_or_404(queryset, project__id=project_id)
+        return obj
+
+    def get_queryset(self):
+        return Settings.objects.filter(project__owner=self.request.user)
