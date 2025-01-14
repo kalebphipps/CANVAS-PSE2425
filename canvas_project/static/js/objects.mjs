@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { Object3D } from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 /**
  *  Class that represents the Heliostat object
@@ -11,14 +12,26 @@ export class Heliostat extends Object3D {
   #kinematicType;
 
   /**
-   *
+   * Creates a Heliostat object
    * @param {THREE.Vector3} aimPoint The Point the Heliostat is aiming at.
    * @param {Number} numberOfFacets Number of Facets the Heliostat has.
    * @param {String} kinematicType The type of kinematic the Heliostat has.
    */
 
-  constructor(aimPoint, numberOfFacets, kinematicType) {
+  constructor(aimPoint, position, numberOfFacets, kinematicType) {
     super();
+    this.loader = new GLTFLoader();
+    this.mesh;
+    this.loader.load("/static/models/heliostat.glb", (gltf) => {
+      this.mesh = gltf.scene;
+      this.mesh.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+        }
+      });
+      this.add(this.mesh);
+    });
+    this.position.copy(position);
     this.#aimPoint = aimPoint;
     this.#numberOfFacets = numberOfFacets;
     this.#kinematicType = kinematicType;
@@ -29,6 +42,11 @@ export class Heliostat extends Object3D {
    */
   updateAimPoint(aimPoint) {
     this.#aimPoint = aimPoint;
+    this.lookAt(aimPoint.x, 0, aimPoint.z);
+  }
+
+  renderConfigurator() {
+    return;
   }
 
   get apiID() {
@@ -79,8 +97,10 @@ export class Receiver extends Object3D {
   #curvatureU;
 
   /**
-   *
+   * Creates a Receiver object
    * @param {String} towerType the type of the tower
+   * @param {Vector3} position Is the position of the receiver
+   * @param {Number} rotationY the rotation Y of the receiver
    * @param {THREE.Vector3} normalVector the normal vector of the receiver
    * @param {Number} planeE the plane E of the receiver
    * @param {Number} planeU the plane U of the receiver
@@ -91,6 +111,8 @@ export class Receiver extends Object3D {
    */
   constructor(
     towerType,
+    position,
+    rotationY,
     normalVector,
     planeE,
     planeU,
@@ -100,6 +122,16 @@ export class Receiver extends Object3D {
     curvatureU
   ) {
     super();
+    // place the 3D object
+    this.base = new ReceiverBase();
+    this.base.position.copy(new Vector3(position.x, 0, position.z));
+    this.add(this.base);
+
+    this.top = new ReceiverTop();
+    this.top.position.copy(position);
+    this.add(this.top);
+
+    this.rotateY(rotationY);
     this.#apiID = apiID;
     this.#towerType = towerType;
     this.#normalVector = normalVector;
@@ -109,6 +141,20 @@ export class Receiver extends Object3D {
     this.#resolutionU = resolutionU;
     this.#curvatureE = curvatureE;
     this.#curvatureU = curvatureU;
+  }
+  
+  /**
+   * Updates the position of the receiver
+   * @param {THREE.Vector3} position the new position of the receiver
+  */
+ updatePosition(position) {
+   this.position.set(position.x, position.y, position.z);
+   this.base.position.set(position.x, 0, position.z);
+   this.top.position.set(position.x, position.y, position.z);
+  }
+
+  renderConfigurator() {
+    return "Receiver";
   }
 
   get apiID() {
@@ -182,14 +228,49 @@ export class Receiver extends Object3D {
   set curvatureU(value) {
     this.#curvatureU = value;
   }
-  /**
-   *
-   * @param {THREE.Vector3} position the new position of the receiver
-   */
-  updatePosition(position) {
-    this.position.set(position.x, position.y, position.z);
+}
+
+/**
+ * Class that builds the base of the receiver
+ */
+export class ReceiverBase extends Object3D {
+  constructor() {
+    super();
+    this.loader = new GLTFLoader();
+    this.loader.load("/static/models/towerBase.glb", (gltf) => {
+      this.base = gltf.scene;
+      this.add(this.base);
+      this.base.traverse((child) => {
+        if (child.type == "Mesh") {
+          child.castShadow = true;
+        }
+      });
+    });
   }
 }
+
+
+/**
+ * Class that builds the top of the receiver
+ */
+export class ReceiverTop extends Object3D {
+  constructor() {
+    super();
+    this.loader = new GLTFLoader();
+    this.loader.load("/static/models/towerTop.glb", (gltf) => {
+      this.top = gltf.scene;
+      this.add(this.top);
+      this.top.traverse((child) => {
+        if (child.type == "Mesh") {
+          child.castShadow = true;
+        }
+      });
+    });
+  }
+}
+
+
+
 
 /**
  * Class that represents the light source object
@@ -226,5 +307,42 @@ export class LightSource extends Object3D {
     this.#distributionType = distributionType;
     this.#distributionMean = distributionMean;
     this.#distributionCovariance = distributionCovariance;
+  }
+}
+
+
+/**
+ * Creates the terrain for the scene
+ */
+export class Terrain extends Object3D {
+  constructor(size) {
+    super();
+
+    this.terrain = new THREE.Mesh(
+      new THREE.CircleGeometry(size / 2),
+      new THREE.MeshStandardMaterial({
+        color: 0x5fd159,
+      })
+    );
+    this.terrain.receiveShadow = true;
+    this.terrain.rotateX((3 * Math.PI) / 2);
+    this.add(this.terrain);
+
+    this.mountains = new THREE.Group();
+    this.add(this.mountains);
+    for (let i = 0; i < 100; i++) {
+      const sphere = new THREE.Mesh(
+        new THREE.SphereGeometry(THREE.MathUtils.randFloat(20, 100)),
+        new THREE.MeshStandardMaterial({
+          color: 0x50ba78,
+        })
+      );
+      sphere.position.set(
+        (size / 2) * Math.sin((i / 100) * 2 * Math.PI),
+        0,
+        (size / 2) * Math.cos((i / 100) * 2 * Math.PI)
+      );
+      this.mountains.add(sphere);
+    }
   }
 }

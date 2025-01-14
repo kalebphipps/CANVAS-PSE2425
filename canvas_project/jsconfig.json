@@ -3,7 +3,8 @@
     "baseUrl": ".",
     "paths": {
       "three": ["static/js/three.module.js"],
-      "objects": ["static/js/object.mjs"]
+      "objects": ["static/js/object.mjs"],
+      "three/addons/": ["static/js/three/examples/jsm/"]
     }
   }
 }
