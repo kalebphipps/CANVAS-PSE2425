@@ -37,7 +37,7 @@ export class Heliostat extends Object3D {
     this.#kinematicType = kinematicType;
   }
   /**
-   * Updates the aimPoint of the Heliostat
+   * Updates the aimPoint of the Heliostat and updates rotation of the Heliostat accordingly
    * @param {THREE.Vector3} aimPoint
    */
   updateAimPoint(aimPoint) {
@@ -144,7 +144,7 @@ export class Receiver extends Object3D {
   }
   
   /**
-   * Updates the position of the receiver
+   * Updates the receiver’s position by adjusting both the base and the top, ensuring that the base remains on the ground.
    * @param {THREE.Vector3} position the new position of the receiver
   */
  updatePosition(position) {
