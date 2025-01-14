@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django import template
+
+register = template.Library()
 
 
 def projects(request):
@@ -19,21 +22,21 @@ def projects(request):
                     "description": "This is a description of project B",
                     "last_edited": "15.11.2024",
                     "favorite": "false",
-                    "preview": "img/test.png",
+                    "preview": "img/logo_dlr.svg",
                 },
                 {
                     "name": "Project C",
                     "description": "This is a description of project C",
                     "last_edited": "15.11.2024",
                     "favorite": "true",
-                    "preview": "img/test.png",
+                    "preview": "img/logo_kit.svg",
                 },
                 {
                     "name": "Project D",
                     "description": "This is a description of project D",
                     "last_edited": "15.11.2024",
                     "favorite": "true",
-                    "preview": "img/test.png",
+                    "preview": "img/logo_canvas.jpg",
                 },
                 {
                     "name": "Project E",
