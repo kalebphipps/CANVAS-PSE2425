@@ -2,7 +2,13 @@ from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from editor.models import Project, Heliostat, Receiver, Lightsource, Settings
+from project_management.models import (
+    Project,
+    Heliostat,
+    Receiver,
+    Lightsource,
+    Settings,
+)
 from .serializers import (
     ProjectSerializer,
     ProjectDetailSerializer,
@@ -49,3 +55,30 @@ class ProjectDetailList(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         # Select only the projects the user owns
         return Project.objects.filter(owner=self.request.user)
+
+
+class HeliostatList(generics.ListCreateAPIView):
+    """
+    Creates a view to list all heliostats and create new ones.
+    """
+
+    serializer_class = HeliostatSerializer
+
+    # Accepted authentication classes and the needed permissions to access the API
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    # Overwrite the default function to use the project defined by the project_id in the url for saving the heliostat
+    def perform_create(self, serializer):
+        # kwargs = keyword arguement
+        project_id = self.kwargs["project_id"]
+        project = generics.get_object_or_404(
+            Project, id=project_id, owner=self.request.user
+        )
+        serializer.save(project=project)
+
+    def get_queryset(self):
+        project_id = self.kwargs["project_id"]
+        return Heliostat.objects.filter(
+            project__id=project_id, project__owner=self.request.user
+        )
