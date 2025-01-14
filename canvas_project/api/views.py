@@ -162,3 +162,18 @@ class LightsourceList(generics.ListCreateAPIView):
         return Lightsource.objects.filter(
             project__id=project_id, project__owner=self.request.user
         )
+
+
+class LightsourceDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Creates a view to retrieve, update or delete a specific lightsource, defined by the given pk.
+    """
+
+    serializer_class = LightsourceSerializer
+
+    # Accepted authentication classes and the needed permissions to access the API
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Lightsource.objects.filter(project__owner=self.request.user)
