@@ -68,7 +68,7 @@
         <div class="row g-0">
           <div class="col-md-4">
             <img
-              src="{% static 'img/logo_kit.svg' %}"
+              src="{% static project.preview %}"
               class="img-fluid"
               alt="..."
             />
@@ -85,19 +85,21 @@
                 </div>
                 <div class="position-absolute end-0 top-0">
                   {% if project.favorite == "true" %}
-                  <button
-                    class="btn btn-primary active custom-btn rounded-0 shadow"
-                    data-bs-toggle="button"
-                  >
-                    <i class="bi bi-star-fill text-warning"></i>
-                  </button>
+                  <a
+                    class="btn btn-primary"
+                    href="./"
+                    role="button"
+                    onclick="project.favorite='false'"
+                    ><i class="bi bi-star"></i
+                  ></a>
                   {% else %}
-                  <button
-                    class="btn btn-primary custom-btn rounded-0 shadow"
-                    data-bs-toggle="button"
-                  >
-                    <i class="bi bi-star-fill"></i>
-                  </button>
+                  <a
+                    class="btn btn-primary"
+                    href="./"
+                    role="button"
+                    onclick="project.favorite='true'"
+                    ><i class="bi-star-fill text-warning"></i
+                  ></a>
                   {% endif %}
                 </div>
               </div>
@@ -129,7 +131,7 @@
         <div class="row g-0">
           <div class="col-md-4">
             <img
-              src="{% static 'img/logo_kit.svg' %}"
+              src="{% static project.preview %}"
               class="img-fluid"
               alt="..."
             />
@@ -146,19 +148,21 @@
                 </div>
                 <div class="position-absolute end-0 top-0">
                   {% if project.favorite == "true" %}
-                  <button
-                    class="btn btn-primary active custom-btn rounded-0 shadow"
-                    data-bs-toggle="button"
-                  >
-                    <i class="bi bi-star-fill text-warning"></i>
-                  </button>
+                  <a
+                    class="btn btn-primary"
+                    href="./"
+                    role="button"
+                    onclick="project.favorite='false'"
+                    ><i class="bi bi-star"></i
+                  ></a>
                   {% else %}
-                  <button
-                    class="btn btn-primary custom-btn rounded-0 shadow"
-                    data-bs-toggle="button"
-                  >
-                    <i class="bi bi-star-fill"></i>
-                  </button>
+                  <a
+                    class="btn btn-primary"
+                    href="./"
+                    role="button"
+                    onclick="project.favorite='true'"
+                    ><i class="bi-star-fill text-warning"></i
+                  ></a>
                   {% endif %}
                 </div>
               </div>
