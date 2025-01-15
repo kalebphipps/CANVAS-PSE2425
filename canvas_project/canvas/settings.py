@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "job_interface_mockup",
     "project_management",
     "account_management",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
