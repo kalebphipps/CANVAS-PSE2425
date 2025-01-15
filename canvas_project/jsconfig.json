@@ -11,7 +11,8 @@
       ],
       "transformControls": [
         "static/js/three/examples/jsm/controls/TransformControls.js"
-      ]
+      ],
+       "command": ["static/js/command.mjs"],
+       "undoRedoHandler": ["static/js/undoRedoHandler.mjs"]
     }
-  }
 }
