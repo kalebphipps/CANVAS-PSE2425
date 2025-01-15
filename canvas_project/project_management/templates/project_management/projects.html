@@ -1,0 +1,226 @@
+{% extends "base.html" %} {% load static %} {% block style %} {{ block.super }}
+<link href="{% static 'css/editor.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %} {% block body %}
+<!--create project modal-->
+<div
+  class="modal fade"
+  id="createProject"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4">
+      <div class="modal-body">
+        <form action="" class="d-flex flex-column">
+          <div class="form-floating mb-3">
+            <input class="form-control rounded-3" id="floatingInput" />
+            <label for="floatingInput">Project name</label>
+          </div>
+          <button class="btn btn-primary rounded-3" type="submit">
+            Create
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--settings modal-->
+{% include "settings.html" %}
+<!--project overview-->
+<div
+  class="d-flex flex-column w-100 justify-content-between align-items-center vh-100 gap-2"
+>
+  <div class="p-2 pt-3">
+    <h1 style="font-size: 3rem; font-weight: 900">My projects</h1>
+  </div>
+  <div
+    class="p-1 d-flex flex-column gap-2 w-100 justify-conten-center align-items-center"
+  >
+    <button
+      class="btn btn-outline-primary rounded-4 fw-bolder fs-5"
+      data-bs-toggle="modal"
+      data-bs-target="#createProject"
+    >
+      <i class="bi bi-plus-lg"></i>New Project
+    </button>
+    <div class="w-100 d-flex justify-content-center gap-4"></div>
+  </div>
+  <div class="d-flex flex-column gap-2 overflow-auto px-2 mt-3">
+    <div
+      class="form-check form-switch position-absolute ms-2"
+      style="transform: translateY(-130%)"
+    >
+      <input
+        class="form-check-input"
+        type="checkbox"
+        role="switch"
+        id="flexSwitchCheckDefault"
+      />
+      <label class="form-check-label" for="flexSwitchCheckDefault"
+        >Only favorites</label
+      >
+    </div>
+    {% for project in projects %} {% if flexSwitchCheckDefault %} {% if
+    project.favorite == "true" %}
+    <div class="px-2">
+      <div class="card mb-3 rounded-4 bg-body-tertiary overflow-hidden">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img
+              src="{% static 'img/logo_kit.svg' %}"
+              class="img-fluid"
+              alt="..."
+            />
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <div class="d-flex gap-1">
+                <div class="d-flex flex-column">
+                  <h1 class="fw-bolder">{{ project.name }}</h1>
+                  <p class="fw-light">{{project.description}}.</p>
+                  <p class="text-start">
+                    Last edited: {{ project.last_edited }}
+                  </p>
+                </div>
+                <div class="position-absolute end-0 top-0">
+                  {% if project.favorite == "true" %}
+                  <button
+                    class="btn btn-primary active custom-btn rounded-0 shadow"
+                    data-bs-toggle="button"
+                  >
+                    <i class="bi bi-star-fill text-warning"></i>
+                  </button>
+                  {% else %}
+                  <button
+                    class="btn btn-primary custom-btn rounded-0 shadow"
+                    data-bs-toggle="button"
+                  >
+                    <i class="bi bi-star-fill"></i>
+                  </button>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="d-flex gap-2">
+                <a
+                  role="button"
+                  href="{% url 'editor' project_name=project.name %}"
+                  class="btn btn-primary"
+                  >Open</a
+                >
+                <button class="btn btn-primary custom-btn shadow">
+                  <i class="bi bi-share"></i>
+                </button>
+                <button class="btn btn-primary custom-btn">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-primary custom-btn">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="px-2">
+      <div class="card mb-3 rounded-4 bg-body-tertiary overflow-hidden">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img
+              src="{% static 'img/logo_kit.svg' %}"
+              class="img-fluid"
+              alt="..."
+            />
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <div class="d-flex gap-1">
+                <div class="d-flex flex-column">
+                  <h1 class="fw-bolder">{{ project.name }}</h1>
+                  <p class="fw-light">{{project.description}}.</p>
+                  <p class="text-start">
+                    Last edited: {{ project.last_edited }}
+                  </p>
+                </div>
+                <div class="position-absolute end-0 top-0">
+                  {% if project.favorite == "true" %}
+                  <button
+                    class="btn btn-primary active custom-btn rounded-0 shadow"
+                    data-bs-toggle="button"
+                  >
+                    <i class="bi bi-star-fill text-warning"></i>
+                  </button>
+                  {% else %}
+                  <button
+                    class="btn btn-primary custom-btn rounded-0 shadow"
+                    data-bs-toggle="button"
+                  >
+                    <i class="bi bi-star-fill"></i>
+                  </button>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="d-flex gap-2">
+                <a
+                  role="button"
+                  href="{% url 'editor' project_name=project.name %}"
+                  class="btn btn-primary"
+                  >Open</a
+                >
+                <button class="btn btn-primary custom-btn shadow">
+                  <i class="bi bi-share"></i>
+                </button>
+                <button class="btn btn-primary custom-btn">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-primary custom-btn">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %} {% endfor %}
+  </div>
+  <div class="d-flex w-100 justify-content-end p-2">
+    <div class="d-flex justify-content-between mx-3 py-1">
+      <a
+        class="dropdown-toggle d-flex align-items-center link-body-emphasis text-decoration-none py-2"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <div
+          class="rounded-circle bg-primary me-2"
+          style="width: 32px; height: 32px"
+        ></div>
+        <strong class="me-2">Max</strong>
+      </a>
+      <ul class="dropdown-menu text-small shadow">
+        <div class="px-3 gap-1">
+          <p class="m-0">Max Mustermann</p>
+          <p class="text-secondary m-0">max.muster@example.com</p>
+        </div>
+        <li>
+          <hr class="dropdown-divider" />
+        </li>
+        <li>
+          <button
+            class="dropdown-item"
+            data-bs-toggle="modal"
+            data-bs-target="#settings"
+          >
+            Settings
+          </button>
+        </li>
+        <li>
+          <a class="dropdown-item" href="/">Sign out</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock body %}

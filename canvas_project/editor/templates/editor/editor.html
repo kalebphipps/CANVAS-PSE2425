@@ -11,8 +11,11 @@
             "imports": {
                 "three": "{% static 'js/three.module.js' %}",
                 "three/addons/": "{% static 'js/three/examples/jsm/' %}",
-                "menu": "{% static 'js/menu.mjs' %}",
+                "navbar": "{% static 'js/navbar.mjs' %}",
                 "compass": "{% static 'js/compass.mjs' %}",
+                "objects": "{% static 'js/objects.mjs' %}",
+                "orbitControls": "{% static 'js/three/examples/jsm/controls/OrbitControls.js' %}",
+                "transformControls": "{% static 'js/three/examples/jsm/controls/TransformControls.js' %}"
                 "command": "{% static 'js/command.mjs' %}",
                 "undoRedoHandler": "{% static 'js/undoRedoHandler.mjs' %}"
             }
@@ -22,11 +25,15 @@
         import { Editor } from "{% static 'js/editor.mjs' %}";
 
         window.addEventListener('DOMContentLoaded', (_) => {
-            new Editor();
+            new Editor({{ project_id }});
         });
     </script>
 {% endblock %}
 {% block body %}
+    <!--settings modal-->
+    {% include "settings.html" %}
+    <!--job interface modal-->
+    {% include "editor/jobInterface.html" %}
     <!-- keybindings modal -->
     <div class="modal modal-lg fade"
          id="keyboardModal"
@@ -102,9 +109,17 @@
                         Copyright © 2024 ARTIST Association
                     </p>
                     <div class="d-flex justify-content-center pt-3 pb-3">
-                        <img class="about-logo px-3" src="{% static 'img/logo_kit.svg' %}">
+                        <img class="about-logo px-3"
+                             height="auto"
+                             width="auto"
+                             alt="logo of the KIT"
+                             src="{% static 'img/logo_kit.svg' %}">
                     </img>
-                    <img class="about-logo px-3" src="{% static 'img/logo_dlr.svg' %}">
+                    <img class="about-logo px-3"
+                         height="auto"
+                         width="auto"
+                         alt="logo of the DLR"
+                         src="{% static 'img/logo_dlr.svg' %}">
                 </img>
             </div>
         </div>
@@ -115,7 +130,9 @@
 <div class="container-fluid d-flex flex-column min-vh-100 p-0">
     <!-- navigation bar -->
     <nav class="navbar navbar-expand-sm navbar-light">
-        <a class="navbar-brand mx-4" href="#">CANVAS Editor</a>
+        <a class="navbar-brand ms-4" href="/projects">
+            <div class="rounded-circle bg-primary" style="width: 32px; height: 32px"></div>
+        </a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
                 <!-- file -->
@@ -135,9 +152,11 @@
                         </a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" id="import" href="#">
-                            <i class="bi-file-earmark-arrow-up me-2"></i>Import
+                            <i class="bi-file-earmark-arrow-up me-2"></i>Open
                         </a>
-                        <a class="dropdown-item" id="export" href="#">
+                        <a class="dropdown-item"
+                           id="export"
+                           href="{% url 'download' project_name %}">
                             <i class="bi-file-earmark-arrow-down me-2"></i>Export
                         </a>
                     </div>
@@ -217,56 +236,285 @@
     <!-- main editor pane -->
     <main class="d-flex flex-row flex-fill">
         <!-- canvas -->
-        <div class="d-flex flex-column flex-fill bg-dark" id="canvas"></div>
+        <div class="mb-2 mx-0 ms-2 overflow-hidden rounded-3 shadow position-relative"
+             id="canvas">
+            <!--mode selector-->
+            <div class="position-absolute mt-4 ms-4 fs-5">
+                <ul class="nav nav-pills flex-column p-2 gap-1 shadow-sm small bg-body-secondary bg-opacity-75 rounded-4 border" id="pillNav2" role="tablist" style="backdrop-filter: blur(0.7rem)"
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active rounded-3"
+                                id="home-tab2"
+                                data-bs-toggle="tab"
+                                type="button"
+                                role="tab"
+                                aria-selected="true">
+                            <i class="bi bi-cursor"></i>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-3"
+                                id="contact-tab2"
+                                data-bs-toggle="tab"
+                                type="button"
+                                role="tab"
+                                aria-selected="false">
+                            <i class="bi bi-bounding-box-circles"></i>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-3"
+                                id="profile-tab2"
+                                data-bs-toggle="tab"
+                                type="button"
+                                role="tab"
+                                aria-selected="false">
+                            <i class="bi bi-arrows-move"></i>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-3"
+                                id="profile-tab2"
+                                data-bs-toggle="tab"
+                                type="button"
+                                role="tab"
+                                aria-selected="false">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <!--quick settings-->
+            <div class="position-absolute bottom-0 mb-4 fs-5 d-flex justify-content-center w-100">
+                <div class="p-2 gap-2 shadow-sm bg-body-secondary bg-opacity-75 rounded-4 border d-flex"
+                     style="backdrop-filter: blur(0.7rem)">
+                    <button class="btn btn-primary custom-btn d-flex gap-1 text-reset">
+                        <i class="bi bi-arrow-up-right-square"></i>
+                    </button>
+                    <button class="btn btn-primary custom-btn d-flex gap-1 text-reset">
+                        <i class="bi bi-align-bottom"></i>
+                    </button>
+                    <button class="btn btn-primary custom-btn d-flex gap-1 text-reset">
+                        <i class="bi bi-lightbulb"></i>
+                    </button>
+                    <button class="btn btn-primary rounded-3 fw-bolder">Render</button>
+                </div>
+            </div>
+        </div>
         <!-- sidebar -->
-        <div class="d-flex flex-column flex-shrink-0 border-left p-2" id="sidebar">
+        <div class="d-flex flex-column flex-shrink-0 py-2 border-left m-2 mt-0 bg-body-secondary rounded-3"
+             id="sidebar">
             <!-- properties -->
-            <ul class="nav nav-underline  nav-fill mb-auto"
+            <ul class="nav nav-tabs nav-underline px-2 nav-fill mb-auto"
                 id="propertiesTab"
                 role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link link-body-emphasis active"
-                       data-bs-toggle="tab"
-                       aria-current="page"
-                       href="#">
-                        <i class="bi-box me-2"></i>Object</a>
+                    <button class="nav-link active text-reset"
+                            id="object-tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#object-tab-pane"
+                            type="button"
+                            role="tab"
+                            aria-controls="object-tab-pane"
+                            aria-selected="true">
+                        <i class="bi-box me-2"></i>Inspector
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link link-body-emphasis" data-bs-toggle="tab" href="#">
-                        <i class="bi-projector me-2"></i>Scene</a>
+                    <button class="nav-link text-reset"
+                            id="overview-tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#overview-tab-pane"
+                            type="button"
+                            role="tab"
+                            aria-controls="overview-tab-pane"
+                            aria-selected="true">
+                        <i class="bi-projector me-2"></i>Overview
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link link-body-emphasis" data-bs-toggle="tab" href="#">
-                        <i class="bi-kanban me-2"></i>Project</a>
+                    <button class="nav-link text-reset"
+                            id="project-tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#project-tab-pane"
+                            type="button"
+                            role="tab"
+                            aria-controls="project-tab-pane"
+                            aria-selected="true">
+                        <i class="bi-kanban me-2"></i>Project
+                    </button>
                 </li>
             </ul>
-            <hr>
+            <div id="content" class="overflow-auto d-flex flex-fill flex-grow-1 w-100">
+                <div class="tab-content h-100 w-100 p-2" id="myTabContent">
+                    <!--Inspector-->
+                    <div class="tab-pane fade show active"
+                         id="object-tab-pane"
+                         role="tabpanel"
+                         aria-labelledby="object-tab"
+                         tabindex="0">
+                        <div id="inspector" class="p-2">Select a object by clicking on it</div>
+                    </div>
+                    <!--Item overview-->
+                    <div class="tab-pane fade"
+                         id="overview-tab-pane"
+                         role="tabpanel"
+                         aria-labelledby="overview-tab"
+                         tabindex="0">
+                        <div class="accordion w-100" id="accordionOverview">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapseOne"
+                                            aria-expanded="true"
+                                            aria-controls="collapseOne">Heliostats</button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show">
+                                    <div class="accordion-body d-flex flex-column gap-2" id="heliostatList"></div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapseTwo"
+                                            aria-expanded="false"
+                                            aria-controls="collapseTwo">Receivers</button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse">
+                                    <div class="accordion-body d-flex flex-column gap-2" id="receiverList"></div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapseThree"
+                                            aria-expanded="false"
+                                            aria-controls="collapseThree">Light Sources</button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse">
+                                    <div class="accordion-body d-flex flex-column gap-2" id="lightsourceList"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Project-->
+                    <div class="tab-pane fade"
+                         id="project-tab-pane"
+                         role="tabpanel"
+                         aria-labelledby="project-tab"
+                         tabindex="0">
+                        <div class="accordion w-100" id="accordionExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapseOne"
+                                            aria-expanded="true"
+                                            aria-controls="collapseOne">Enviroment Settings</button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show">
+                                    <div class="accordion-body"></div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapseTwo"
+                                            aria-expanded="false"
+                                            aria-controls="collapseTwo">Graphic Settings</button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse">
+                                    <div class="accordion-body"></div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapseThree"
+                                            aria-expanded="false"
+                                            aria-controls="collapseThree">Other</button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse">
+                                    <div class="accordion-body"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="settings" class="pb-3 pt-2">
+                <hr class="m-0">
+            </div>
             <!-- user -->
-            <div class="dropup d-flex justify-content-end me-3">
+            <div class="dropup d-flex justify-content-between mx-3 py-1">
+                <button class="btn btn-primary custom-btn text-reset fs-3 position-relative p-0 px-1 rounded-3"
+                        data-bs-toggle="modal"
+                        data-bs-target="#jobInterface">
+                    <span class="position-absolute top-0 start-100 translate-middle bg-danger bg-opacity-50 rounded-circle"
+                          style="padding: 0.7rem">
+                        <span class="visually-hidden">New alerts</span>
+                    </span>
+                    <span class="position-absolute top-0 start-100 translate-middle bg-danger rounded-circle"
+                          style="padding: 0.3rem">
+                        <span class="visually-hidden">New alerts</span>
+                    </span>
+                    <i class="bi bi-list-ul p-1"></i>
+                </button>
                 <a class="dropdown-toggle d-flex align-items-center link-body-emphasis text-decoration-none"
                    data-bs-toggle="dropdown"
                    aria-expanded="false">
-                    <div class="rounded-circle bg-body-secondary me-3"
+                    <div class="rounded-circle bg-primary me-2"
                          style="width: 32px;
                                 height: 32px"></div>
-                    <strong class="me-2">User</strong>
+                    <strong class="me-2">Max</strong>
                 </a>
-                <ul class="dropdown-menu text-small" style="">
-                    <li>
-                        <a class="dropdown-item" href="#">Settings</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">Profile</a>
-                    </li>
+                <ul class="dropdown-menu text-small">
+                    <div class="px-3 gap-1">
+                        <p class="m-0">Max Mustermann</p>
+                        <p class="text-secondary m-0">max.muster@example.com</p>
+                    </div>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">Sign out</a>
+                        <button class="dropdown-item"
+                                data-bs-toggle="modal"
+                                data-bs-target="#settings">Settings</button>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href"/">Sign out</a>
                     </li>
                 </ul>
             </div>
         </div>
     </main>
+    <script>{
+        // fix the size of the inspector pane to prevent overflowing (welcome for better solutions)
+        const content = document.getElementById("content");
+        const tab = document.getElementById("propertiesTab");
+        const userSettings = document.getElementById("settings");
+        const calculateMaxHeight = () => {
+            const tabRect = tab.getBoundingClientRect();
+            const userSettingsRect = userSettings.getBoundingClientRect();
+
+            let maxHeight = tabRect.bottom - userSettingsRect.top;
+            maxHeight = Math.abs(maxHeight);
+            content.style.height = maxHeight + "px";
+        };
+
+        window.addEventListener('resize', calculateMaxHeight);
+        document.addEventListener('DOMContentLoaded', calculateMaxHeight);
+    }
+    </script>
 </div>
-{% endblock %}
+{% endblock body %}
