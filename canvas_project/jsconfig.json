@@ -1,8 +1,10 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "three": ["static/js/three.module.js"]
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "three": ["static/js/three.module.js"],
+            "command": ["static/js/command.mjs"],
+            "undoRedoHandler": ["static/js/undoRedoHandler.mjs"]
+        }
     }
-  }
 }
