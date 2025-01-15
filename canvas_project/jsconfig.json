@@ -3,8 +3,15 @@
     "baseUrl": ".",
     "paths": {
       "three": ["static/js/three.module.js"],
-      "objects": ["static/js/object.mjs"],
-      "three/addons/": ["static/js/three/examples/jsm/"]
+      "objects": ["static/js/objects.mjs"],
+      "three/addons/": ["static/js/three/examples/jsm/"],
+      "compass": ["static/js/compass.mjs"],
+      "orbitControls": [
+        "static/js/three/examples/jsm/controls/OrbitControls.js"
+      ],
+      "transformControls": [
+        "static/js/three/examples/jsm/controls/TransformControls.js"
+      ]
     }
   }
 }
