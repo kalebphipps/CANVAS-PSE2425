@@ -1,17 +1,19 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "three": ["static/js/three.module.js"],
-      "objects": ["static/js/objects.mjs"],
-      "three/addons/": ["static/js/three/examples/jsm/"],
-      "compass": ["static/js/compass.mjs"],
-      "orbitControls": [
-        "static/js/three/examples/jsm/controls/OrbitControls.js"
-      ],
-      "transformControls": [
-        "static/js/three/examples/jsm/controls/TransformControls.js"
-      ]
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "three": ["static/js/three.module.js"],
+            "objects": ["static/js/objects.mjs"],
+            "three/addons/": ["static/js/three/examples/jsm/"],
+            "compass": ["static/js/compass.mjs"],
+            "orbitControls": [
+                "static/js/three/examples/jsm/controls/OrbitControls.js"
+            ],
+            "transformControls": [
+                "static/js/three/examples/jsm/controls/TransformControls.js"
+            ],
+            "command": ["static/js/command.mjs"],
+            "undoRedoHandler": ["static/js/undoRedoHandler.mjs"]
+        }
     }
-  }
 }
