@@ -1,11 +1,23 @@
-import { Command } from "static/js/command.mjs";
+import { Command } from "command";
 
 /**
  * This class manages the execution of commands and provides undo/redo functionality.
  * It maintains two stacks to keep track of executed and undone commands, allowing users to reverse or reapply actions seamlessly.
  */
 class UndoRedoHandler {
+    /**
+     * A stack that stores commands that have been executed.
+     * The stack has a maximum size of 100 commands, and any excess commands will result in the oldest commands
+     * being removed to make room for new ones.
+     * @type {Array<Command>}
+     */
     #undoStack;
+    /**
+     * A stack that stores commands that have been undone.
+     * The stack has a maximum size of 100 commands, and any excess commands will result in the oldest commands
+     * being removed to make room for new ones.
+     * @type {Array<Command>}
+     */
     #redoStack;
 
     /**
@@ -13,19 +25,7 @@ class UndoRedoHandler {
      * Sets up the undo and redo stacks with a maximum size of 100 commands each.
      */
     constructor() {
-        /**
-         * A stack that stores commands that have been executed.
-         * The stack has a maximum size of 100 commands, and any excess commands will result in the oldest commands
-         * being removed to make room for new ones.
-         * @type {Array<Command>}
-         */
         this.#undoStack = [];
-        /**
-         * A stack that stores commands that have been undone.
-         * The stack has a maximum size of 100 commands, and any excess commands will result in the oldest commands
-         * being removed to make room for new ones.
-         * @type {Array<Command>}
-         */
         this.#redoStack = [];
     }
 
