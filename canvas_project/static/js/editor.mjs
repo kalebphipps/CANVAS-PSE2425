@@ -4,8 +4,8 @@ import { ViewHelper } from "compass";
 import { OrbitControls } from "orbitControls";
 import { TransformControls } from "transformControls";
 
-//import { UndoRedoHandler } from "undoRedoHandler";
-//import { SaveAndLoadHandler } from "saveAndLoadHandler";
+import { UndoRedoHandler } from "undoRedoHandler";
+import { SaveAndLoadHandler } from "saveAndLoadHandler";
 //import { Navbar } from "navbar";
 //import { Overview } from "overview";
 //import { ModeSelector } from "modeSelector";
@@ -54,8 +54,8 @@ export class Editor {
         this.#projectId = projectId;
 
         // initiate needed classes
-        //this.#undoRedoHandler = new UndoRedoHandler();
-        //this.#saveAndLoadHandler = new SaveAndLoadHandler(this.#projectId);
+        this.#undoRedoHandler = new UndoRedoHandler();
+        this.#saveAndLoadHandler = new SaveAndLoadHandler(this.#projectId);
         //this.#navbar = new Navbar();
         //this.#picker = new Picker();
         //this.#overview = new Overview(this.#picker);
