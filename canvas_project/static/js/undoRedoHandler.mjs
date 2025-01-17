@@ -27,6 +27,7 @@ class UndoRedoHandler {
     constructor() {
         this.#undoStack = [];
         this.#redoStack = [];
+        this.initializeKeyBindings();
     }
 
     /**
@@ -66,11 +67,26 @@ class UndoRedoHandler {
         if (this.#redoStack.length > 0) {
             /** @type {Command} */
             const command = this.#redoStack.pop();
-            command.redo();
+            command.execute();
             this.#undoStack.push(command);
             if (this.#undoStack.length > 100) {
                 this.#undoStack.shift();
             }
         }
+    }
+
+    /**
+     * Initializes key bindings for undo and redo commands.
+     */
+    initializeKeyBindings() {
+        document.addEventListener("keydown", (event) => {
+            if (event.ctrlKey && event.key === "z" && !event.shiftKey) {
+                event.preventDefault();
+                this.undo();
+            } else if (event.ctrlKey && event.shiftKey && event.key === "z") {
+                event.preventDefault();
+                this.redo();
+            }
+        });
     }
 }
