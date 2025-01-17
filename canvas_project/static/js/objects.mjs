@@ -96,6 +96,7 @@ export class Receiver extends Object3D {
     #resolutionU;
     #curvatureE;
     #curvatureU;
+    #rotationY;
 
     /**
      * Creates a Receiver object
@@ -144,6 +145,7 @@ export class Receiver extends Object3D {
         this.#resolutionU = resolutionU;
         this.#curvatureE = curvatureE;
         this.#curvatureU = curvatureU;
+        this.#rotationY = rotationY;
     }
 
     /**
@@ -226,6 +228,14 @@ export class Receiver extends Object3D {
 
     set curvatureU(value) {
         this.#curvatureU = value;
+    }
+
+    get rotationY() {
+        return this.#rotationY;
+    }
+
+    set rotationY(rotation) {
+        this.#rotationY = rotation;
     }
 }
 

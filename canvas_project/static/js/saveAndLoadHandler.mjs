@@ -83,13 +83,77 @@ export class SaveAndLoadHandler {
      * Creates a databank entry for the given receiver
      * @param {Receiver} receiver - Is the receiver you want an entry for
      */
-    async createReceiver(receiver) {}
+    async createReceiver(receiver) {
+        const url =
+            this.#baseAPIUrl + "projects/" + this.#projectID + "/receivers/";
+
+        const body = {
+            position_x: receiver.top.position.x,
+            position_y: receiver.top.position.y,
+            position_z: receiver.top.position.z,
+            normal_x: receiver.normalVector.x,
+            normal_y: receiver.normalVector.y,
+            normal_z: receiver.normalVector.z,
+            rotation_y: receiver.rotationY,
+            curvature_e: receiver.curvatureE,
+            curvature_u: receiver.curvatureU,
+            plane_e: receiver.planeE,
+            plane_u: receiver.planeU,
+            resolution_e: receiver.resolutionE,
+            resolution_u: receiver.resolutionU,
+        };
+
+        console.log(body);
+
+        return fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": this.#getCookie("csrftoken"),
+            },
+            body: JSON.stringify(body),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .catch((error) => console.log(error.message));
+    }
 
     /**
      * Creates a databank entry for the given lightsource
-     * @param {Lightsource} lightsource - Is the lightsource you want an entry for
+     * @param {LightSource} lightsource - Is the lightsource you want an entry for
      */
-    async createLightsource(lightsource) {}
+    async createLightsource(lightsource) {
+        const url =
+            this.#baseAPIUrl + "projects/" + this.#projectID + "/lightsources/";
+
+        const body = {
+            number_of_rays: lightsource.numberOfRays,
+            lightsource_type: lightsource.lightSourceType,
+            distribution_type: lightsource.distributionType,
+            mean: lightsource.distributionMean,
+            covariance: lightsource.distributionCovariance,
+        };
+
+        return fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": this.#getCookie("csrftoken"),
+            },
+            body: JSON.stringify(body),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .catch((error) => console.log(error.message));
+    }
 
     // Object deletion
     /**
@@ -108,7 +172,7 @@ export class SaveAndLoadHandler {
     // Object deletion
     /**
      * Deletes the given lightsource from the backend
-     * @param {Lightsource} lightsource - Is the lightsource you want to delete
+     * @param {LightSource} lightsource - Is the lightsource you want to delete
      */
     async deleteLightsource(lightsource) {}
 
@@ -127,7 +191,7 @@ export class SaveAndLoadHandler {
 
     /**
      * Updates the given lightsource in the backend
-     * @param {Lightsource} lightsource - Is the updated lightsource from the frontend
+     * @param {LightSource} lightsource - Is the updated lightsource from the frontend
      */
     async updateLightsource(lightsource) {}
 
