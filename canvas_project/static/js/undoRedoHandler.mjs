@@ -4,7 +4,7 @@ import { Command } from "command";
  * This class manages the execution of commands and provides undo/redo functionality.
  * It maintains two stacks to keep track of executed and undone commands, allowing users to reverse or reapply actions seamlessly.
  */
-class UndoRedoHandler {
+export class UndoRedoHandler {
     /**
      * A stack that stores commands that have been executed.
      * The stack has a maximum size of 100 commands, and any excess commands will result in the oldest commands
@@ -27,7 +27,7 @@ class UndoRedoHandler {
     constructor() {
         this.#undoStack = [];
         this.#redoStack = [];
-        this.initializeKeyBindings();
+        this.#initializeKeyBindings();
     }
 
     /**
@@ -78,12 +78,20 @@ class UndoRedoHandler {
     /**
      * Initializes key bindings for undo and redo commands.
      */
-    initializeKeyBindings() {
+    #initializeKeyBindings() {
         document.addEventListener("keydown", (event) => {
-            if (event.ctrlKey && event.key === "z" && !event.shiftKey) {
+            if (
+                event.ctrlKey &&
+                event.key.toLowerCase() === "z" &&
+                !event.shiftKey
+            ) {
                 event.preventDefault();
                 this.undo();
-            } else if (event.ctrlKey && event.shiftKey && event.key === "z") {
+            } else if (
+                event.ctrlKey &&
+                event.shiftKey &&
+                event.key.toLowerCase() === "z"
+            ) {
                 event.preventDefault();
                 this.redo();
             }
