@@ -5,7 +5,7 @@
  * @throws {Error} When the method is not implemented by a subclass.
  */
 
-class Command {
+export class Command {
     /**
      * Initializes a new instance of the Command class.
      * Throws an error if an attempt is made to instantiate the abstract class directly.
