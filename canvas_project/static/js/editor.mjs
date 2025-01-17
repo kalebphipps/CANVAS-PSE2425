@@ -67,7 +67,7 @@ export class Editor {
 
         // initate ThreeJs scene
         this.#setUpScene();
-        //this.#loadProject();
+        this.#loadProject();
 
         window.addEventListener("resize", () => this.onWindowResize());
 
@@ -239,12 +239,12 @@ export class Editor {
                         receiver.normal_z
                     ),
                     receiver.towerType,
-                    receiver.curvature_e,
-                    receiver.curvature_u,
                     receiver.plane_e,
                     receiver.plane_u,
                     receiver.resolution_e,
-                    receiver.resolution_u
+                    receiver.resolution_u,
+                    receiver.curvature_e,
+                    receiver.curvature_u
                 )
             );
         });
@@ -263,9 +263,17 @@ export class Editor {
         });
 
         // set the settings
-        this.setShadows(settingsList["shadows"]);
-        this.setFog(settingsList["fog"]);
+        this.#setShadows(settingsList["shadows"]);
+        this.#setFog(settingsList["fog"]);
 
         // TODO: Update settings also in UI --> wait till implemented
+    }
+
+    #setShadows(mode) {
+        this.#renderer.shadowMap.enabled = mode;
+    }
+
+    #setFog(mode) {
+        this.#scene.fog = mode ? new THREE.Fog(0xdde0e0, 100, 2200) : null;
     }
 }
