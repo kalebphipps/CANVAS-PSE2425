@@ -45,6 +45,7 @@ export class SaveAndLoadHandler {
     /**
      * Creates a databank entry for the given heliostat
      * @param {Heliostat} heliostat - Is the heliostat you want an entry for
+     * @returns {Promise<JSON>} - JSON representation of the new heliostat.
      */
     async createHeliostat(heliostat) {
         const url =
@@ -82,6 +83,7 @@ export class SaveAndLoadHandler {
     /**
      * Creates a databank entry for the given receiver
      * @param {Receiver} receiver - Is the receiver you want an entry for
+     * @returns {Promise<JSON>} - JSON representation of the new receiver.
      */
     async createReceiver(receiver) {
         const url =
@@ -125,8 +127,9 @@ export class SaveAndLoadHandler {
     /**
      * Creates a databank entry for the given lightsource
      * @param {LightSource} lightsource - Is the lightsource you want an entry for
+     * @returns {Promise<JSON>} - JSON representation of the new lightsource.
      */
-    async createLightsource(lightsource) {
+    async createLightSource(lightsource) {
         const url =
             this.#baseAPIUrl + "projects/" + this.#projectID + "/lightsources/";
 
