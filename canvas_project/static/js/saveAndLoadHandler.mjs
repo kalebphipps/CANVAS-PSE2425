@@ -265,19 +265,139 @@ export class SaveAndLoadHandler {
      * Updates the given heliostat in the backend
      * @param {Heliostat} heliostat - Is the updated heliostat from the frontend
      */
-    async updateHeliostat(heliostat) {}
+    async updateHeliostat(heliostat) {
+        if (!heliostat.apiID) {
+            return;
+        }
+
+        const url =
+            this.#baseAPIUrl +
+            "projects/" +
+            this.#projectID +
+            "/heliostats/" +
+            heliostat.apiID +
+            "/";
+
+        const body = {
+            name: "",
+            position_x: heliostat.position.x,
+            position_y: heliostat.position.y,
+            position_z: heliostat.position.z,
+            aimpoint_x: heliostat.aimPoint.x,
+            aimpoint_y: heliostat.aimPoint.y,
+            aimpoint_z: heliostat.aimPoint.z,
+            number_of_facets: heliostat.numberOfFacets,
+            kinematic_type: heliostat.kinematicType,
+        };
+
+        return fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": this.#getCookie("csrftoken"),
+            },
+            body: JSON.stringify(body),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .catch((error) => console.log(error.message));
+    }
 
     /**
      * Updates the given receiver in the backend
      * @param {Receiver} receiver - Is the updated receiver from the frontend
      */
-    async updateReceiver(receiver) {}
+    async updateReceiver(receiver) {
+        if (!receiver.apiID) {
+            return;
+        }
+
+        const url =
+            this.#baseAPIUrl +
+            "projects/" +
+            this.#projectID +
+            "/receivers/" +
+            receiver.apiID +
+            "/";
+
+        const body = {
+            name: "",
+            position_x: receiver.position.x,
+            position_y: receiver.position.y,
+            position_z: receiver.position.z,
+            aimpoint_x: receiver.aimPoint.x,
+            aimpoint_y: receiver.aimPoint.y,
+            aimpoint_z: receiver.aimPoint.z,
+            number_of_facets: receiver.numberOfFacets,
+            kinematic_type: receiver.kinematicType,
+        };
+
+        return fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": this.#getCookie("csrftoken"),
+            },
+            body: JSON.stringify(body),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .catch((error) => console.log(error.message));
+    }
 
     /**
      * Updates the given lightsource in the backend
      * @param {LightSource} lightsource - Is the updated lightsource from the frontend
      */
-    async updateLightsource(lightsource) {}
+    async updateLightsource(lightsource) {
+        if (!lightsource.apiID) {
+            return;
+        }
+
+        const url =
+            this.#baseAPIUrl +
+            "projects/" +
+            this.#projectID +
+            "/lightsources/" +
+            lightsource.apiID +
+            "/";
+
+        const body = {
+            name: "",
+            position_x: lightsource.position.x,
+            position_y: lightsource.position.y,
+            position_z: lightsource.position.z,
+            aimpoint_x: lightsource.aimPoint.x,
+            aimpoint_y: lightsource.aimPoint.y,
+            aimpoint_z: lightsource.aimPoint.z,
+            number_of_facets: lightsource.numberOfFacets,
+            kinematic_type: lightsource.kinematicType,
+        };
+
+        return fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": this.#getCookie("csrftoken"),
+            },
+            body: JSON.stringify(body),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .catch((error) => console.log(error.message));
+    }
 
     // Settings updating
     /**
@@ -285,7 +405,30 @@ export class SaveAndLoadHandler {
      * @param {String} attribute the attribute you want to change
      * @param {any} newValue the new value of the attribute
      */
-    async updateSettings(attribute, newValue) {}
+    async updateSettings(attribute, newValue) {
+        const url =
+            this.#baseAPIUrl + "projects/" + this.#projectID + "/settings/";
+
+        const body = {
+            [attribute]: newValue,
+        };
+
+        return fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": this.#getCookie("csrftoken"),
+            },
+            body: JSON.stringify(body),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .catch((error) => console.log(error.message));
+    }
 
     /**
      * Gets the cookie specified by the name
