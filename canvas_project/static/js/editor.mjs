@@ -15,7 +15,7 @@ import { SaveAndLoadHandler } from "saveAndLoadHandler";
 //import { JobInterface } from "jobInterface";
 //import { Inspector } from "inspector";
 
-import { Heliostat, Receiver, LightSource, Terrain } from "objects";
+import { Heliostat, Receiver, LightSource, Terrain, ObjectType } from "objects";
 
 let editorInstance = null;
 export class Editor {
@@ -43,7 +43,7 @@ export class Editor {
     #renderer;
     #camera;
     #scene;
-    #selectableGroup;
+    #selectableGroup = new THREE.Group();
     #terrain;
 
     constructor(projectId) {
@@ -189,7 +189,6 @@ export class Editor {
             }
         );
 
-        this.#selectableGroup = new THREE.Group();
         this.#selectableGroup.name = "selectableGroup";
         this.#scene.add(this.#selectableGroup);
 
@@ -289,5 +288,82 @@ export class Editor {
         this.#scene.fog = mode ? new THREE.Fog(0xdde0e0, 100, 2200) : null;
         this.#saveAndLoadHandler.updateSettings("fog", mode);
         return this;
+    }
+
+    /**
+     * Adds an object to the scene and saves it inside of the database.
+     * Only allows adding of heliostat, receivers or lightsources.
+     * @param {THREE.Object3D} object the object you want to add.
+     */
+    async addObject(object) {
+        const objectType = object.objectType;
+        if (!objectType) {
+            return this;
+        }
+
+        switch (objectType) {
+            case ObjectType.HELIOSTAT:
+                this.#selectableGroup.add(object);
+                object.apiID = (
+                    await this.#saveAndLoadHandler.createHeliostat(object)
+                )["id"];
+                break;
+            case ObjectType.RECEIVER:
+                this.#selectableGroup.add(object);
+                object.apiID = (
+                    await this.#saveAndLoadHandler.createReceiver(object)
+                )["id"];
+                break;
+            case ObjectType.LIGHTSOURCE:
+                this.#selectableGroup.add(object);
+                object.apiID = (
+                    await this.#saveAndLoadHandler.createLightSource(object)
+                )["id"];
+                break;
+            default:
+                console.warn(`Unknown object type: ${objectType}`);
+                break;
+        }
+
+        return this;
+    }
+
+    /**
+     * Deletes the given object from the scene and from the database.
+     * Only allows deletion of heliostat, receivers and lightsources.
+     * @param {THREE.Object3D} object the object you want to delete.
+     */
+    async deleteObject(object) {
+        const objectType = object.objectType;
+        if (!objectType) {
+            return this;
+        }
+
+        switch (objectType) {
+            case ObjectType.HELIOSTAT:
+                this.#selectableGroup.remove(object);
+                await this.#saveAndLoadHandler.deleteHeliostat(object);
+                break;
+            case ObjectType.RECEIVER:
+                this.#selectableGroup.remove(object);
+                await this.#saveAndLoadHandler.deleteReceiver(object);
+                break;
+            case ObjectType.LIGHTSOURCE:
+                this.#selectableGroup.remove(object);
+                await this.#saveAndLoadHandler.deleteLightsource(object);
+                break;
+            default:
+                console.warn(`Unknown object type: ${objectType}`);
+                break;
+        }
+
+        return this;
+    }
+
+    /**
+     * @returns {Array<THREE.Object3D>} an array containing all placed objects.
+     */
+    get objects() {
+        return this.#selectableGroup.children;
     }
 }
