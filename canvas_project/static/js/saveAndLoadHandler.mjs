@@ -187,7 +187,7 @@ export class SaveAndLoadHandler {
                 if (!response.ok) {
                     throw new Error(`Response status: ${response.status}`);
                 }
-                return;
+                return this;
             })
             .catch((error) => console.log(error.message));
     }
@@ -221,7 +221,7 @@ export class SaveAndLoadHandler {
                 if (!response.ok) {
                     throw new Error(`Response status: ${response.status}`);
                 }
-                return;
+                return this;
             })
             .catch((error) => console.log(error.message));
     }
@@ -255,7 +255,7 @@ export class SaveAndLoadHandler {
                 if (!response.ok) {
                     throw new Error(`Response status: ${response.status}`);
                 }
-                return;
+                return this;
             })
             .catch((error) => console.log(error.message));
     }

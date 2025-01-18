@@ -66,8 +66,7 @@ export class Editor {
         //this.#inspector = new Inspector(this.#picker);
 
         // initate ThreeJs scene
-        this.#setUpScene();
-        this.#loadProject();
+        this.#setUpScene().#loadProject();
 
         window.addEventListener("resize", () => this.onWindowResize());
 
@@ -193,6 +192,8 @@ export class Editor {
         this.#selectableGroup = new THREE.Group();
         this.#selectableGroup.name = "selectableGroup";
         this.#scene.add(this.#selectableGroup);
+
+        return this;
     }
 
     async #loadProject() {
@@ -263,10 +264,11 @@ export class Editor {
         });
 
         // set the settings
-        this.setShadows(settingsList["shadows"]);
-        this.setFog(settingsList["fog"]);
+        this.setShadows(settingsList["shadows"]).setFog(settingsList["fog"]);
 
         // TODO: Update settings also in UI --> wait till implemented
+
+        return this;
     }
 
     /**
@@ -276,6 +278,7 @@ export class Editor {
     setShadows(mode) {
         this.#renderer.shadowMap.enabled = mode;
         this.#saveAndLoadHandler.updateSettings("shadows", mode);
+        return this;
     }
 
     /**
@@ -285,5 +288,6 @@ export class Editor {
     setFog(mode) {
         this.#scene.fog = mode ? new THREE.Fog(0xdde0e0, 100, 2200) : null;
         this.#saveAndLoadHandler.updateSettings("fog", mode);
+        return this;
     }
 }
