@@ -19,5 +19,10 @@ export class SingleObjectCommand extends Command {
     constructor(object) {
         super();
         this.#object = object;
+        if (new.target === SingleObjectCommand) {
+            throw new Error(
+                "Cannot instantiate abstract class SingleObjectCommand directly"
+            );
+        }
     }
 }
