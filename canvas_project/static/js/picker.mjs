@@ -1,4 +1,6 @@
 import * as THREE from "three";
+//import { ModeSelector } from "./modeSelector.mjs";
+
 
 export class Picker {
     #camera;

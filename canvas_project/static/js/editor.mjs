@@ -57,9 +57,9 @@ export class Editor {
         //this.#undoRedoHandler = new UndoRedoHandler();
         //this.#saveAndLoadHandler = new SaveAndLoadHandler(this.#projectId);
         //this.#navbar = new Navbar();
-        //this.#picker = new Picker();
-        //this.#overview = new Overview(this.#picker);
         //this.#modeSelector = new ModeSelector();
+        //this.#picker = new Picker(this.#camera, this.#transformControls, this.#selectionBox, this.#selectableGroup, this.#modeSelector);
+        //this.#overview = new Overview(this.#picker);
         //this.#projectSettingManager = new ProjectSettingManager();
         //this.#quickSelector = new QuickSelector();
         //this.#jobInterface = new JobInterface();
