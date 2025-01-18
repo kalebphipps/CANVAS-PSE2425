@@ -163,21 +163,102 @@ export class SaveAndLoadHandler {
      * Deletes the given heliostat from the backend
      * @param {Heliostat} heliostat - Is the heliostat you want to delete
      */
-    async deleteHeliostat(heliostat) {}
+    async deleteHeliostat(heliostat) {
+        if (!heliostat.apiID) {
+            return;
+        }
+
+        const url =
+            this.#baseAPIUrl +
+            "projects/" +
+            this.#projectID +
+            "/heliostats/" +
+            heliostat.apiID +
+            "/";
+
+        return fetch(url, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": this.#getCookie("csrftoken"),
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                return;
+            })
+            .catch((error) => console.log(error.message));
+    }
 
     // Object deletion
     /**
      * Deletes the given receiver from the backend
      * @param {Receiver} receiver - Is the receiver you want to delete
      */
-    async deleteReceiver(receiver) {}
+    async deleteReceiver(receiver) {
+        if (!receiver.apiID) {
+            return;
+        }
+
+        const url =
+            this.#baseAPIUrl +
+            "projects/" +
+            this.#projectID +
+            "/receivers/" +
+            receiver.apiID +
+            "/";
+
+        return fetch(url, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": this.#getCookie("csrftoken"),
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                return;
+            })
+            .catch((error) => console.log(error.message));
+    }
 
     // Object deletion
     /**
      * Deletes the given lightsource from the backend
      * @param {LightSource} lightsource - Is the lightsource you want to delete
      */
-    async deleteLightsource(lightsource) {}
+    async deleteLightsource(lightsource) {
+        if (!lightsource.apiID) {
+            return;
+        }
+
+        const url =
+            this.#baseAPIUrl +
+            "projects/" +
+            this.#projectID +
+            "/lightsources/" +
+            lightsource.apiID +
+            "/";
+
+        return fetch(url, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": this.#getCookie("csrftoken"),
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                return;
+            })
+            .catch((error) => console.log(error.message));
+    }
 
     // Object updating
     /**
