@@ -269,11 +269,19 @@ export class Editor {
         // TODO: Update settings also in UI --> wait till implemented
     }
 
+    /**
+     * Enables or disables the shadows
+     * @param {Boolean} mode is the mode you want to use
+     */
     setShadows(mode) {
         this.#renderer.shadowMap.enabled = mode;
         this.#saveAndLoadHandler.updateSettings("shadows", mode);
     }
 
+    /**
+     * Enables or disables the fog
+     * @param {Boolean} mode is the mode you want to use
+     */
     setFog(mode) {
         this.#scene.fog = mode ? new THREE.Fog(0xdde0e0, 100, 2200) : null;
         this.#saveAndLoadHandler.updateSettings("fog", mode);

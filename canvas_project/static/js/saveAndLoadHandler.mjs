@@ -28,7 +28,7 @@ export class SaveAndLoadHandler {
 
     /**
      * Returns a Json representation of the project defined by the project_id
-     * @returns {Promise<JSON>} - A JSON representation of the project
+     * @returns {Promise<JSON>} A JSON representation of the project
      */
     async getProjectData() {
         const url = this.#baseAPIUrl + "projects/" + this.#projectID;
@@ -44,8 +44,8 @@ export class SaveAndLoadHandler {
 
     /**
      * Creates a databank entry for the given heliostat
-     * @param {Heliostat} heliostat - Is the heliostat you want an entry for
-     * @returns {Promise<JSON>} - JSON representation of the new heliostat.
+     * @param {Heliostat} heliostat Is the heliostat you want an entry for
+     * @returns {Promise<JSON>} JSON representation of the new heliostat.
      */
     async createHeliostat(heliostat) {
         const url =
@@ -82,8 +82,8 @@ export class SaveAndLoadHandler {
 
     /**
      * Creates a databank entry for the given receiver
-     * @param {Receiver} receiver - Is the receiver you want an entry for
-     * @returns {Promise<JSON>} - JSON representation of the new receiver.
+     * @param {Receiver} receiver Is the receiver you want an entry for
+     * @returns {Promise<JSON>} JSON representation of the new receiver.
      */
     async createReceiver(receiver) {
         const url =
@@ -126,8 +126,8 @@ export class SaveAndLoadHandler {
 
     /**
      * Creates a databank entry for the given lightsource
-     * @param {LightSource} lightsource - Is the lightsource you want an entry for
-     * @returns {Promise<JSON>} - JSON representation of the new lightsource.
+     * @param {LightSource} lightsource Is the lightsource you want an entry for
+     * @returns {Promise<JSON>} JSON representation of the new lightsource.
      */
     async createLightSource(lightsource) {
         const url =
@@ -161,7 +161,7 @@ export class SaveAndLoadHandler {
     // Object deletion
     /**
      * Deletes the given heliostat from the backend
-     * @param {Heliostat} heliostat - Is the heliostat you want to delete
+     * @param {Heliostat} heliostat Is the heliostat you want to delete
      */
     async deleteHeliostat(heliostat) {
         if (!heliostat.apiID) {
@@ -195,7 +195,7 @@ export class SaveAndLoadHandler {
     // Object deletion
     /**
      * Deletes the given receiver from the backend
-     * @param {Receiver} receiver - Is the receiver you want to delete
+     * @param {Receiver} receiver Is the receiver you want to delete
      */
     async deleteReceiver(receiver) {
         if (!receiver.apiID) {
@@ -229,7 +229,7 @@ export class SaveAndLoadHandler {
     // Object deletion
     /**
      * Deletes the given lightsource from the backend
-     * @param {LightSource} lightsource - Is the lightsource you want to delete
+     * @param {LightSource} lightsource Is the lightsource you want to delete
      */
     async deleteLightsource(lightsource) {
         if (!lightsource.apiID) {
@@ -263,7 +263,8 @@ export class SaveAndLoadHandler {
     // Object updating
     /**
      * Updates the given heliostat in the backend
-     * @param {Heliostat} heliostat - Is the updated heliostat from the frontend
+     * @param {Heliostat} heliostat Is the updated heliostat from the frontend
+     * @returns {Promise<JSON>} JSON representation of the updated heliostat
      */
     async updateHeliostat(heliostat) {
         if (!heliostat.apiID) {
@@ -309,7 +310,8 @@ export class SaveAndLoadHandler {
 
     /**
      * Updates the given receiver in the backend
-     * @param {Receiver} receiver - Is the updated receiver from the frontend
+     * @param {Receiver} receiver Is the updated receiver from the frontend
+     * @returns {Promise<JSON>} JSON representation of the updated receiver
      */
     async updateReceiver(receiver) {
         if (!receiver.apiID) {
@@ -355,7 +357,8 @@ export class SaveAndLoadHandler {
 
     /**
      * Updates the given lightsource in the backend
-     * @param {LightSource} lightsource - Is the updated lightsource from the frontend
+     * @param {LightSource} lightsource Is the updated lightsource from the frontend
+     * @returns {Promise<JSON>} JSON representation of the updated light source
      */
     async updateLightsource(lightsource) {
         if (!lightsource.apiID) {
@@ -404,6 +407,7 @@ export class SaveAndLoadHandler {
      * Updates the settings accroding to the given changes
      * @param {String} attribute the attribute you want to change
      * @param {any} newValue the new value of the attribute
+     * @returns {Promise<JSON>} JSON of all the project settings
      */
     async updateSettings(attribute, newValue) {
         const url =
