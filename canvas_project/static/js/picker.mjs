@@ -62,4 +62,14 @@ export class Picker {
 
         this.itemSelectedEvent();
     }
+
+    /**
+     * Inform the inspector that an item has been selected
+     */
+    itemSelectedEvent() {
+        const event = new CustomEvent("itemSelected", {
+            detail: { object: this.#selectedObjects },
+          });
+          document.getElementById("inspector").dispatchEvent(event);
+    }
 }
