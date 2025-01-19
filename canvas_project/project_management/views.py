@@ -1,50 +1,18 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django import template
-
-register = template.Library()
+from .models import Project
 
 
 def projects(request):
-    return render(
-        request,
-        "project_management/projects.html",
-        context={
-            "projects": [
-                {
-                    "name": "Project A",
-                    "description": "This is a description of project A",
-                    "last_edited": "15.11.2024",
-                    "favorite": "true",
-                    "preview": "img/test.png",
-                },
-                {
-                    "name": "Project B",
-                    "description": "This is a description of project B",
-                    "last_edited": "15.11.2024",
-                    "favorite": "false",
-                    "preview": "img/logo_dlr.svg",
-                },
-                {
-                    "name": "Project C",
-                    "description": "This is a description of project C",
-                    "last_edited": "15.11.2024",
-                    "favorite": "true",
-                    "preview": "img/logo_kit.svg",
-                },
-                {
-                    "name": "Project D",
-                    "description": "This is a description of project D",
-                    "last_edited": "15.11.2024",
-                    "favorite": "true",
-                    "preview": "img/logo_canvas.jpg",
-                },
-                {
-                    "name": "Project E",
-                    "description": "This is a description of project E",
-                    "last_edited": "15.11.2024",
-                    "favorite": "false",
-                    "preview": "img/test.png",
-                },
-            ]
-        },
-    )
+    if request.method == "GET":
+        all_projects = Project.objects.order_by("last_edited")
+        context = {"projects": all_projects}
+        return render(request, "project_management/projects.html", context)
+    elif request.method == "POST":
+        project_name = request.POST.get("project_name")
+        project_description = request.POST.get("project_description")
+        project = Project.objects.create(
+            name=project_name, descrition=project_description
+        )
+        return HttpResponse()
