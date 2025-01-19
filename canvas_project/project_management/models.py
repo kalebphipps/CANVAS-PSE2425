@@ -10,7 +10,11 @@ class Project(models.Model):
     name = models.CharField(max_length=300)
     description = models.CharField(max_length=500)
     last_edited = models.DateTimeField("timezone.now")
-    preview = models.ImageField()
+    favorite = models.CharField(max_length=5, default="False")
+    preview = models.ImageField(
+        upload_to="projectPreviews",
+        default="projectPreviews/logo_canvas.jpg",
+    )
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:

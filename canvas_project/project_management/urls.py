@@ -4,4 +4,5 @@ from . import views
 
 urlpatterns = [
     path("", views.projects, name="projects"),
+    path("deleteProject/<str:project_name>", views.deleteProject, name="deleteProject"),
 ]
