@@ -278,6 +278,7 @@ export class SaveAndLoadHandler {
             "/";
 
         const body = {
+            id: heliostat.apiID,
             name: "",
             position_x: heliostat.position.x,
             position_y: heliostat.position.y,
