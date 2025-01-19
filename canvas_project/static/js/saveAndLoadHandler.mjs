@@ -105,8 +105,6 @@ export class SaveAndLoadHandler {
             resolution_u: receiver.resolutionU,
         };
 
-        console.log(body);
-
         return fetch(url, {
             method: "POST",
             headers: {
@@ -327,15 +325,20 @@ export class SaveAndLoadHandler {
             "/";
 
         const body = {
-            name: "",
-            position_x: receiver.position.x,
-            position_y: receiver.position.y,
-            position_z: receiver.position.z,
-            aimpoint_x: receiver.aimPoint.x,
-            aimpoint_y: receiver.aimPoint.y,
-            aimpoint_z: receiver.aimPoint.z,
-            number_of_facets: receiver.numberOfFacets,
-            kinematic_type: receiver.kinematicType,
+            id: receiver.apiID,
+            position_x: receiver.top.position.x,
+            position_y: receiver.top.position.y,
+            position_z: receiver.top.position.z,
+            normal_x: receiver.normalVector.x,
+            normal_y: receiver.normalVector.y,
+            normal_z: receiver.normalVector.z,
+            rotation_y: receiver.rotationY,
+            curvature_e: receiver.curvatureE,
+            curvature_u: receiver.curvatureU,
+            plane_e: receiver.planeE,
+            plane_u: receiver.planeU,
+            resolution_e: receiver.resolutionE,
+            resolution_u: receiver.resolutionU,
         };
 
         return fetch(url, {
@@ -374,15 +377,12 @@ export class SaveAndLoadHandler {
             "/";
 
         const body = {
-            name: "",
-            position_x: lightsource.position.x,
-            position_y: lightsource.position.y,
-            position_z: lightsource.position.z,
-            aimpoint_x: lightsource.aimPoint.x,
-            aimpoint_y: lightsource.aimPoint.y,
-            aimpoint_z: lightsource.aimPoint.z,
-            number_of_facets: lightsource.numberOfFacets,
-            kinematic_type: lightsource.kinematicType,
+            id: lightsource.apiID,
+            number_of_rays: lightsource.numberOfRays,
+            lightsource_type: lightsource.lightSourceType,
+            distribution_type: lightsource.distributionType,
+            mean: lightsource.distributionMean,
+            covariance: lightsource.distributionCovariance,
         };
 
         return fetch(url, {
