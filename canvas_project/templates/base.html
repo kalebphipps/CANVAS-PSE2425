@@ -3,14 +3,10 @@
 <html lang="en">
     <head>
         <title>
-            {% block title %}
-                CANVAS Editor
-            {% endblock title %}
+            {% block title %}CANVAS Editor{% endblock %}
         </title>
         <meta charset="utf-8" />
-        <link rel="icon"
-              href="{% static 'img/logo_canvas_round.svg' %}"
-              type="image/x-icon">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         {% block style %}
             <link href="{% static 'css/bootstrap.css' %}"
                   rel="stylesheet"
@@ -18,11 +14,11 @@
             <link href="{% static 'css/bootstrap-icons.css' %}"
                   rel="stylesheet"
                   type="text/css" />
-        {% endblock style %}
+        {% endblock %}
         {% block script %}
             <script src="{% static 'js/bootstrap.bundle.js' %}" type="text/javascript"></script>
             <script src="{% static 'js/darkmode.js' %}"></script>
-        {% endblock script %}
+        {% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}
