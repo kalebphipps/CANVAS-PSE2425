@@ -53,20 +53,26 @@ export class Editor {
 
         this.#projectId = projectId;
 
+        this.#saveAndLoadHandler = new SaveAndLoadHandler(this.#projectId);
+
+        // initate ThreeJs scene
+        this.#setUpScene().#loadProject();
+
         // initiate needed classes
         this.#undoRedoHandler = new UndoRedoHandler();
-        this.#saveAndLoadHandler = new SaveAndLoadHandler(this.#projectId);
         //this.#navbar = new Navbar();
         //this.#modeSelector = new ModeSelector();
-        this.#picker = new Picker(this.#camera, this.#transformControls, this.#selectionBox, this.#selectableGroup);
+        this.#picker = new Picker(
+            this.#camera,
+            this.#transformControls,
+            this.#selectionBox,
+            this.#selectableGroup
+        );
         //this.#overview = new Overview(this.#picker);
         //this.#projectSettingManager = new ProjectSettingManager();
         //this.#quickSelector = new QuickSelector();
         //this.#jobInterface = new JobInterface();
         //this.#inspector = new Inspector(this.#picker);
-
-        // initate ThreeJs scene
-        this.#setUpScene().#loadProject();
 
         window.addEventListener("resize", () => this.onWindowResize());
 
@@ -79,6 +85,7 @@ export class Editor {
     }
 
     render() {
+        this.#selectionBox.update();
         this.#renderer.clear();
         this.#renderer.render(this.#scene, this.#camera);
         this.#compass.render(this.#renderer);
