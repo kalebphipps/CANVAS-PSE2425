@@ -1,5 +1,5 @@
 import { Editor } from "editor";
-import { ObjectType } from "objects";
+import { Heliostat, LightSource, ObjectType, Receiver } from "objects";
 import { Picker } from "picker";
 
 export class OverviewHandler {
@@ -102,6 +102,12 @@ export class OverviewHandler {
         }
     }
 
+    /**
+     * Creates an entry for the given heliostat
+     * @param {Heliostat} object the heliostat you want to create an entry for
+     * @param {Boolean} selected if the object is selected or not
+     * @returns the html element
+     */
     #createHeliostatEntry(object, selected) {
         this.#heliostatMap.set(`${object.apiID}`, object);
 
@@ -117,7 +123,10 @@ export class OverviewHandler {
         heliostatEntry.appendChild(icon);
 
         const text = document.createElement("div");
-        text.innerHTML = object.name ? object.name : "Heliostat";
+        text.innerHTML =
+            object.heliostatName !== "" && object.heliostatName !== ""
+                ? object.heliostatName
+                : "Heliostat";
         heliostatEntry.appendChild(text);
 
         heliostatEntry.dataset.apiId = object.apiID;
@@ -130,6 +139,12 @@ export class OverviewHandler {
         return heliostatEntry;
     }
 
+    /**
+     * Creates an entry for the given receiver
+     * @param {Receiver} object the receiver you want to create an entry for
+     * @param {Boolean} selected if the object is selected or not
+     * @returns the html element
+     */
     #createReceiverEntry(object, selected) {
         this.#receiverMap.set(`${object.apiID}`, object);
 
@@ -145,7 +160,10 @@ export class OverviewHandler {
         receiverEntry.appendChild(icon);
 
         const text = document.createElement("div");
-        text.innerHTML = object.name ? object.name : "Receiver";
+        text.innerHTML =
+            object.receiverName !== "" && object.receiverName
+                ? object.receiverName
+                : "Receiver";
         receiverEntry.appendChild(text);
 
         receiverEntry.dataset.apiId = object.apiID;
@@ -158,6 +176,12 @@ export class OverviewHandler {
         return receiverEntry;
     }
 
+    /**
+     * Creates an entry for the given light source
+     * @param {LightSource} object the light source you want to create an entry for
+     * @param {Boolean} selected if the object is selected or not
+     * @returns the html element
+     */
     #createLightsourceEntry(object, selected) {
         this.#lightsourceMap.set(`${object.apiID}`, object);
 
@@ -173,7 +197,10 @@ export class OverviewHandler {
         lightsourceEntry.appendChild(icon);
 
         const text = document.createElement("div");
-        text.innerHTML = object.name ? object.name : "Light source";
+        text.innerHTML =
+            object.lightsourceName !== "" && object.lightsourceName
+                ? object.lightsourceName
+                : "Light source";
         lightsourceEntry.appendChild(text);
 
         lightsourceEntry.dataset.apiId = object.apiID;

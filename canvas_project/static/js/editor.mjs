@@ -214,6 +214,7 @@ export class Editor {
             this.#selectableGroup.add(
                 new Heliostat(
                     heliostat.id,
+                    heliostat.name,
                     new THREE.Vector3(
                         heliostat.position_x,
                         heliostat.position_y,
@@ -234,6 +235,7 @@ export class Editor {
             this.#selectableGroup.add(
                 new Receiver(
                     receiver.id,
+                    receiver.name,
                     new THREE.Vector3(
                         receiver.position_x,
                         receiver.position_y,
@@ -260,6 +262,7 @@ export class Editor {
             this.#selectableGroup.add(
                 new LightSource(
                     lightsource.id,
+                    lightsource.name,
                     lightsource.number_of_rays,
                     lightsource.lightsource_type,
                     lightsource.distribution_type,
