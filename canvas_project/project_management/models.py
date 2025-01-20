@@ -21,13 +21,6 @@ class Project(models.Model):
         # Make each combination of owner and project name unique
         unique_together = [["name", "owner"]]
 
-    # Overwrite the orignal save method to create a settings object each time a new project is created
-    def save(self, *args, **kwargs):
-        # Call the original save method
-        super(Project, self).save(*args, **kwargs)
-        # Create a settings object for this project
-        # Settings.objects.create(project=self)
-
     def __str__(self) -> str:
         return self.name
 
