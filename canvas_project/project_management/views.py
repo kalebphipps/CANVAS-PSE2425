@@ -29,6 +29,7 @@ def projects(request):
 # Deleting a project
 @login_required
 def deleteProject(request, project_name):
+    print(project_name)
     project = Project.objects.get(owner=request.user, name=project_name)
     if project.owner == request.user:
         project.delete()
