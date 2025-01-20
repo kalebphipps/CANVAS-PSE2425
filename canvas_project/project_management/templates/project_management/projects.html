@@ -115,13 +115,23 @@
                                     class="btn btn-primary"
                                     >Open</a
                                 >
+                                <button class="btn btn-primary custom-btn">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+
+                                <!-- Duplicate Button -->
+                                <a
+                                    href="{% url 'duplicateProject' project_name=project.name %}"
+                                    class="btn btn-primary custom-btn shadow"
+                                >
+                                    <i class="bi bi-copy"></i>
+                                </a>
+
+                                <!-- Share Button -->
                                 <button
                                     class="btn btn-primary custom-btn shadow"
                                 >
                                     <i class="bi bi-share"></i>
-                                </button>
-                                <button class="btn btn-primary custom-btn">
-                                    <i class="bi bi-pencil-square"></i>
                                 </button>
 
                                 <!-- Delete Button -->

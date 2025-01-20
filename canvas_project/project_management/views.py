@@ -29,7 +29,6 @@ def projects(request):
 # Deleting a project
 @login_required
 def deleteProject(request, project_name):
-    print(project_name)
     project = Project.objects.get(owner=request.user, name=project_name)
     if project.owner == request.user:
         project.delete()
@@ -53,4 +52,15 @@ def defavorProject(request, project_name):
     if project.owner == request.user:
         project.favorite = "false"
         project.save(update_fields=["favorite"])
+        return redirect("projects")
+
+
+# Duplicate a project
+@login_required
+def duplicateProject(request, project_name):
+    project = Project.objects.get(owner=request.user, name=project_name)
+    if project.owner == request.user:
+        project.pk = None
+        project.name = project.name + "copy"
+        project.save()
         return redirect("projects")
