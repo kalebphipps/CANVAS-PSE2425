@@ -17,7 +17,8 @@
             "singleObjectCommands": ["static/js/singleObjectCommands.mjs"],
             "picker": ["static/js/picker.mjs"],
             "saveAndLoadHandler": ["static/js/saveAndLoadHandler.mjs"],
-            "bulkObjectCommands": ["static/js/bulkObjectCommands.mjs"]
+            "bulkObjectCommands": ["static/js/bulkObjectCommands.mjs"],
+            "overview": ["static/js/overview.mjs"]
         }
     }
 }
