@@ -30,7 +30,7 @@
         import { Editor } from "{% static 'js/editor.mjs' %}";
 
         window.addEventListener('DOMContentLoaded', (_) => {
-            new Editor({{ project_id }});
+            new Editor("{{ project_id }}");
         });
     </script>
 {% endblock %}
@@ -245,7 +245,7 @@
              id="canvas">
             <!--mode selector-->
             <div class="position-absolute mt-4 ms-4 fs-5">
-                <ul class="nav nav-pills flex-column p-2 gap-1 shadow-sm small bg-body-secondary bg-opacity-75 rounded-4 border" id="pillNav2" role="tablist" style="backdrop-filter: blur(0.7rem)"
+                <ul class="nav nav-pills flex-column p-2 gap-1 shadow-sm small bg-body-secondary bg-opacity-95 rounded-4 border" id="pillNav2" role="tablist" style="backdrop-filter: blur(0.7rem)"
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active rounded-3"
                                 id="home-tab2"
@@ -253,7 +253,7 @@
                                 type="button"
                                 role="tab"
                                 aria-selected="true">
-                            <i class="bi bi-cursor"></i>
+                            <i class="bi bi-eye"></i>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
