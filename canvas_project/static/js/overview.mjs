@@ -52,6 +52,9 @@ export class OverviewHandler {
         const objects = this.#editor.objects;
         const selectedObjects = this.#picker.getSelectedObjects();
 
+        // reset the selected items list, to be filled with the items specified by selectedObjects
+        this.#selectedItems = [];
+
         // render the objects
         objects.forEach((element) => {
             const selected = selectedObjects.includes(element);
@@ -79,7 +82,6 @@ export class OverviewHandler {
     }
 
     #createHeliostatEntry(object, selected) {
-        // add to hashmap
         this.#heliostatMap.set(`${object.apiID}`, object);
 
         // create the html element to render
@@ -108,7 +110,6 @@ export class OverviewHandler {
     }
 
     #createReceiverEntry(object, selected) {
-        // add to hashmap
         this.#receiverMap.set(`${object.apiID}`, object);
 
         // create the html element to render
@@ -137,7 +138,6 @@ export class OverviewHandler {
     }
 
     #createLightsourceEntry(object, selected) {
-        // add to hashmap
         this.#lightsourceMap.set(`${object.apiID}`, object);
 
         // create the html element to render
@@ -169,11 +169,11 @@ export class OverviewHandler {
         document
             .getElementById("accordionOverview")
             .addEventListener("click", (event) => {
+                // get the closest parent which has the overviewElem class
                 const target = event.target.closest(".overviewElem");
-                if (target.classList.contains("overviewElem")) {
-                    event.stopPropagation();
 
-                    // TODO: When pressing STRG add to selection
+                if (target && target.classList.contains("overviewElem")) {
+                    // TODO: When pressing STRG add to selection or remove if already selected
                     // TODO: Whene holding SHIFT select everything between the highest and the clicked on element
                     // When more than one item is selected -> choose the nearest selected, or the last added elem
 
