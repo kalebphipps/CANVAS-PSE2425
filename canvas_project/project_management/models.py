@@ -21,6 +21,11 @@ class Project(models.Model):
         # Make each combination of owner and project name unique
         unique_together = [["name", "owner"]]
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not hasattr(self, "settings"):
+            Settings.objects.create(project=self)
+
     def __str__(self) -> str:
         return self.name
 
