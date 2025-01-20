@@ -93,7 +93,7 @@
                                 <div class="position-absolute end-0 top-0">
                                     {% if project.favorite == "true" %}
                                     <a
-                                        href="{% url 'defavoreProject' project.name %}"
+                                        href="{% url 'defavorProject' project.name %}"
                                         class="btn btn-primary"
                                         ><i
                                             class="bi bi-star-fill text-warning"
@@ -101,7 +101,7 @@
                                     ></a>
                                     {% else %}
                                     <a
-                                        href="{% url 'favoreProject' project.name %}"
+                                        href="{% url 'favorProject' project.name %}"
                                         class="btn btn-primary"
                                         ><i class="bi bi-star"></i
                                     ></a>

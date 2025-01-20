@@ -5,10 +5,10 @@ from . import views
 urlpatterns = [
     path("", views.projects, name="projects"),
     path("deleteProject/<str:project_name>", views.deleteProject, name="deleteProject"),
-    path("favoreProject/<str:project_name>", views.favoreProject, name="favoreProject"),
+    path("favorProject/<str:project_name>", views.favorProject, name="favorProject"),
     path(
-        "defavoreProject/<str:project_name>",
-        views.defavoreProject,
-        name="defavoreProject",
+        "defavorProject/<str:project_name>",
+        views.defavorProject,
+        name="defavorProject",
     ),
 ]

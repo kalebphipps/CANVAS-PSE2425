@@ -26,7 +26,7 @@ class Project(models.Model):
         # Call the original save method
         super(Project, self).save(*args, **kwargs)
         # Create a settings object for this project
-        Settings.objects.create(project=self)
+        # Settings.objects.create(project=self)
 
     def __str__(self) -> str:
         return self.name

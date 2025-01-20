@@ -32,14 +32,16 @@ def deleteProject(request, project_name):
 
 
 # Set project to favorite
-def favoreProject(request, project_name):
+def favorProject(request, project_name):
     project = Project.objects.get(name=project_name)
     project.favorite = "true"
+    project.save(update_fields=["favorite"])
     return redirect("projects")
 
 
 # Set project to not favorite
-def defavoreProject(request, project_name):
+def defavorProject(request, project_name):
     project = Project.objects.get(name=project_name)
     project.favorite = "false"
+    project.save(update_fields=["favorite"])
     return redirect("projects")
