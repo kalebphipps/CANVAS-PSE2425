@@ -63,11 +63,16 @@
             <div class="card mb-3 rounded-4 bg-body-tertiary overflow-hidden">
                 <div class="row g-0">
                     <div class="col-md-4">
-                        <img
-                            src="{% static project.preview %}"
-                            class="img-fluid"
-                            alt="..."
-                        />
+                        <a
+                            class="col-md-4"
+                            href="{% url 'editor' project.name %}"
+                        >
+                            <img
+                                src="{{ project.preview.url }}"
+                                alt="{{ project.name }}"
+                                class="img-fluid"
+                            />
+                        </a>
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -83,22 +88,22 @@
                                         Last edited: {{ project.last_edited }}
                                     </p>
                                 </div>
+
+                                <!-- favorites-->
                                 <div class="position-absolute end-0 top-0">
                                     {% if project.favorite == "true" %}
                                     <a
+                                        href="{% url 'defavoreProject' project.name %}"
                                         class="btn btn-primary"
-                                        href="./"
-                                        role="button"
-                                        ><i class="bi bi-star"></i
+                                        ><i
+                                            class="bi bi-star-fill text-warning"
+                                        ></i
                                     ></a>
                                     {% else %}
                                     <a
+                                        href="{% url 'favoreProject' project.name %}"
                                         class="btn btn-primary"
-                                        href="./"
-                                        role="button"
-                                        ><i
-                                            class="bi-star-fill text-warning"
-                                        ></i
+                                        ><i class="bi bi-star"></i
                                     ></a>
                                     {% endif %}
                                 </div>

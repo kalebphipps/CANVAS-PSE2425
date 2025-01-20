@@ -29,3 +29,17 @@ def deleteProject(request, project_name):
     project = Project.objects.get(name=project_name)
     project.delete()
     return redirect("projects")
+
+
+# Set project to favorite
+def favoreProject(request, project_name):
+    project = Project.objects.get(name=project_name)
+    project.favorite = "true"
+    return redirect("projects")
+
+
+# Set project to not favorite
+def defavoreProject(request, project_name):
+    project = Project.objects.get(name=project_name)
+    project.favorite = "false"
+    return redirect("projects")
