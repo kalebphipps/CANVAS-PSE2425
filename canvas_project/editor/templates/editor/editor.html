@@ -30,7 +30,7 @@
         import { Editor } from "{% static 'js/editor.mjs' %}";
 
         window.addEventListener('DOMContentLoaded', (_) => {
-            new Editor({{ project_id }});
+            new Editor("{{ project_id }}");
         });
     </script>
 {% endblock %}
