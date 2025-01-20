@@ -74,8 +74,6 @@ export class Editor {
         //this.#jobInterface = new JobInterface();
         //this.#inspector = new Inspector(this.#picker);
 
-        this.#picker.setSelection([]);
-
         window.addEventListener("resize", () => this.onWindowResize());
 
         this.animate();
