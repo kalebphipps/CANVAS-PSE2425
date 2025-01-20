@@ -4,8 +4,8 @@ import { ViewHelper } from "compass";
 import { OrbitControls } from "orbitControls";
 import { TransformControls } from "transformControls";
 
-//import { UndoRedoHandler } from "undoRedoHandler";
-//import { SaveAndLoadHandler } from "saveAndLoadHandler";
+import { UndoRedoHandler } from "undoRedoHandler";
+import { SaveAndLoadHandler } from "saveAndLoadHandler";
 //import { Navbar } from "navbar";
 //import { Overview } from "overview";
 //import { ModeSelector } from "modeSelector";
@@ -54,8 +54,8 @@ export class Editor {
         this.#projectId = projectId;
 
         // initiate needed classes
-        //this.#undoRedoHandler = new UndoRedoHandler();
-        //this.#saveAndLoadHandler = new SaveAndLoadHandler(this.#projectId);
+        this.#undoRedoHandler = new UndoRedoHandler();
+        this.#saveAndLoadHandler = new SaveAndLoadHandler(this.#projectId);
         //this.#navbar = new Navbar();
         //this.#modeSelector = new ModeSelector();
         //this.#picker = new Picker(this.#camera, this.#transformControls, this.#selectionBox, this.#selectableGroup, this.#modeSelector);
@@ -66,8 +66,7 @@ export class Editor {
         //this.#inspector = new Inspector(this.#picker);
 
         // initate ThreeJs scene
-        this.#setUpScene();
-        //this.#loadProject();
+        this.#setUpScene().#loadProject();
 
         window.addEventListener("resize", () => this.onWindowResize());
 
@@ -193,6 +192,8 @@ export class Editor {
         this.#selectableGroup = new THREE.Group();
         this.#selectableGroup.name = "selectableGroup";
         this.#scene.add(this.#selectableGroup);
+
+        return this;
     }
 
     async #loadProject() {
@@ -239,12 +240,12 @@ export class Editor {
                         receiver.normal_z
                     ),
                     receiver.towerType,
-                    receiver.curvature_e,
-                    receiver.curvature_u,
                     receiver.plane_e,
                     receiver.plane_u,
                     receiver.resolution_e,
-                    receiver.resolution_u
+                    receiver.resolution_u,
+                    receiver.curvature_e,
+                    receiver.curvature_u
                 )
             );
         });
@@ -263,9 +264,30 @@ export class Editor {
         });
 
         // set the settings
-        this.setShadows(settingsList["shadows"]);
-        this.setFog(settingsList["fog"]);
+        this.setShadows(settingsList["shadows"]).setFog(settingsList["fog"]);
 
         // TODO: Update settings also in UI --> wait till implemented
+
+        return this;
+    }
+
+    /**
+     * Enables or disables the shadows
+     * @param {Boolean} mode is the mode you want to use
+     */
+    setShadows(mode) {
+        this.#renderer.shadowMap.enabled = mode;
+        this.#saveAndLoadHandler.updateSettings("shadows", mode);
+        return this;
+    }
+
+    /**
+     * Enables or disables the fog
+     * @param {Boolean} mode is the mode you want to use
+     */
+    setFog(mode) {
+        this.#scene.fog = mode ? new THREE.Fog(0xdde0e0, 100, 2200) : null;
+        this.#saveAndLoadHandler.updateSettings("fog", mode);
+        return this;
     }
 }
