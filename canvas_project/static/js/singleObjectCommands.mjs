@@ -1,8 +1,7 @@
 import { Object3D } from "three";
 import { Command } from "command";
-import { Heliostat } from "objects";
-import { Receiver } from "objects";
-import { LightSource } from "objects";
+import { Heliostat, Receiver, LightSource } from "objects";
+import { SaveAndLoadHandler } from "saveAndLoadHandler";
 
 /**
  * This class is designed for operations that target a single 'Object3D' instance.
@@ -81,6 +80,9 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
+
+        const saveAndLoadHandler = new SaveAndLoadHandler();
+        saveAndLoadHandler.updateHeliostat(this.object);
     }
 
     /**
@@ -97,6 +99,9 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
+
+        const saveAndLoadHandler = new SaveAndLoadHandler();
+        saveAndLoadHandler.updateHeliostat(this.object);
     }
 
     /**
@@ -179,6 +184,9 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
+
+        const saveAndLoadHandler = new SaveAndLoadHandler();
+        saveAndLoadHandler.updateReceiver(this.object);
     }
 
     /**
@@ -213,6 +221,9 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
+
+        const saveAndLoadHandler = new SaveAndLoadHandler();
+        saveAndLoadHandler.updateReceiver(this.object);
     }
 
     /**
@@ -295,6 +306,9 @@ export class UpdateLightSourceCommand extends SingleObjectCommand {
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
+
+        const saveAndLoadHandler = new SaveAndLoadHandler();
+        saveAndLoadHandler.updateLightsource(this.object);
     }
 
     /**
@@ -320,6 +334,9 @@ export class UpdateLightSourceCommand extends SingleObjectCommand {
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
+
+        const saveAndLoadHandler = new SaveAndLoadHandler();
+        saveAndLoadHandler.updateLightsource(this.object);
     }
 
     /**
