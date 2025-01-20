@@ -25,9 +25,7 @@
 <!--settings modal-->
 {% include "settings.html" %}
 <!--project overview-->
-<div
-    class="d-flex flex-column w-100 align-items-center vh-100 gap-2"
->
+<div class="d-flex flex-column w-100 align-items-center vh-100 gap-2">
     <div class="p-2 pt-3">
         <h1 style="font-size: 3rem; font-weight: 900">My projects</h1>
     </div>
@@ -43,7 +41,8 @@
         </button>
         <div class="w-100 d-flex justify-content-center gap-4"></div>
     </div>
-    <div class="d-flex flex-column h-100 w-75 justify-content-center gap-2 overflow-auto px-2 mt-3">
+    <div class="d-flex flex-column h-100 w-75 gap-2 overflow-auto px-2 mt-3">
+        {% if projects %}
         <div
             class="form-check form-switch position-absolute ms-2"
             style="transform: translateY(-130%)"
@@ -70,7 +69,11 @@
                             <img
                                 src="{{ project.preview.url }}"
                                 alt="{{ project.name }}"
-                                style="height: 350px; width: 100%; object-fit: cover;"
+                                style="
+                                    height: 350px;
+                                    width: 100%;
+                                    object-fit: cover;
+                                "
                             />
                         </a>
                     </div>
@@ -189,7 +192,11 @@
                 </div>
             </div>
         </div>
-        {% endfor %}
+        {% endfor %} {% else %}
+        <div class="text-center w-100 text-secondary fs-3">
+            <i>You currently have no projects</i>
+        </div>
+        {% endif %}
     </div>
     <div class="d-flex w-100 justify-content-end p-2">
         <div class="d-flex justify-content-between mx-3 py-1">
