@@ -4,9 +4,11 @@ from django.shortcuts import redirect, render
 from .models import Project
 from .forms import ProjectForm
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
 
 
 # General project handling
+@login_required
 def projects(request):
     form = ProjectForm()
     if request.method == "GET":
@@ -25,23 +27,29 @@ def projects(request):
 
 
 # Deleting a project
+@login_required
 def deleteProject(request, project_name):
     project = Project.objects.get(owner=request.user, name=project_name)
-    project.delete()
-    return redirect("projects")
+    if project.owner == request.user:
+        project.delete()
+        return redirect("projects")
 
 
 # Set project to favorite
+@login_required
 def favorProject(request, project_name):
     project = Project.objects.get(owner=request.user, name=project_name)
-    project.favorite = "true"
-    project.save(update_fields=["favorite"])
-    return redirect("projects")
+    if project.owner == request.user:
+        project.favorite = "true"
+        project.save(update_fields=["favorite"])
+        return redirect("projects")
 
 
 # Set project to not favorite
+@login_required
 def defavorProject(request, project_name):
     project = Project.objects.get(owner=request.user, name=project_name)
-    project.favorite = "false"
-    project.save(update_fields=["favorite"])
-    return redirect("projects")
+    if project.owner == request.user:
+        project.favorite = "false"
+        project.save(update_fields=["favorite"])
+        return redirect("projects")
