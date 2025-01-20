@@ -26,14 +26,14 @@ def projects(request):
 
 # Deleting a project
 def deleteProject(request, project_name):
-    project = Project.objects.get(name=project_name)
+    project = Project.objects.get(owner=request.user, name=project_name)
     project.delete()
     return redirect("projects")
 
 
 # Set project to favorite
 def favorProject(request, project_name):
-    project = Project.objects.get(name=project_name)
+    project = Project.objects.get(owner=request.user, name=project_name)
     project.favorite = "true"
     project.save(update_fields=["favorite"])
     return redirect("projects")
@@ -41,7 +41,7 @@ def favorProject(request, project_name):
 
 # Set project to not favorite
 def defavorProject(request, project_name):
-    project = Project.objects.get(name=project_name)
+    project = Project.objects.get(owner=request.user, name=project_name)
     project.favorite = "false"
     project.save(update_fields=["favorite"])
     return redirect("projects")
