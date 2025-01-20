@@ -22,8 +22,8 @@ export class ModeSelector {
         this.#currentMode = "translate";
 
         this.#translationButton = document.getElementById("home-tab2");
-        this.#moveButton = document.getElementById("contact-tab2");
-        this.#rotateButton = document.getElementById("profile-tab2");
+        this.#moveButton = document.getElementById("profile-tab2");
+        this.#rotateButton = document.getElementById("profile-tab3");
 
         this.addEventListeners();
     }
@@ -36,6 +36,7 @@ export class ModeSelector {
             this.setCurrentMode("translate");
             this.#transformControls.setMode("translate");
             this.#transformControls.detach();
+            this.#editor.orbitControls.enabled = true;
         });
 
         this.#moveButton.addEventListener("click", () => {
