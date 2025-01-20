@@ -4,18 +4,18 @@ import { ViewHelper } from "compass";
 import { OrbitControls } from "orbitControls";
 import { TransformControls } from "transformControls";
 
-//import { UndoRedoHandler } from "undoRedoHandler";
-//import { SaveAndLoadHandler } from "saveAndLoadHandler";
+import { UndoRedoHandler } from "undoRedoHandler";
+import { SaveAndLoadHandler } from "saveAndLoadHandler";
 //import { Navbar } from "navbar";
 //import { Overview } from "overview";
 //import { ModeSelector } from "modeSelector";
-//import { Picker } from "picker";
+import { Picker } from "picker";
 //import { ProjectSettingManager } from "projectSettingManager";
 //import { QuickSelector } from "quickSelector";
 //import { JobInterface } from "jobInterface";
 //import { Inspector } from "inspector";
 
-import { Heliostat, Receiver, LightSource, Terrain } from "objects";
+import { Heliostat, Receiver, LightSource, Terrain, ObjectType } from "objects";
 
 let editorInstance = null;
 export class Editor {
@@ -43,7 +43,7 @@ export class Editor {
     #renderer;
     #camera;
     #scene;
-    #selectableGroup;
+    #selectableGroup = new THREE.Group();
     #terrain;
 
     constructor(projectId) {
@@ -53,21 +53,26 @@ export class Editor {
 
         this.#projectId = projectId;
 
+        this.#saveAndLoadHandler = new SaveAndLoadHandler(this.#projectId);
+
+        // initate ThreeJs scene
+        this.#setUpScene().#loadProject();
+
         // initiate needed classes
-        //this.#undoRedoHandler = new UndoRedoHandler();
-        //this.#saveAndLoadHandler = new SaveAndLoadHandler(this.#projectId);
+        this.#undoRedoHandler = new UndoRedoHandler();
         //this.#navbar = new Navbar();
-        //this.#picker = new Picker();
-        //this.#overview = new Overview(this.#picker);
         //this.#modeSelector = new ModeSelector();
+        this.#picker = new Picker(
+            this.#camera,
+            this.#transformControls,
+            this.#selectionBox,
+            this.#selectableGroup
+        );
+        //this.#overview = new Overview(this.#picker);
         //this.#projectSettingManager = new ProjectSettingManager();
         //this.#quickSelector = new QuickSelector();
         //this.#jobInterface = new JobInterface();
         //this.#inspector = new Inspector(this.#picker);
-
-        // initate ThreeJs scene
-        this.#setUpScene();
-        //this.#loadProject();
 
         window.addEventListener("resize", () => this.onWindowResize());
 
@@ -80,6 +85,7 @@ export class Editor {
     }
 
     render() {
+        this.#selectionBox.update();
         this.#renderer.clear();
         this.#renderer.render(this.#scene, this.#camera);
         this.#compass.render(this.#renderer);
@@ -190,9 +196,10 @@ export class Editor {
             }
         );
 
-        this.#selectableGroup = new THREE.Group();
         this.#selectableGroup.name = "selectableGroup";
         this.#scene.add(this.#selectableGroup);
+
+        return this;
     }
 
     async #loadProject() {
@@ -239,12 +246,12 @@ export class Editor {
                         receiver.normal_z
                     ),
                     receiver.towerType,
-                    receiver.curvature_e,
-                    receiver.curvature_u,
                     receiver.plane_e,
                     receiver.plane_u,
                     receiver.resolution_e,
-                    receiver.resolution_u
+                    receiver.resolution_u,
+                    receiver.curvature_e,
+                    receiver.curvature_u
                 )
             );
         });
@@ -263,9 +270,107 @@ export class Editor {
         });
 
         // set the settings
-        this.setShadows(settingsList["shadows"]);
-        this.setFog(settingsList["fog"]);
+        this.setShadows(settingsList["shadows"]).setFog(settingsList["fog"]);
 
         // TODO: Update settings also in UI --> wait till implemented
+
+        return this;
+    }
+
+    /**
+     * Enables or disables the shadows
+     * @param {Boolean} mode is the mode you want to use
+     */
+    setShadows(mode) {
+        this.#renderer.shadowMap.enabled = mode;
+        this.#saveAndLoadHandler.updateSettings("shadows", mode);
+        return this;
+    }
+
+    /**
+     * Enables or disables the fog
+     * @param {Boolean} mode is the mode you want to use
+     */
+    setFog(mode) {
+        this.#scene.fog = mode ? new THREE.Fog(0xdde0e0, 100, 2200) : null;
+        this.#saveAndLoadHandler.updateSettings("fog", mode);
+        return this;
+    }
+
+    /**
+     * Adds an object to the scene and saves it inside of the database.
+     * Only allows adding of heliostat, receivers or lightsources.
+     * @param {THREE.Object3D} object the object you want to add.
+     */
+    async addObject(object) {
+        const objectType = object.objectType;
+        if (!objectType) {
+            return this;
+        }
+
+        switch (objectType) {
+            case ObjectType.HELIOSTAT:
+                this.#selectableGroup.add(object);
+                object.apiID = (
+                    await this.#saveAndLoadHandler.createHeliostat(object)
+                )["id"];
+                break;
+            case ObjectType.RECEIVER:
+                this.#selectableGroup.add(object);
+                object.apiID = (
+                    await this.#saveAndLoadHandler.createReceiver(object)
+                )["id"];
+                break;
+            case ObjectType.LIGHTSOURCE:
+                this.#selectableGroup.add(object);
+                object.apiID = (
+                    await this.#saveAndLoadHandler.createLightSource(object)
+                )["id"];
+                break;
+            default:
+                console.warn(`Unknown object type: ${objectType}`);
+                break;
+        }
+
+        return this;
+    }
+
+    /**
+     * Deletes the given object from the scene and from the database.
+     * Only allows deletion of heliostat, receivers and lightsources.
+     * @param {THREE.Object3D} object the object you want to delete.
+     */
+    async deleteObject(object) {
+        const objectType = object.objectType;
+        if (!objectType) {
+            return this;
+        }
+
+        switch (objectType) {
+            case ObjectType.HELIOSTAT:
+                this.#selectableGroup.remove(object);
+                await this.#saveAndLoadHandler.deleteHeliostat(object);
+                break;
+            case ObjectType.RECEIVER:
+                this.#selectableGroup.remove(object);
+                await this.#saveAndLoadHandler.deleteReceiver(object);
+                break;
+            case ObjectType.LIGHTSOURCE:
+                this.#selectableGroup.remove(object);
+                await this.#saveAndLoadHandler.deleteLightsource(object);
+                break;
+            default:
+                console.warn(`Unknown object type: ${objectType}`);
+                break;
+        }
+
+        return this;
+    }
+
+    /**
+     * @returns {Array<THREE.Object3D>} an array containing all placed objects.
+     */
+    get objects() {
+        return this.#selectableGroup.children;
     }
 }

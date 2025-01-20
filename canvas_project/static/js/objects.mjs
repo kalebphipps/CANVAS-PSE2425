@@ -2,6 +2,12 @@ import * as THREE from "three";
 import { Object3D } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
+export const ObjectType = Object.freeze({
+    HELIOSTAT: "heliostat",
+    RECEIVER: "receiver",
+    LIGHTSOURCE: "lightsource",
+});
+
 /**
  *  Class that represents the Heliostat object
  */
@@ -10,6 +16,7 @@ export class Heliostat extends Object3D {
     #aimPoint;
     #numberOfFacets;
     #kinematicType;
+    #objectType;
 
     /**
      * Creates a Heliostat object
@@ -44,6 +51,7 @@ export class Heliostat extends Object3D {
         this.#aimPoint = aimPoint;
         this.#numberOfFacets = numberOfFacets;
         this.#kinematicType = kinematicType;
+        this.#objectType = ObjectType.HELIOSTAT;
     }
     /**
      * Updates the aimPoint of the Heliostat and updates rotation of the Heliostat accordingly
@@ -81,6 +89,10 @@ export class Heliostat extends Object3D {
     set kinematicType(kinematicType) {
         this.#kinematicType = kinematicType;
     }
+
+    get objectType() {
+        return this.#objectType;
+    }
 }
 
 /**
@@ -96,6 +108,8 @@ export class Receiver extends Object3D {
     #resolutionU;
     #curvatureE;
     #curvatureU;
+    #rotationY;
+    #objectType;
 
     /**
      * Creates a Receiver object
@@ -144,6 +158,8 @@ export class Receiver extends Object3D {
         this.#resolutionU = resolutionU;
         this.#curvatureE = curvatureE;
         this.#curvatureU = curvatureU;
+        this.#rotationY = rotationY;
+        this.#objectType = ObjectType.RECEIVER;
     }
 
     /**
@@ -227,6 +243,18 @@ export class Receiver extends Object3D {
     set curvatureU(value) {
         this.#curvatureU = value;
     }
+
+    get rotationY() {
+        return this.#rotationY;
+    }
+
+    set rotationY(rotation) {
+        this.#rotationY = rotation;
+    }
+
+    get objectType() {
+        return this.#objectType;
+    }
 }
 
 /**
@@ -277,6 +305,7 @@ export class LightSource extends Object3D {
     #distributionType;
     #distributionMean;
     #distributionCovariance;
+    #objectType;
 
     /**
      * @param {Number} [apiID=null] the id for api usage
@@ -301,6 +330,7 @@ export class LightSource extends Object3D {
         this.#distributionType = distributionType;
         this.#distributionMean = distributionMean;
         this.#distributionCovariance = distributionCovariance;
+        this.#objectType = ObjectType.LIGHTSOURCE;
     }
 
     get apiID() {
@@ -348,6 +378,10 @@ export class LightSource extends Object3D {
 
     set distributionCovariance(number) {
         this.#distributionCovariance = number;
+    }
+
+    get objectType() {
+        return this.#objectType;
     }
 }
 

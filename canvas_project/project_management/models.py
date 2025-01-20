@@ -9,18 +9,22 @@ class Project(models.Model):
 
     name = models.CharField(max_length=300)
     description = models.CharField(max_length=500)
+    last_edited = models.DateTimeField("timezone.now")
+    favorite = models.CharField(max_length=5, default="false")
+    preview = models.ImageField(
+        upload_to="project_previews/",
+        default="project_previews/logo_canvas.jpg",
+    )
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         # Make each combination of owner and project name unique
         unique_together = [["name", "owner"]]
 
-    # Overwrite the orignal save method to create a settings object each time a new project is created
     def save(self, *args, **kwargs):
-        # Call the original save method
-        super(Project, self).save(*args, **kwargs)
-        # Create a settings object for this project
-        Settings.objects.create(project=self)
+        super().save(*args, **kwargs)
+        if not hasattr(self, "settings"):
+            Settings.objects.create(project=self)
 
     def __str__(self) -> str:
         return self.name
