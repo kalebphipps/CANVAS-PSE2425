@@ -79,6 +79,27 @@ export class OverviewHandler {
                     console.warn(`Unknown object type: ${element.objectType}`);
             }
         });
+
+        if (this.#heliostatList.children.length == 0) {
+            const text = document.createElement("i");
+            text.classList = "text-secondary";
+            text.innerHTML = "No heliostats in this scene";
+            this.#heliostatList.appendChild(text);
+        }
+
+        if (this.#receiverList.children.length == 0) {
+            const text = document.createElement("i");
+            text.classList = "text-secondary";
+            text.innerHTML = "No receivers in this scene";
+            this.#receiverList.appendChild(text);
+        }
+
+        if (this.#lightsourceList.children.length == 0) {
+            const text = document.createElement("i");
+            text.classList = "text-secondary";
+            text.innerHTML = "No light sources in this scene";
+            this.#lightsourceList.appendChild(text);
+        }
     }
 
     #createHeliostatEntry(object, selected) {
@@ -96,7 +117,7 @@ export class OverviewHandler {
         heliostatEntry.appendChild(icon);
 
         const text = document.createElement("div");
-        text.innerHTML = "Heliostat " + object.apiID;
+        text.innerHTML = object.name ? object.name : "Heliostat";
         heliostatEntry.appendChild(text);
 
         heliostatEntry.dataset.apiId = object.apiID;
@@ -124,7 +145,7 @@ export class OverviewHandler {
         receiverEntry.appendChild(icon);
 
         const text = document.createElement("div");
-        text.innerHTML = "Receiver " + object.apiID;
+        text.innerHTML = object.name ? object.name : "Receiver";
         receiverEntry.appendChild(text);
 
         receiverEntry.dataset.apiId = object.apiID;
@@ -152,7 +173,7 @@ export class OverviewHandler {
         lightsourceEntry.appendChild(icon);
 
         const text = document.createElement("div");
-        text.innerHTML = "Lightsource " + object.apiID;
+        text.innerHTML = object.name ? object.name : "Light source";
         lightsourceEntry.appendChild(text);
 
         lightsourceEntry.dataset.apiId = object.apiID;
