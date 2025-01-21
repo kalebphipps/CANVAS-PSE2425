@@ -7,6 +7,7 @@ export class ModeSelector {
     /** @type {Editor} */
     #editor;
     /** @type {string} */
+    #picker;
     #currentMode;
     #translationButton;
     #moveButton;
@@ -16,8 +17,9 @@ export class ModeSelector {
      *
      * @param {THREE.TransformControls} transformControls
      */
-    constructor(transformControls) {
+    constructor(transformControls, picker) {
         this.#transformControls = transformControls;
+        this.#picker = picker;
         this.#editor = Editor.getInstance();
         this.#currentMode = "translate";
 
@@ -34,9 +36,7 @@ export class ModeSelector {
     addEventListeners() {
         this.#translationButton.addEventListener("click", () => {
             this.setCurrentMode("translate");
-            this.#transformControls.setMode("translate");
-            this.#transformControls.detach();
-            this.#editor.orbitControls.enabled = true;
+            this.#picker.setMode("translate");
         });
 
         this.#moveButton.addEventListener("click", () => {
@@ -56,13 +56,5 @@ export class ModeSelector {
      */
     setCurrentMode(mode) {
         this.#currentMode = mode;
-    }
-
-    /**
-     * get the current mode
-     * @returns the current mode
-     */
-    getCurrentMode() {
-        return this.#currentMode;
     }
 }
