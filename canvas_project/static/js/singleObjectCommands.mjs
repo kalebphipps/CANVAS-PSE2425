@@ -52,6 +52,10 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
      * The new value of the attribute.
      */
     #newParameter;
+    /**
+     * The SaveAndLoadHandler instance, that saves the changes.
+     */
+    #saveAndLoadHandler;
 
     /**
      * Initializes a new UpdateHeliostatCommand with the specified 'Heliostat' instance, attribute, and new parameter.
@@ -64,6 +68,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
         this.#attribute = attribute;
         this.#newParameter = newParameter;
         this.#oldParameter = this.#getAttributeValue(heliostat, attribute);
+        this.#saveAndLoadHandler = new SaveAndLoadHandler();
     }
 
     /**
@@ -81,7 +86,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        new SaveAndLoadHandler().updateHeliostat(this.object);
+        this.#saveAndLoadHandler.updateHeliostat(this.object);
     }
 
     /**
@@ -99,7 +104,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        new SaveAndLoadHandler().updateHeliostat(this.object);
+        this.#saveAndLoadHandler.updateHeliostat(this.object);
     }
 
     /**
@@ -136,6 +141,10 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
      * The new value of the attribute.
      */
     #newParameter;
+    /**
+     * The SaveAndLoadHandler instance, that saves the changes.
+     */
+    #saveAndLoadHandler;
 
     /**
      * Initializes a new UpdateReceiverCommand with the specified 'Receiver' instance, attribute, and new parameter.
@@ -148,6 +157,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
         this.#attribute = attribute;
         this.#newParameter = newParameter;
         this.#oldParameter = this.#getAttributeValue(receiver, attribute);
+        this.#saveAndLoadHandler = new SaveAndLoadHandler();
     }
 
     /**
@@ -183,7 +193,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        new SaveAndLoadHandler().updateReceiver(this.object);
+        this.#saveAndLoadHandler.updateReceiver(this.object);
     }
 
     /**
@@ -219,7 +229,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        new SaveAndLoadHandler().updateReceiver(this.object);
+        this.#saveAndLoadHandler.updateReceiver(this.object);
     }
 
     /**
@@ -268,6 +278,10 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
      * The new value of the attribute.
      */
     #newParameter;
+    /**
+     * The SaveAndLoadHandler instance, that saves the changes.
+     */
+    #saveAndLoadHandler;
 
     /**
      * Initializes a new UpdateLightSourceCommand with the specified 'LightSource' instance, attribute, and new parameter.
@@ -280,6 +294,7 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
         this.#attribute = attribute;
         this.#newParameter = newParameter;
         this.#oldParameter = this.#getAttributeValue(lightSource, attribute);
+        this.#saveAndLoadHandler = new SaveAndLoadHandler();
     }
 
     /**
@@ -306,7 +321,7 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        new SaveAndLoadHandler().updateLightsource(this.object);
+        this.#saveAndLoadHandler.updateLightsource(this.object);
     }
 
     /**
@@ -333,7 +348,7 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        new SaveAndLoadHandler().updateLightsource(this.object);
+        this.#saveAndLoadHandler.updateLightsource(this.object);
     }
 
     /**
