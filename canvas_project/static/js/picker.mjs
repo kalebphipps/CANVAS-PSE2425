@@ -30,9 +30,94 @@ export class Picker {
         this.#selectableGroup = selectableGroup;
         this.#selectedObjects = [];
         this.#raycaster = new THREE.Raycaster();
-        this.#mode = Mode.NONE;
+        this.#mode = Mode.SINGLE;
+
+        this.canvas = document.getElementById("canvas");
+        this.mouse = new THREE.Vector2();
+        var startingPoint = new THREE.Vector2();
+        var endPoint = new THREE.Vector2();
+        this.isTransformDragging = false;
+        this.selectedObject = null;
+
+        
 
         // TODO: Event listener for click
+        window.addEventListener("click", (event) => {
+            
+            //check if the correct mode is applied
+            if (this.#mode != Mode.SINGLE) { 
+                transformControls.detach();
+                for (Object of this.#selectedObjects) {
+                    if (Object) {
+                        Object.traverse((child) => {
+                            if (child.type == "Mesh") {
+                                child.material.emissive.set(0x000000);
+                            }
+                        });
+                    }
+                }
+                this.#selectedObjects = [];
+                return; 
+            }
+
+            if (this.isTransformDragging) { return; } // während oder kurz nach Dragging nichts machen
+            
+            //gets the mouse position
+            this.mouse = this.#mouseposition({ x: event.clientX, y: event.clientY });
+
+            //checks if the transformationControls are currently dragging, if so calls the itemSelectedEvent to update the selected objects in the canvas
+            if (this.#transformControls.dragging) { 
+                this.#itemSelectedEvent();
+                return;
+            }
+            
+            //gets the selected object
+            this.selectedObject = this.#getSelectedObject(this.mouse, this.#camera);
+
+            // updates the selected objects according to the situation
+            if (event.shiftKey) {
+                if (this.selectedObject != null) {
+                    if (this.#selectedObjects.includes(this.selectedObject)) {
+                        this.#transformControls.attach(this.selectedObject);
+                    } else {
+                        this.#selectedObjects.push(this.selectedObject);
+                        this.#transformControls.attach(this.selectedObject);
+                    }
+                } else {
+                    this.#transformControls.detach();
+                }
+            } else {
+                this.#transformControls.detach();
+                for (Object of this.#selectedObjects) {
+                    if (Object) {
+                        Object.traverse((child) => {
+                            if (child.type == "Mesh") {
+                                child.material.emissive.set(0x000000);
+                            }
+                        });
+                    }
+                }
+                this.#selectedObjects = [];
+
+                if (this.selectedObject != null) {
+                    this.#selectedObjects.push(this.selectedObject);
+                    this.#transformControls.attach(this.selectedObject);
+                }
+            }
+
+            this.#itemSelectedEvent();
+        });
+
+        this.#transformControls.addEventListener("dragging-changed", (event) => {
+            this.isTransformDragging = !event.value;
+            console.log("dragging-changed");
+            setTimeout(() => {
+                this.isTransformDragging = false;
+            }, 100);
+
+        });
+
+
 
         // TODO: Event listener for Rectangular selection
 
@@ -42,7 +127,7 @@ export class Picker {
      * Sets the selection mode and updats the tranformControls
      * @param {Mode} mode The selection mode
      */
-    setMode(mode) {
+    setMode(mode, transformMode) {
         this.#mode = mode;
         if (mode === Mode.NONE) {
             this.#transformControls.detach();
@@ -97,4 +182,34 @@ export class Picker {
           });
           document.getElementById("canvas").dispatchEvent(event);
     }
+
+    #mouseposition(position) {
+        var rect = this.canvas.getBoundingClientRect();
+        return {
+            x: ((position.x - rect.left) / rect.width) * 2 - 1,
+            y: -((position.y - rect.top) / rect.height) * 2 + 1
+        };
+    }
+
+
+    #getSelectedObject(mouse, camera) {
+        this.#raycaster.setFromCamera(mouse, camera);
+        const intersects = this.#raycaster.intersectObjects(this.#selectableGroup.children);
+
+        if (intersects.length > 0) {
+            for (let i = 0; i < intersects.length; i++) {
+                if (intersects[i].object.type == "Mesh") {
+                  // bubble up to parent -> only two times (mesh -> group -> parent)
+                  intersects[i].object.parent.parent.traverse((child) => {
+                    if (child.type == "Mesh") {
+                        child.material.emissive.set(0xff0000);
+                    }
+                  });
+                return intersects[i].object.parent.parent;
+              }
+            }
+        }
+        return null;
+    }
+    
 }
