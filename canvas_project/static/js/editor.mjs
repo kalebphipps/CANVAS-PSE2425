@@ -7,7 +7,7 @@ import { TransformControls } from "transformControls";
 import { UndoRedoHandler } from "undoRedoHandler";
 import { SaveAndLoadHandler } from "saveAndLoadHandler";
 //import { Navbar } from "navbar";
-//import { Overview } from "overview";
+import { OverviewHandler } from "overview";
 //import { ModeSelector } from "modeSelector";
 import { Picker } from "picker";
 //import { ProjectSettingManager } from "projectSettingManager";
@@ -68,7 +68,7 @@ export class Editor {
             this.#selectionBox,
             this.#selectableGroup
         );
-        //this.#overview = new Overview(this.#picker);
+        this.#overview = new OverviewHandler(this.#picker);
         //this.#projectSettingManager = new ProjectSettingManager();
         //this.#quickSelector = new QuickSelector();
         //this.#jobInterface = new JobInterface();
@@ -214,6 +214,7 @@ export class Editor {
             this.#selectableGroup.add(
                 new Heliostat(
                     heliostat.id,
+                    heliostat.name,
                     new THREE.Vector3(
                         heliostat.position_x,
                         heliostat.position_y,
@@ -234,6 +235,7 @@ export class Editor {
             this.#selectableGroup.add(
                 new Receiver(
                     receiver.id,
+                    receiver.name,
                     new THREE.Vector3(
                         receiver.position_x,
                         receiver.position_y,
@@ -260,6 +262,7 @@ export class Editor {
             this.#selectableGroup.add(
                 new LightSource(
                     lightsource.id,
+                    lightsource.name,
                     lightsource.number_of_rays,
                     lightsource.lightsource_type,
                     lightsource.distribution_type,
