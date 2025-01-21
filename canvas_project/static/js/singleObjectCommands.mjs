@@ -55,15 +55,15 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
 
     /**
      * Initializes a new UpdateHeliostatCommand with the specified 'Heliostat' instance, attribute, and new parameter.
-     * @param {Heliostat} heliostat
-     * @param {String} attribute
-     * @param {*} newParameter
+     * @param {Heliostat} heliostat - the 'Heliostat' instance to be updated.
+     * @param {String} attribute - The name of the attribute to modify.
+     * @param {*} newParameter - the new value to assign to the attribute.
      */
     constructor(heliostat, attribute, newParameter) {
         super(heliostat);
         this.#attribute = attribute;
         this.#newParameter = newParameter;
-        this.#oldParameter = this.#getParameter(heliostat, attribute);
+        this.#oldParameter = this.#getAttributeValue(heliostat, attribute);
     }
 
     /**
@@ -71,10 +71,10 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
      */
     execute() {
         switch (this.#attribute) {
-            case "facets":
+            case "numberOfFacets":
                 this.object.numberOfFacets = this.#newParameter;
                 break;
-            case "kinematic":
+            case "kinematicType":
                 this.object.kinematicType = this.#newParameter;
                 break;
             default:
@@ -90,10 +90,10 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
      */
     undo() {
         switch (this.#attribute) {
-            case "facets":
+            case "numberOfFacets":
                 this.object.numberOfFacets = this.#oldParameter;
                 break;
-            case "kinematic":
+            case "kinematicType":
                 this.object.kinematicType = this.#oldParameter;
                 break;
             default:
@@ -105,16 +105,16 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
     }
 
     /**
-     * gets the current value of the attribute.
-     * @param {Heliostat} heliostat
-     * @param {String} attribute
-     * @returns the current value of the attribute
+     * Gets the current value of the attribute.
+     * @param {Heliostat} heliostat - The heliostat to update.
+     * @param {String} attribute - The name of the attribute to modify.
+     * @returns {*} the current value of the attribute.
      */
-    #getParameter(heliostat, attribute) {
+    #getAttributeValue(heliostat, attribute) {
         switch (attribute) {
-            case "facets":
+            case "numberOfFacets":
                 return heliostat.numberOfFacets;
-            case "kinematic":
+            case "kinematicType":
                 return heliostat.kinematicType;
             default:
                 throw new Error(`Invalid attribute: ${attribute}`);
@@ -141,15 +141,15 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
 
     /**
      * Initializes a new UpdateReceiverCommand with the specified 'Receiver' instance, attribute, and new parameter.
-     * @param {Receiver} receiver
-     * @param {String} attribute
-     * @param {*} newParameter
+     * @param {Receiver} receiver - This is the receiver object whose attribute will be updated.
+     * @param {String} attribute - The name of the attribute to modify.
+     * @param {*} newParameter - The new value to assign to the attribute. This can be of any type depending on the attribute being updated.
      */
     constructor(receiver, attribute, newParameter) {
         super(receiver);
         this.#attribute = attribute;
         this.#newParameter = newParameter;
-        this.#oldParameter = this.#getParameter(receiver, attribute);
+        this.#oldParameter = this.#getAttributeValue(receiver, attribute);
     }
 
     /**
@@ -227,12 +227,12 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
     }
 
     /**
-     * gets the current value of the attribute.
-     * @param {Receiver} receiver
-     * @param {String} attribute
-     * @returns
+     * Gets the current value of the attribute.
+     * @param {Receiver} receiver - The receiver to update.
+     * @param {String} attribute - The name of the attribute to modify.
+     * @returns {*} The current value of the specified attribute.
      */
-    #getParameter(receiver, attribute) {
+    #getAttributeValue(receiver, attribute) {
         switch (attribute) {
             case "towerType":
                 return receiver.towerType;
@@ -256,7 +256,10 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
     }
 }
 
-export class UpdateLightSourceCommand extends SingleObjectCommand {
+/**
+ * This class is responsible for updating a specific attribute of a 'LightSource' object.
+ */
+export class UpdateLightsourceCommand extends SingleObjectCommand {
     /**
      * The attribute to update.
      */
@@ -272,15 +275,15 @@ export class UpdateLightSourceCommand extends SingleObjectCommand {
 
     /**
      * Initializes a new UpdateLightSourceCommand with the specified 'LightSource' instance, attribute, and new parameter.
-     * @param {LightSource} lightSource
-     * @param {String} attribute
-     * @param {*} newParameter
+     * @param {LightSource} lightSource - This is the lightsource object whose attribute will be updated.
+     * @param {String} attribute - The name of the attribute to modify.
+     * @param {*} newParameter - The new value to assign to the attribute.
      */
     constructor(lightSource, attribute, newParameter) {
         super(lightSource);
         this.#attribute = attribute;
         this.#newParameter = newParameter;
-        this.#oldParameter = this.#getParameter(lightSource, attribute);
+        this.#oldParameter = this.#getAttributeValue(lightSource, attribute);
     }
 
     /**
@@ -291,8 +294,8 @@ export class UpdateLightSourceCommand extends SingleObjectCommand {
             case "numberOfRays":
                 this.object.numberOfRays = this.#newParameter;
                 break;
-            case "type":
-                this.object.type = this.#newParameter;
+            case "lightSourceType":
+                this.object.lightSourceType = this.#newParameter;
                 break;
             case "distributionType":
                 this.object.distributionType = this.#newParameter;
@@ -319,8 +322,8 @@ export class UpdateLightSourceCommand extends SingleObjectCommand {
             case "numberOfRays":
                 this.object.numberOfRays = this.#oldParameter;
                 break;
-            case "type":
-                this.object.type = this.#oldParameter;
+            case "lightSourceType":
+                this.object.lightSourceType = this.#oldParameter;
                 break;
             case "distributionType":
                 this.object.distributionType = this.#oldParameter;
@@ -341,22 +344,22 @@ export class UpdateLightSourceCommand extends SingleObjectCommand {
 
     /**
      * gets the current value of the attribute.
-     * @param {LightSource} lightSource
-     * @param {String} attribute
-     * @returns
+     * @param {LightSource} lightSource - The light source to update.
+     * @param {String} attribute - The name of the attribute to modify.
+     * @returns {*} The current value of the specified attribute.
      */
-    #getParameter(lightSource, attribute) {
+    #getAttributeValue(lightSource, attribute) {
         switch (attribute) {
             case "numberOfRays":
                 return lightSource.numberOfRays;
-            case "type":
-                return lightSource.type;
+            case "lightSourceType":
+                return lightSource.lightSourceType;
             case "distributionType":
-                lightSource.distributionType;
+                return lightSource.distributionType;
             case "distributionMean":
-                lightSource.distributionMean;
+                return lightSource.distributionMean;
             case "distributionCovariance":
-                lightSource.distributionCovariance;
+                return lightSource.distributionCovariance;
             default:
                 throw new Error(`Invalid attribute: ${attribute}`);
         }
