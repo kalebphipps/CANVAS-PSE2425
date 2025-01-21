@@ -119,15 +119,25 @@ export class OverviewHandler {
             (selected ? "bg-primary-subtle" : "bg-body-secondary");
 
         const icon = document.createElement("i");
-        icon.classList = "bi-arrow-up-right-square";
+        icon.classList = "bi-arrow-up-right-square d-flex align-items-center";
         heliostatEntry.appendChild(icon);
 
         const text = document.createElement("div");
+        text.classList = "w-100 d-flex align-items-center";
         text.innerHTML =
             object.heliostatName !== "" && object.heliostatName !== ""
                 ? object.heliostatName
                 : "Heliostat";
         heliostatEntry.appendChild(text);
+
+        const button = document.createElement("button");
+        button.classList = "btn btn-primary custom-btn";
+        const buttonIcon = document.createElement("i");
+        buttonIcon.classList = "bi bi-pencil-square";
+        button.appendChild(buttonIcon);
+        heliostatEntry.appendChild(button);
+
+        this.#addEditFunctionality(button, object);
 
         heliostatEntry.dataset.apiId = object.apiID;
         heliostatEntry.dataset.objectType = ObjectType.HELIOSTAT;
@@ -156,15 +166,25 @@ export class OverviewHandler {
             (selected ? "bg-primary-subtle" : "bg-body-secondary");
 
         const icon = document.createElement("i");
-        icon.classList = "bi bi-align-bottom";
+        icon.classList = "bi bi-align-bottom d-flex align-items-center";
         receiverEntry.appendChild(icon);
 
         const text = document.createElement("div");
+        text.classList = "w-100 d-flex align-items-center";
         text.innerHTML =
             object.receiverName !== "" && object.receiverName
                 ? object.receiverName
                 : "Receiver";
         receiverEntry.appendChild(text);
+
+        const button = document.createElement("button");
+        button.classList = "btn btn-primary custom-btn";
+        const buttonIcon = document.createElement("i");
+        buttonIcon.classList = "bi bi-pencil-square";
+        button.appendChild(buttonIcon);
+        receiverEntry.appendChild(button);
+
+        this.#addEditFunctionality(button, object);
 
         receiverEntry.dataset.apiId = object.apiID;
         receiverEntry.dataset.objectType = ObjectType.RECEIVER;
@@ -193,15 +213,25 @@ export class OverviewHandler {
             (selected ? "bg-primary-subtle" : "bg-body-secondary");
 
         const icon = document.createElement("i");
-        icon.classList = "bi bi-lightbulb";
+        icon.classList = "bi bi-lightbulb d-flex align-items-center";
         lightsourceEntry.appendChild(icon);
 
         const text = document.createElement("div");
+        text.classList = "w-100 d-flex align-items-center";
         text.innerHTML =
             object.lightsourceName !== "" && object.lightsourceName
                 ? object.lightsourceName
                 : "Light source";
         lightsourceEntry.appendChild(text);
+
+        const button = document.createElement("button");
+        button.classList = "btn btn-primary custom-btn";
+        const buttonIcon = document.createElement("i");
+        buttonIcon.classList = "bi bi-pencil-square";
+        button.appendChild(buttonIcon);
+        lightsourceEntry.appendChild(button);
+
+        this.#addEditFunctionality(button, object);
 
         lightsourceEntry.dataset.apiId = object.apiID;
         lightsourceEntry.dataset.objectType = ObjectType.LIGHTSOURCE;
@@ -260,5 +290,62 @@ export class OverviewHandler {
                     this.#picker.setSelection(selectedObjects);
                 }
             });
+    }
+
+    #addEditFunctionality(button, object) {
+        const entry = button.parentElement;
+        button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            const inputField = document.createElement("input");
+            inputField.type = "text";
+            inputField.classList = "form-control rounded-1";
+            switch (object.objectType) {
+                case ObjectType.HELIOSTAT:
+                    inputField.value =
+                        object.heliostatName && object.heliostatName !== ""
+                            ? object.heliostatName
+                            : "Heliostat";
+                    break;
+                case ObjectType.RECEIVER:
+                    inputField.value =
+                        object.receiverName && object.receiverName !== ""
+                            ? object.receiverName
+                            : "Receiver";
+                    break;
+                case ObjectType.LIGHTSOURCE:
+                    inputField.value =
+                        object.lightsourceName && object.lightsourceName !== ""
+                            ? object.lightsourceName
+                            : "Light source";
+            }
+            entry.innerHTML = "";
+            entry.appendChild(inputField);
+            inputField.focus();
+
+            inputField.addEventListener("click", (event) => {
+                event.stopPropagation();
+            });
+
+            inputField.addEventListener("keyup", (event) => {
+                if (event.key == "Enter") {
+                    inputField.blur();
+                }
+            });
+
+            inputField.addEventListener("blur", () => {
+                switch (object.objectType) {
+                    case ObjectType.HELIOSTAT:
+                        object.heliostatName = inputField.value;
+                        break;
+                    case ObjectType.RECEIVER:
+                        object.receiverName = inputField.value;
+                        break;
+                    case ObjectType.LIGHTSOURCE:
+                        object.lightsourceName = inputField.value;
+                }
+                // TODO: Make change through command when command exists
+                this.#render();
+            });
+        });
     }
 }
