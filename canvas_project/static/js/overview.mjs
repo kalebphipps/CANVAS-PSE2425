@@ -383,6 +383,22 @@ export class OverviewHandler {
             }
         });
 
+        inputField.addEventListener("keyup", (event) => {
+            if (event.key == "Escape") {
+                switch (object.objectType) {
+                    case ObjectType.HELIOSTAT:
+                        inputField.value = object.heliostatName;
+                        break;
+                    case ObjectType.RECEIVER:
+                        inputField.value = object.receiverName;
+                        break;
+                    case ObjectType.LIGHTSOURCE:
+                        inputField.value = object.lightsourceName;
+                }
+                inputField.blur();
+            }
+        });
+
         inputField.addEventListener("blur", () => {
             switch (object.objectType) {
                 case ObjectType.HELIOSTAT:
