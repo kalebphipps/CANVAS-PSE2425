@@ -41,6 +41,43 @@ export class OverviewHandler {
             });
 
         this.#handleUserInput();
+
+        // F2 to rename current selected object
+        document.addEventListener("keydown", (event) => {
+            if (
+                event.key == "F2" &&
+                this.#overviewButton.classList.contains("active")
+            ) {
+                if (this.#selectedItems.length !== 1) {
+                    alert(
+                        "To rename an object exactly one item must be selected"
+                    );
+                } else {
+                    const entry = this.#selectedItems[0];
+                    let object;
+                    switch (entry.dataset.objectType) {
+                        case ObjectType.HELIOSTAT:
+                            object = this.#heliostatMap.get(
+                                entry.dataset.apiId
+                            );
+                            break;
+                        case ObjectType.RECEIVER:
+                            object = this.#receiverMap.get(entry.dataset.apiId);
+                            break;
+                        case ObjectType.LIGHTSOURCE:
+                            object = this.#lightsourceMap.get(
+                                entry.dataset.apiId
+                            );
+                            break;
+                        default:
+                            console.warn(
+                                `Unknown object type: ${object.objectType}`
+                            );
+                    }
+                    this.#openEditInput(object, entry);
+                }
+            }
+        });
     }
 
     #render() {
@@ -305,56 +342,60 @@ export class OverviewHandler {
         const entry = button.parentElement;
         button.addEventListener("click", (event) => {
             event.stopPropagation();
-            const inputField = document.createElement("input");
-            inputField.type = "text";
-            inputField.classList = "form-control rounded-1";
+            this.#openEditInput(object, entry);
+        });
+    }
+
+    #openEditInput(object, entry) {
+        const inputField = document.createElement("input");
+        inputField.type = "text";
+        inputField.classList = "form-control rounded-1";
+        switch (object.objectType) {
+            case ObjectType.HELIOSTAT:
+                inputField.value =
+                    object.heliostatName && object.heliostatName !== ""
+                        ? object.heliostatName
+                        : "Heliostat";
+                break;
+            case ObjectType.RECEIVER:
+                inputField.value =
+                    object.receiverName && object.receiverName !== ""
+                        ? object.receiverName
+                        : "Receiver";
+                break;
+            case ObjectType.LIGHTSOURCE:
+                inputField.value =
+                    object.lightsourceName && object.lightsourceName !== ""
+                        ? object.lightsourceName
+                        : "Light source";
+        }
+        entry.innerHTML = "";
+        entry.appendChild(inputField);
+        inputField.focus();
+
+        inputField.addEventListener("click", (event) => {
+            event.stopPropagation();
+        });
+
+        inputField.addEventListener("keyup", (event) => {
+            if (event.key == "Enter") {
+                inputField.blur();
+            }
+        });
+
+        inputField.addEventListener("blur", () => {
             switch (object.objectType) {
                 case ObjectType.HELIOSTAT:
-                    inputField.value =
-                        object.heliostatName && object.heliostatName !== ""
-                            ? object.heliostatName
-                            : "Heliostat";
+                    object.heliostatName = inputField.value;
                     break;
                 case ObjectType.RECEIVER:
-                    inputField.value =
-                        object.receiverName && object.receiverName !== ""
-                            ? object.receiverName
-                            : "Receiver";
+                    object.receiverName = inputField.value;
                     break;
                 case ObjectType.LIGHTSOURCE:
-                    inputField.value =
-                        object.lightsourceName && object.lightsourceName !== ""
-                            ? object.lightsourceName
-                            : "Light source";
+                    object.lightsourceName = inputField.value;
             }
-            entry.innerHTML = "";
-            entry.appendChild(inputField);
-            inputField.focus();
-
-            inputField.addEventListener("click", (event) => {
-                event.stopPropagation();
-            });
-
-            inputField.addEventListener("keyup", (event) => {
-                if (event.key == "Enter") {
-                    inputField.blur();
-                }
-            });
-
-            inputField.addEventListener("blur", () => {
-                switch (object.objectType) {
-                    case ObjectType.HELIOSTAT:
-                        object.heliostatName = inputField.value;
-                        break;
-                    case ObjectType.RECEIVER:
-                        object.receiverName = inputField.value;
-                        break;
-                    case ObjectType.LIGHTSOURCE:
-                        object.lightsourceName = inputField.value;
-                }
-                // TODO: Make change through command when command exists
-                this.#render();
-            });
+            // TODO: Make change through command when command exists
+            this.#render();
         });
     }
 }
