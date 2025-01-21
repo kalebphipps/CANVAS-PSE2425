@@ -12,13 +12,18 @@ export class SaveAndLoadHandler {
     #baseAPIUrl;
 
     /**
-     * Creates a saveAndLoadHandler
-     * @param {Number} projectId the projectID for api requests.
+     * Creates a saveAndLoadHandler or returns the existing one
+     * @param {Number} [projectId=null] the projectID for api requests.
      * @returns a new saveAndLoadHandler instance or the existing one.
      */
-    constructor(projectId) {
+    constructor(projectId = null) {
         if (saveAndLoadHandlerInstance) {
             return saveAndLoadHandlerInstance;
+        }
+        if (!projectId) {
+            throw new Error(
+                "To initialize the SaveAndLoadHandler an projectID is needed"
+            );
         }
         saveAndLoadHandlerInstance = this;
 
