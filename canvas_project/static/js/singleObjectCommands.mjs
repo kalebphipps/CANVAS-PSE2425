@@ -81,8 +81,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        const saveAndLoadHandler = new SaveAndLoadHandler();
-        saveAndLoadHandler.updateHeliostat(this.object);
+        new SaveAndLoadHandler().updateHeliostat(this.object);
     }
 
     /**
@@ -100,8 +99,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        const saveAndLoadHandler = new SaveAndLoadHandler();
-        saveAndLoadHandler.updateHeliostat(this.object);
+        new SaveAndLoadHandler().updateHeliostat(this.object);
     }
 
     /**
@@ -185,8 +183,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        const saveAndLoadHandler = new SaveAndLoadHandler();
-        saveAndLoadHandler.updateReceiver(this.object);
+        new SaveAndLoadHandler().updateReceiver(this.object);
     }
 
     /**
@@ -222,8 +219,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        const saveAndLoadHandler = new SaveAndLoadHandler();
-        saveAndLoadHandler.updateReceiver(this.object);
+        new SaveAndLoadHandler().updateReceiver(this.object);
     }
 
     /**
@@ -310,8 +306,7 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        const saveAndLoadHandler = new SaveAndLoadHandler();
-        saveAndLoadHandler.updateLightsource(this.object);
+        new SaveAndLoadHandler().updateLightsource(this.object);
     }
 
     /**
@@ -338,8 +333,7 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        const saveAndLoadHandler = new SaveAndLoadHandler();
-        saveAndLoadHandler.updateLightsource(this.object);
+        new SaveAndLoadHandler().updateLightsource(this.object);
     }
 
     /**
