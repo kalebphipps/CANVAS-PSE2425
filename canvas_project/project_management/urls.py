@@ -11,4 +11,9 @@ urlpatterns = [
         views.defavorProject,
         name="defavorProject",
     ),
+    path(
+        "duplicateProject/<str:project_name>",
+        views.duplicateProject,
+        name="duplicateProject",
+    ),
 ]
