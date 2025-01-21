@@ -251,11 +251,20 @@ export class OverviewHandler {
                 const target = event.target.closest(".overviewElem");
 
                 if (target && target.classList.contains("overviewElem")) {
-                    // TODO: When pressing STRG add to selection or remove if already selected
-                    // TODO: Whene holding SHIFT select everything between the highest and the clicked on element
-                    // When more than one item is selected -> choose the nearest selected, or the last added elem
-
-                    this.#selectedItems = [target];
+                    if (event.ctrlKey && !event.shiftKey) {
+                        if (this.#selectedItems.includes(target)) {
+                            this.#selectedItems.splice(
+                                this.#selectedItems.indexOf(target),
+                                1
+                            );
+                        } else {
+                            this.#selectedItems.push(target);
+                        }
+                    } else if (!event.ctrlKey && event.shiftKey) {
+                        //
+                    } else {
+                        this.#selectedItems = [target];
+                    }
 
                     const selectedObjects = [];
                     this.#selectedItems.forEach((element) => {
