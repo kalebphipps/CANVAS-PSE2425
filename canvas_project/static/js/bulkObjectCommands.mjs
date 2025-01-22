@@ -1,6 +1,5 @@
 import { Command } from "command";
 import { SelectableObject } from "objects";
-import { Object3D } from "three";
 
 /**
  * This class is designed for operations that target multiple 'SelectableObject' instances.
