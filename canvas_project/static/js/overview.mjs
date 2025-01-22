@@ -1,14 +1,13 @@
 import { Editor } from "editor";
 import { Heliostat, LightSource, Receiver, SelectableObject } from "objects";
 import { Picker } from "picker";
-import * as THREE from "three";
 
 export class OverviewHandler {
     #editor;
     #picker;
     #overviewButton;
     /**
-     * @type {THREE.Object3D[]}
+     * @type {SelectableObject[]}
      */
     #selectedObjects = [];
     #heliostatList;
@@ -49,6 +48,21 @@ export class OverviewHandler {
                 }
             });
 
+        // handle F2 to rename
+        document.addEventListener("keyup", (event) => {
+            if (
+                event.key == "F2" &&
+                this.#overviewButton.classList.contains("active")
+            ) {
+                if (this.#selectedObjects.length !== 1) {
+                    alert("Exactly one object must selected to rename it");
+                } else {
+                    const object = this.#selectedObjects[0];
+                    const type = this.#objectToHtml.get(object).dataset.type;
+                    this.#openEditInput(this.#selectedObjects[0], type);
+                }
+            }
+        });
         this.#handleUserInput();
     }
 
@@ -60,8 +74,6 @@ export class OverviewHandler {
 
         const objects = this.#editor.objects;
         const selectedObjects = this.#picker.getSelectedObjects();
-
-        console.log(selectedObjects);
 
         // render the objects
         objects.heliostatList.forEach((heliostat) => {
@@ -152,6 +164,7 @@ export class OverviewHandler {
         this.#addEditFunctionality(button, object, this.#objectType.HELIOSTAT);
 
         heliostatEntry.dataset.apiId = object.apiID.toString();
+        heliostatEntry.dataset.type = this.#objectType.HELIOSTAT;
 
         this.#htmlToObject.set(heliostatEntry, object);
         this.#objectToHtml.set(object, heliostatEntry);
@@ -204,6 +217,7 @@ export class OverviewHandler {
         this.#addEditFunctionality(button, object, this.#objectType.RECEIVER);
 
         receiverEntry.dataset.apiId = object.apiID.toString();
+        receiverEntry.dataset.type = this.#objectType.RECEIVER;
 
         this.#htmlToObject.set(receiverEntry, object);
         this.#objectToHtml.set(object, receiverEntry);
@@ -260,6 +274,7 @@ export class OverviewHandler {
         );
 
         lightsourceEntry.dataset.apiId = object.apiID.toString();
+        lightsourceEntry.dataset.type = this.#objectType.LIGHTSOURCE;
 
         this.#htmlToObject.set(lightsourceEntry, object);
         this.#objectToHtml.set(object, lightsourceEntry);
