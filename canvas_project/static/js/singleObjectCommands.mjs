@@ -2,7 +2,7 @@ import { Object3D } from "three";
 import { Command } from "command";
 import { Heliostat, Receiver, LightSource } from "objects";
 import { SaveAndLoadHandler } from "saveAndLoadHandler";
-import { Editor } from "static/js/editor.mjs";
+import { Editor } from "editor";
 
 /**
  * This class is designed for operations that target a single 'Object3D' instance.
@@ -27,6 +27,14 @@ export class SingleObjectCommand extends Command {
                 "Cannot instantiate abstract class SingleObjectCommand directly"
             );
         }
+    }
+
+    /**
+     * Gets the object on which the command operates.
+     * @returns {Object3D} The object on which the command operates.
+     */
+    get object() {
+        return this.#object;
     }
 }
 
