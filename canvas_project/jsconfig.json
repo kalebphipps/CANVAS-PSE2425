@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "checkJs": true,
-        "target": "es6",
+        "target": "ES2016",
         "baseUrl": ".",
         "paths": {
             "three": ["static/js/three.module.js"],

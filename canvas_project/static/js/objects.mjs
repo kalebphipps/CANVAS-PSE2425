@@ -2,22 +2,35 @@ import * as THREE from "three";
 import { Object3D } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-export const ObjectType = Object.freeze({
-    HELIOSTAT: "heliostat",
-    RECEIVER: "receiver",
-    LIGHTSOURCE: "lightsource",
-});
+export class SelectableObject extends Object3D {
+    #objectName;
+
+    /**
+     * Creates a new selectable object
+     * @param {String} name the name of the object
+     */
+    constructor(name) {
+        super();
+        this.#objectName = name;
+    }
+
+    get objectName() {
+        return this.#objectName;
+    }
+
+    set objectName(name) {
+        this.#objectName = name;
+    }
+}
 
 /**
  *  Class that represents the Heliostat object
  */
-export class Heliostat extends Object3D {
+export class Heliostat extends SelectableObject {
     #apiID;
     #aimPoint;
     #numberOfFacets;
     #kinematicType;
-    #objectType;
-    #heliostatName;
 
     /**
      * Creates a Heliostat object
@@ -30,14 +43,14 @@ export class Heliostat extends Object3D {
      */
 
     constructor(
-        apiId = null,
         heliostatName,
         position,
         aimPoint,
         numberOfFacets,
-        kinematicType
+        kinematicType,
+        apiID = null
     ) {
-        super();
+        super(heliostatName);
         this.loader = new GLTFLoader();
         this.mesh;
         this.loader.load("/static/models/heliostat.glb", (gltf) => {
@@ -50,12 +63,10 @@ export class Heliostat extends Object3D {
             this.add(this.mesh);
         });
         this.position.copy(position);
-        this.#apiID = apiId;
-        this.#heliostatName = heliostatName;
+        this.#apiID = apiID;
         this.#aimPoint = aimPoint;
         this.#numberOfFacets = numberOfFacets;
         this.#kinematicType = kinematicType;
-        this.#objectType = ObjectType.HELIOSTAT;
     }
     /**
      * Updates the aimPoint of the Heliostat and updates rotation of the Heliostat accordingly
@@ -78,14 +89,6 @@ export class Heliostat extends Object3D {
         this.#apiID = value;
     }
 
-    get heliostatName() {
-        return this.#heliostatName;
-    }
-
-    set heliostatName(name) {
-        this.#heliostatName = name;
-    }
-
     get numberOfFacets() {
         return this.#numberOfFacets;
     }
@@ -101,18 +104,13 @@ export class Heliostat extends Object3D {
     set kinematicType(kinematicType) {
         this.#kinematicType = kinematicType;
     }
-
-    get objectType() {
-        return this.#objectType;
-    }
 }
 
 /**
  * Class that represents the receiver object
  */
-export class Receiver extends Object3D {
+export class Receiver extends SelectableObject {
     #apiID;
-    #receiverName;
     #towerType;
     #normalVector;
     #planeE;
@@ -122,7 +120,6 @@ export class Receiver extends Object3D {
     #curvatureE;
     #curvatureU;
     #rotationY;
-    #objectType;
 
     /**
      * Creates a Receiver object
@@ -140,7 +137,6 @@ export class Receiver extends Object3D {
      * @param {Number} curvatureU the curvature U of the receiver
      */
     constructor(
-        apiID = null,
         receiverName,
         position,
         rotationY,
@@ -151,9 +147,10 @@ export class Receiver extends Object3D {
         resolutionE,
         resolutionU,
         curvatureE,
-        curvatureU
+        curvatureU,
+        apiID = null
     ) {
-        super();
+        super(receiverName);
         // place the 3D object
         this.base = new ReceiverBase();
         this.base.position.copy(new THREE.Vector3(position.x, 0, position.z));
@@ -165,7 +162,6 @@ export class Receiver extends Object3D {
 
         this.rotateY(rotationY);
         this.#apiID = apiID;
-        this.#receiverName = receiverName;
         this.#towerType = towerType;
         this.#normalVector = normalVector;
         this.#planeE = planeE;
@@ -175,7 +171,6 @@ export class Receiver extends Object3D {
         this.#curvatureE = curvatureE;
         this.#curvatureU = curvatureU;
         this.#rotationY = rotationY;
-        this.#objectType = ObjectType.RECEIVER;
     }
 
     /**
@@ -194,14 +189,6 @@ export class Receiver extends Object3D {
 
     set apiID(value) {
         this.#apiID = value;
-    }
-
-    get receiverName() {
-        return this.#receiverName;
-    }
-
-    set receiverName(name) {
-        this.#receiverName = name;
     }
 
     get towerType() {
@@ -275,10 +262,6 @@ export class Receiver extends Object3D {
     set rotationY(rotation) {
         this.#rotationY = rotation;
     }
-
-    get objectType() {
-        return this.#objectType;
-    }
 }
 
 /**
@@ -322,15 +305,13 @@ export class ReceiverTop extends Object3D {
 /**
  * Class that represents the light source object
  */
-export class LightSource extends Object3D {
+export class LightSource extends SelectableObject {
     #apiID;
-    #lightsourceName;
     #numberOfRays;
     #lightSourceType;
     #distributionType;
     #distributionMean;
     #distributionCovariance;
-    #objectType;
 
     /**
      * @param {Number} [apiID=null] the id for api usage
@@ -342,23 +323,21 @@ export class LightSource extends Object3D {
      * @param {Number} distributionCovariance the covariance of the distribution
      */
     constructor(
-        apiID = null,
         lightsourceName,
         numberOfRays,
         lightSourceType,
         distributionType,
         distributionMean,
-        distributionCovariance
+        distributionCovariance,
+        apiID = null
     ) {
-        super();
+        super(lightsourceName);
         this.#apiID = apiID;
-        this.#lightsourceName = lightsourceName;
         this.#numberOfRays = numberOfRays;
         this.#lightSourceType = lightSourceType;
         this.#distributionType = distributionType;
         this.#distributionMean = distributionMean;
         this.#distributionCovariance = distributionCovariance;
-        this.#objectType = ObjectType.LIGHTSOURCE;
     }
 
     get apiID() {
@@ -367,14 +346,6 @@ export class LightSource extends Object3D {
 
     set apiID(id) {
         this.#apiID = id;
-    }
-
-    get lightsourceName() {
-        return this.#lightsourceName;
-    }
-
-    set lightsourceName(name) {
-        this.#lightsourceName = name;
     }
 
     get numberOfRays() {
@@ -416,16 +387,16 @@ export class LightSource extends Object3D {
     set distributionCovariance(number) {
         this.#distributionCovariance = number;
     }
-
-    get objectType() {
-        return this.#objectType;
-    }
 }
 
 /**
  * Creates the terrain for the scene
  */
 export class Terrain extends Object3D {
+    /**
+     * Creates a new terrain.
+     * @param {Number} size the size of the terrain.
+     */
     constructor(size) {
         super();
 
