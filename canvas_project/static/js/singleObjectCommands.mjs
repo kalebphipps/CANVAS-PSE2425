@@ -2,7 +2,7 @@ import { Object3D } from "three";
 import { Command } from "command";
 import { Heliostat, Receiver, LightSource } from "objects";
 import { SaveAndLoadHandler } from "saveAndLoadHandler";
-import { Editor } from "editor";
+import { Editor } from "static/js/editor.mjs";
 
 /**
  * This class is designed for operations that target a single 'Object3D' instance.
@@ -28,19 +28,17 @@ export class SingleObjectCommand extends Command {
             );
         }
     }
-
-    /**
-     * Gets the object on which the command operates.
-     */
-    get object() {
-        return this.#object;
-    }
 }
 
 /**
  * This class  is responsible for updating a specific attribute of a ’Heliostat’ object.
  */
 export class UpdateHeliostatCommand extends SingleObjectCommand {
+    /**
+     * The heliostat object to update.
+     * @type {Heliostat}
+     */
+    #heliostat;
     /**
      * The attribute to update.
      */
@@ -66,9 +64,10 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
      */
     constructor(heliostat, attribute, newParameter) {
         super(heliostat);
+        this.#heliostat = heliostat;
         this.#attribute = attribute;
         this.#newParameter = newParameter;
-        this.#oldParameter = this.#getAttributeValue(heliostat, attribute);
+        this.#oldParameter = this.#getAttributeValue();
         this.#saveAndLoadHandler = new SaveAndLoadHandler();
     }
 
@@ -78,16 +77,16 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
     execute() {
         switch (this.#attribute) {
             case "numberOfFacets":
-                this.object.numberOfFacets = this.#newParameter;
+                this.#heliostat.numberOfFacets = this.#newParameter;
                 break;
             case "kinematicType":
-                this.object.kinematicType = this.#newParameter;
+                this.#heliostat.kinematicType = this.#newParameter;
                 break;
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        this.#saveAndLoadHandler.updateHeliostat(this.object);
+        this.#saveAndLoadHandler.updateHeliostat(this.#heliostat);
     }
 
     /**
@@ -96,32 +95,30 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
     undo() {
         switch (this.#attribute) {
             case "numberOfFacets":
-                this.object.numberOfFacets = this.#oldParameter;
+                this.#heliostat.numberOfFacets = this.#oldParameter;
                 break;
             case "kinematicType":
-                this.object.kinematicType = this.#oldParameter;
+                this.#heliostat.kinematicType = this.#oldParameter;
                 break;
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        this.#saveAndLoadHandler.updateHeliostat(this.object);
+        this.#saveAndLoadHandler.updateHeliostat(this.#heliostat);
     }
 
     /**
      * Gets the current value of the attribute.
-     * @param {Heliostat} heliostat - The heliostat to update.
-     * @param {String} attribute - The name of the attribute to modify.
      * @returns {*} the current value of the attribute.
      */
-    #getAttributeValue(heliostat, attribute) {
-        switch (attribute) {
+    #getAttributeValue() {
+        switch (this.#attribute) {
             case "numberOfFacets":
-                return heliostat.numberOfFacets;
+                return this.#heliostat.numberOfFacets;
             case "kinematicType":
-                return heliostat.kinematicType;
+                return this.#heliostat.kinematicType;
             default:
-                throw new Error(`Invalid attribute: ${attribute}`);
+                throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
     }
 }
@@ -130,6 +127,11 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
  * This class is responsible for updating a specific attribute of a 'Receiver' object.
  */
 export class UpdateReceiverCommand extends SingleObjectCommand {
+    /**
+     * The receiver object to update.
+     * @type {Receiver}
+     */
+    #receiver;
     /**
      * The attribute to update.
      */
@@ -155,9 +157,10 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
      */
     constructor(receiver, attribute, newParameter) {
         super(receiver);
+        this.#receiver = receiver;
         this.#attribute = attribute;
         this.#newParameter = newParameter;
-        this.#oldParameter = this.#getAttributeValue(receiver, attribute);
+        this.#oldParameter = this.#getAttributeValue();
         this.#saveAndLoadHandler = new SaveAndLoadHandler();
     }
 
@@ -167,34 +170,34 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
     execute() {
         switch (this.#attribute) {
             case "towerType":
-                this.object.towerType = this.#newParameter;
+                this.#receiver.towerType = this.#newParameter;
                 break;
             case "normalVector":
-                this.object.normalVector = this.#newParameter;
+                this.#receiver.normalVector = this.#newParameter;
                 break;
             case "planeE":
-                this.object.planeE = this.#newParameter;
+                this.#receiver.planeE = this.#newParameter;
                 break;
             case "planeU":
-                this.object.planeU = this.#newParameter;
+                this.#receiver.planeU = this.#newParameter;
                 break;
             case "curvatureE":
-                this.object.curvatureE = this.#newParameter;
+                this.#receiver.curvatureE = this.#newParameter;
                 break;
             case "curvatureU":
-                this.object.curvatureU = this.#newParameter;
+                this.#receiver.curvatureU = this.#newParameter;
                 break;
             case "resolutionE":
-                this.object.resolutionE = this.#newParameter;
+                this.#receiver.resolutionE = this.#newParameter;
                 break;
             case "resolutionU":
-                this.object.resolutionU = this.#newParameter;
+                this.#receiver.resolutionU = this.#newParameter;
                 break;
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        this.#saveAndLoadHandler.updateReceiver(this.object);
+        this.#saveAndLoadHandler.updateReceiver(this.#receiver);
     }
 
     /**
@@ -203,62 +206,60 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
     undo() {
         switch (this.#attribute) {
             case "towerType":
-                this.object.towerType = this.#oldParameter;
+                this.#receiver.towerType = this.#oldParameter;
                 break;
             case "normalVector":
-                this.object.normalVector = this.#oldParameter;
+                this.#receiver.normalVector = this.#oldParameter;
                 break;
             case "planeE":
-                this.object.planeE = this.#oldParameter;
+                this.#receiver.planeE = this.#oldParameter;
                 break;
             case "planeU":
-                this.object.planeU = this.#oldParameter;
+                this.#receiver.planeU = this.#oldParameter;
                 break;
             case "curvatureE":
-                this.object.curvatureE = this.#oldParameter;
+                this.#receiver.curvatureE = this.#oldParameter;
                 break;
             case "curvatureU":
-                this.object.curvatureU = this.#oldParameter;
+                this.#receiver.curvatureU = this.#oldParameter;
                 break;
             case "resolutionE":
-                this.object.resolutionE = this.#oldParameter;
+                this.#receiver.resolutionE = this.#oldParameter;
                 break;
             case "resolutionU":
-                this.object.resolutionU = this.#oldParameter;
+                this.#receiver.resolutionU = this.#oldParameter;
                 break;
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        this.#saveAndLoadHandler.updateReceiver(this.object);
+        this.#saveAndLoadHandler.updateReceiver(this.#receiver);
     }
 
     /**
      * Gets the current value of the attribute.
-     * @param {Receiver} receiver - The receiver to update.
-     * @param {String} attribute - The name of the attribute to modify.
      * @returns {*} The current value of the specified attribute.
      */
-    #getAttributeValue(receiver, attribute) {
-        switch (attribute) {
+    #getAttributeValue() {
+        switch (this.#attribute) {
             case "towerType":
-                return receiver.towerType;
+                return this.#receiver.towerType;
             case "normalVector":
-                return receiver.normalVector;
+                return this.#receiver.normalVector;
             case "planeE":
-                return receiver.planeE;
+                return this.#receiver.planeE;
             case "planeU":
-                return receiver.planeU;
+                return this.#receiver.planeU;
             case "curvatureE":
-                return receiver.curvatureE;
+                return this.#receiver.curvatureE;
             case "curvatureU":
-                return receiver.curvatureU;
+                return this.#receiver.curvatureU;
             case "resolutionE":
-                return receiver.resolutionE;
+                return this.#receiver.resolutionE;
             case "resolutionU":
-                return receiver.resolutionU;
+                return this.#receiver.resolutionU;
             default:
-                throw new Error(`Invalid attribute: ${attribute}`);
+                throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
     }
 }
@@ -267,6 +268,10 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
  * This class is responsible for updating a specific attribute of a 'LightSource' object.
  */
 export class UpdateLightsourceCommand extends SingleObjectCommand {
+    /**
+     * The lightsource object to update.
+     */
+    #lightsource;
     /**
      * The attribute to update.
      */
@@ -292,9 +297,10 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
      */
     constructor(lightSource, attribute, newParameter) {
         super(lightSource);
+        this.#lightsource = lightSource;
         this.#attribute = attribute;
         this.#newParameter = newParameter;
-        this.#oldParameter = this.#getAttributeValue(lightSource, attribute);
+        this.#oldParameter = this.#getAttributeValue();
         this.#saveAndLoadHandler = new SaveAndLoadHandler();
     }
 
@@ -304,25 +310,25 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
     execute() {
         switch (this.#attribute) {
             case "numberOfRays":
-                this.object.numberOfRays = this.#newParameter;
+                this.#lightsource.numberOfRays = this.#newParameter;
                 break;
             case "lightSourceType":
-                this.object.lightSourceType = this.#newParameter;
+                this.#lightsource.lightSourceType = this.#newParameter;
                 break;
             case "distributionType":
-                this.object.distributionType = this.#newParameter;
+                this.#lightsource.distributionType = this.#newParameter;
                 break;
             case "distributionMean":
-                this.object.distributionMean = this.#newParameter;
+                this.#lightsource.distributionMean = this.#newParameter;
                 break;
             case "distributionCovariance":
-                this.object.distributionCovariance = this.#newParameter;
+                this.#lightsource.distributionCovariance = this.#newParameter;
                 break;
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        this.#saveAndLoadHandler.updateLightsource(this.object);
+        this.#saveAndLoadHandler.updateLightsource(this.#lightsource);
     }
 
     /**
@@ -331,47 +337,45 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
     undo() {
         switch (this.#attribute) {
             case "numberOfRays":
-                this.object.numberOfRays = this.#oldParameter;
+                this.#lightsource.numberOfRays = this.#oldParameter;
                 break;
             case "lightSourceType":
-                this.object.lightSourceType = this.#oldParameter;
+                this.#lightsource.lightSourceType = this.#oldParameter;
                 break;
             case "distributionType":
-                this.object.distributionType = this.#oldParameter;
+                this.#lightsource.distributionType = this.#oldParameter;
                 break;
             case "distributionMean":
-                this.object.distributionMean = this.#oldParameter;
+                this.#lightsource.distributionMean = this.#oldParameter;
                 break;
             case "distributionCovariance":
-                this.object.distributionCovariance = this.#oldParameter;
+                this.#lightsource.distributionCovariance = this.#oldParameter;
                 break;
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
 
-        this.#saveAndLoadHandler.updateLightsource(this.object);
+        this.#saveAndLoadHandler.updateLightsource(this.#lightsource);
     }
 
     /**
      * gets the current value of the attribute.
-     * @param {LightSource} lightSource - The light source to update.
-     * @param {String} attribute - The name of the attribute to modify.
      * @returns {*} The current value of the specified attribute.
      */
-    #getAttributeValue(lightSource, attribute) {
-        switch (attribute) {
+    #getAttributeValue() {
+        switch (this.#attribute) {
             case "numberOfRays":
-                return lightSource.numberOfRays;
+                return this.#lightsource.numberOfRays;
             case "lightSourceType":
-                return lightSource.lightSourceType;
+                return this.#lightsource.lightSourceType;
             case "distributionType":
-                return lightSource.distributionType;
+                return this.#lightsource.distributionType;
             case "distributionMean":
-                return lightSource.distributionMean;
+                return this.#lightsource.distributionMean;
             case "distributionCovariance":
-                return lightSource.distributionCovariance;
+                return this.#lightsource.distributionCovariance;
             default:
-                throw new Error(`Invalid attribute: ${attribute}`);
+                throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
     }
 }
@@ -396,14 +400,14 @@ export class CreateObjectCommand extends SingleObjectCommand {
     }
 
     /**
-     * Executes the command.
+     * The object is added to the scene.
      */
     execute() {
         this.#editor.addObject(this.object);
     }
 
     /**
-     * Undoes the command.
+     * The object is removed from the scene.
      */
     undo() {
         this.#editor.deleteObject(this.object);
