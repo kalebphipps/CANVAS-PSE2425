@@ -24,6 +24,7 @@ export class CreateObjectCommand extends SingleObjectCommand {
 
     /**
      * Gets the editor instance that will be used to add or remove the object to the scene.
+     * @returns {Editor} The editor instance that will be used to add or remove the object to the scene.
      */
     get editor() {
         return this.#editor;
