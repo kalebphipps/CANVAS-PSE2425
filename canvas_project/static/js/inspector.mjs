@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { Object3D } from "three";
 import { Picker } from "picker";
 import { UndoRedoHandler } from "undoRedoHandler";
+import { Heliostat, LightSource, Receiver } from "objects";
 
 /**
  * Inspector class
@@ -29,7 +30,6 @@ export class Inspector {
         inspectorHTML.innerHTML = "Select a object by clicking on it";
 
         inspectorHTML.addEventListener("itemSelected", (event) => {
-            console.log("hilfeeee");
             if (event.detail.object.length > 0) {
                 console.log(
                     "event.detail.object[0].type: " +
@@ -51,12 +51,12 @@ export class Inspector {
 
     createInspectorSelection(selectedObjects) {
         if (selectedObjects.length === 1) {
-            if (selectedObjects[0].type === "heliostat") {
+            if (selectedObjects[0] instanceof Heliostat) {
                 console.log("ziemlich weit hihi");
                 return new HeliostatSelection();
-            } else if (selectedObjects[0].type === "receiver") {
+            } else if (selectedObjects[0] instanceof Receiver) {
                 return new ReceiverSelection();
-            } else if (selectedObjects[0].type === "lightsource") {
+            } else if (selectedObjects[0] instanceof LightSource) {
                 return new LightSourceSelection();
             }
         } else {
@@ -79,18 +79,8 @@ export class HeliostatSelection extends InspectorSelection {
 
     renderSeleciton() {
         const inspectorHTML = document.getElementById("inspector");
-        const template = /** @type {HTMLTemplateElement} */ (
-            document.getElementById("test-test")
-        );
-        if (!template) {
-            console.error("Template not found");
-            return;
-        }
-
-        const clone = template.content.cloneNode(true);
-        let tempHTML = new XMLSerializer().serializeToString(clone);
-
-        inspectorHTML.innerHTML = tempHTML;
+        inspectorHTML.innerHTML = "Heliostat selected";
+        console.log("weit gekommen");
     }
 }
 
