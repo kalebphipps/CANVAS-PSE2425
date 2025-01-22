@@ -66,10 +66,11 @@ def duplicateProject(request, project_name):
         newNameFound = False
         while not newNameFound:
             try:
-                project.name = project_name + "copy"
+                Project.objects.get(name=project_name)
+                project_name = project_name + "copy"
+            except Project.DoesNotExist:
+                project.name = project_name
                 project.save()
                 newNameFound = True
-            except:
-                project_name = project_name + "copy"
 
         return redirect("projects")
