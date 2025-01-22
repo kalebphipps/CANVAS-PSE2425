@@ -17,6 +17,12 @@ export class OverviewHandler {
     #htmlToObject = new Map();
     #objectToHtml = new Map();
 
+    #objectType = Object.freeze({
+        HELIOSTAT: "heliostat",
+        RECEIVER: "receiver",
+        LIGHTSOURCE: "lightsource",
+    });
+
     /**
      * Creates a new overview handler.
      * @param {Picker} picker the picker currently in use.
@@ -143,7 +149,7 @@ export class OverviewHandler {
         button.appendChild(buttonIcon);
         heliostatEntry.appendChild(button);
 
-        this.#addEditFunctionality(button, object);
+        this.#addEditFunctionality(button, object, this.#objectType.HELIOSTAT);
 
         heliostatEntry.dataset.apiId = object.apiID.toString();
 
@@ -195,7 +201,7 @@ export class OverviewHandler {
         button.appendChild(buttonIcon);
         receiverEntry.appendChild(button);
 
-        this.#addEditFunctionality(button, object);
+        this.#addEditFunctionality(button, object, this.#objectType.RECEIVER);
 
         receiverEntry.dataset.apiId = object.apiID.toString();
 
@@ -247,7 +253,11 @@ export class OverviewHandler {
         button.appendChild(buttonIcon);
         lightsourceEntry.appendChild(button);
 
-        this.#addEditFunctionality(button, object);
+        this.#addEditFunctionality(
+            button,
+            object,
+            this.#objectType.LIGHTSOURCE
+        );
 
         lightsourceEntry.dataset.apiId = object.apiID.toString();
 
@@ -286,19 +296,21 @@ export class OverviewHandler {
      * Adds edit functionality to a given button.
      * @param {HTMLButtonElement} button the button to open the edit field.
      * @param {SelectableObject} object the object you want to edit.
+     * @param {"heliostat" | "receiver" | "lightsource"} type the type of object you want to edit the of.
      */
-    #addEditFunctionality(button, object) {
+    #addEditFunctionality(button, object, type) {
         button.addEventListener("click", (event) => {
             event.stopPropagation();
-            this.#openEditInput(object);
+            this.#openEditInput(object, type);
         });
     }
 
     /**
      * Opens a new edit field for the given input
      * @param {SelectableObject} object the object you want rename.
+     * @param {"heliostat" | "receiver" | "lightsource"} type the type of object you want to edit the of.
      */
-    #openEditInput(object) {
+    #openEditInput(object, type) {
         const entry = this.#objectToHtml.get(object);
         const inputField = document.createElement("input");
         inputField.type = "text";
@@ -326,7 +338,17 @@ export class OverviewHandler {
         });
 
         inputField.addEventListener("blur", () => {
-            object.objectName = inputField.value;
+            switch (type) {
+                case this.#objectType.HELIOSTAT:
+                    object.objectName = inputField.value;
+                    break;
+                case this.#objectType.RECEIVER:
+                    object.objectName = inputField.value;
+                    break;
+                case this.#objectType.LIGHTSOURCE:
+                    object.objectName = inputField.value;
+                    break;
+            }
             // TODO: Make change through command when command exists
             this.#render();
         });
