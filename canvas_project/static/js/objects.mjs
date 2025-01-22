@@ -17,10 +17,12 @@ export class Heliostat extends Object3D {
     #numberOfFacets;
     #kinematicType;
     #objectType;
+    #heliostatName;
 
     /**
      * Creates a Heliostat object
      * @param {Number} [apiID=null] The id for api usage
+     * @param {String} heliostatName the name of the heliostat
      * @param {THREE.Vector3} position The position of the heliostat.
      * @param {THREE.Vector3} aimPoint The Point the Heliostat is aiming at.
      * @param {Number} numberOfFacets Number of Facets the Heliostat has.
@@ -29,6 +31,7 @@ export class Heliostat extends Object3D {
 
     constructor(
         apiId = null,
+        heliostatName,
         position,
         aimPoint,
         numberOfFacets,
@@ -48,6 +51,7 @@ export class Heliostat extends Object3D {
         });
         this.position.copy(position);
         this.#apiID = apiId;
+        this.#heliostatName = heliostatName;
         this.#aimPoint = aimPoint;
         this.#numberOfFacets = numberOfFacets;
         this.#kinematicType = kinematicType;
@@ -72,6 +76,14 @@ export class Heliostat extends Object3D {
 
     set apiID(value) {
         this.#apiID = value;
+    }
+
+    get heliostatName() {
+        return this.#heliostatName;
+    }
+
+    set heliostatName(name) {
+        this.#heliostatName = name;
     }
 
     get numberOfFacets() {
@@ -100,6 +112,7 @@ export class Heliostat extends Object3D {
  */
 export class Receiver extends Object3D {
     #apiID;
+    #receiverName;
     #towerType;
     #normalVector;
     #planeE;
@@ -114,6 +127,7 @@ export class Receiver extends Object3D {
     /**
      * Creates a Receiver object
      * @param {Number} [apiID=null] The id for api usage
+     * @param {String} receiverName the name of the receiver
      * @param {THREE.Vector3} position Is the position of the receiver
      * @param {Number} rotationY the rotation Y of the receiver
      * @param {THREE.Vector3} normalVector the normal vector of the receiver
@@ -127,6 +141,7 @@ export class Receiver extends Object3D {
      */
     constructor(
         apiID = null,
+        receiverName,
         position,
         rotationY,
         normalVector,
@@ -150,6 +165,7 @@ export class Receiver extends Object3D {
 
         this.rotateY(rotationY);
         this.#apiID = apiID;
+        this.#receiverName = receiverName;
         this.#towerType = towerType;
         this.#normalVector = normalVector;
         this.#planeE = planeE;
@@ -178,6 +194,14 @@ export class Receiver extends Object3D {
 
     set apiID(value) {
         this.#apiID = value;
+    }
+
+    get receiverName() {
+        return this.#receiverName;
+    }
+
+    set receiverName(name) {
+        this.#receiverName = name;
     }
 
     get towerType() {
@@ -300,6 +324,7 @@ export class ReceiverTop extends Object3D {
  */
 export class LightSource extends Object3D {
     #apiID;
+    #lightsourceName;
     #numberOfRays;
     #lightSourceType;
     #distributionType;
@@ -309,6 +334,7 @@ export class LightSource extends Object3D {
 
     /**
      * @param {Number} [apiID=null] the id for api usage
+     * @param {String} lightsourceName the name of the lightsource
      * @param {Number} numberOfRays the number of rays the light source has
      * @param {String} lightSourceType the type of the light source
      * @param {String} distributionType the type of the distribution
@@ -317,6 +343,7 @@ export class LightSource extends Object3D {
      */
     constructor(
         apiID = null,
+        lightsourceName,
         numberOfRays,
         lightSourceType,
         distributionType,
@@ -325,6 +352,7 @@ export class LightSource extends Object3D {
     ) {
         super();
         this.#apiID = apiID;
+        this.#lightsourceName = lightsourceName;
         this.#numberOfRays = numberOfRays;
         this.#lightSourceType = lightSourceType;
         this.#distributionType = distributionType;
@@ -340,6 +368,15 @@ export class LightSource extends Object3D {
     set apiID(id) {
         this.#apiID = id;
     }
+
+    get lightsourceName() {
+        return this.#lightsourceName;
+    }
+
+    set lightsourceName(name) {
+        this.#lightsourceName = name;
+    }
+
     get numberOfRays() {
         return this.#numberOfRays;
     }
