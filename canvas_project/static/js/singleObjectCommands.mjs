@@ -1,22 +1,21 @@
-import { Object3D } from "three";
 import { Command } from "command";
-import { Heliostat, Receiver, LightSource } from "objects";
+import { Heliostat, Receiver, LightSource, SelectableObject } from "objects";
 import { SaveAndLoadHandler } from "saveAndLoadHandler";
 
 /**
- * This class is designed for operations that target a single 'Object3D' instance.
+ * This class is designed for operations that target a single 'SelectableObject' instance.
  * It serves as a base class for commands that modify individual objects in the scene.
  */
 export class SingleObjectCommand extends Command {
     /**
      * The object on which the command operates.
-     * @type {Object3D}
+     * @type {SelectableObject}
      */
     #object;
 
     /**
-     * Initializes a new SingleObjectCommand with the specified 'Object3D' instance.
-     * @param {Object3D} object - The 'Object3D' instance that this command will target.
+     * Initializes a new SingleObjectCommand with the specified 'SelectableObject' instance.
+     * @param {SelectableObject} object - The 'SelectableObject' instance that this command will target.
      */
     constructor(object) {
         super();

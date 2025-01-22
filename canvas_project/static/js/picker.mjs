@@ -1,3 +1,4 @@
+import { SelectableObject } from "objects";
 import * as THREE from "three";
 
 export const Mode = Object.freeze({
@@ -35,7 +36,6 @@ export class Picker {
         // TODO: Event listener for click
 
         // TODO: Event listener for Rectangular selection
-
     }
 
     /**
@@ -47,15 +47,12 @@ export class Picker {
         if (mode === Mode.NONE) {
             this.#transformControls.detach();
             this.#selectionBox.visible = false;
-        }
-        else if (mode === Mode.SINGLE || mode === Mode.RECTANGLE) {
+        } else if (mode === Mode.SINGLE || mode === Mode.RECTANGLE) {
             this.#transformControls.setMode("translate");
-        }
-        else {
+        } else {
             this.#transformControls.setMode("rotate");
         }
     }
-
 
     /**
      * Returns the list of selected objects
@@ -67,7 +64,7 @@ export class Picker {
 
     /**
      * Sets the list of selected objects
-     * @param {Array<THREE.Object3D>} objectList 
+     * @param {Array<SelectableObject>} objectList
      */
     setSelection(objectList) {
         this.#selectedObjects = objectList;
@@ -78,13 +75,11 @@ export class Picker {
 
     // TODO: sigle pick selection
     pick(normalizedPosition, camera) {
-
         this.#itemSelectedEvent();
     }
 
     // TODO: Rectangular selection
     pickMultiSelection(start, end) {
-
         this.#itemSelectedEvent();
     }
 
@@ -94,7 +89,7 @@ export class Picker {
     #itemSelectedEvent() {
         const event = new CustomEvent("itemSelected", {
             detail: { object: this.#selectedObjects },
-          });
-          document.getElementById("canvas").dispatchEvent(event);
+        });
+        document.getElementById("canvas").dispatchEvent(event);
     }
 }

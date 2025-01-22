@@ -1,20 +1,21 @@
 import { Command } from "command";
+import { SelectableObject } from "objects";
 import { Object3D } from "three";
 
 /**
- * This class is designed for operations that target multiple 'Object3D' instances.
+ * This class is designed for operations that target multiple 'SelectableObject' instances.
  * It serves as a base class for commands that modify multiple objects in the scene.
  */
 export class BulkObjectCommand extends Command {
     /**
      * An array of objects on which the command operates.
-     * @type {Array<Object3D>}
+     * @type {Array<SelectableObject>}
      */
     #objects;
 
     /**
-     * Initializes a new BulkObjectCommand with the specified 'Object3D' instances.
-     * @param {Array<Object3D>} objects - The 'Object3D' instances that this command will target.
+     * Initializes a new BulkObjectCommand with the specified 'SelectableObject' instances.
+     * @param {Array<SelectableObject>} objects - The 'SelectableObject' instances that this command will target.
      */
     constructor(objects) {
         super();
