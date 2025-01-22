@@ -61,6 +61,15 @@ def duplicateProject(request, project_name):
     project = Project.objects.get(owner=request.user, name=project_name)
     if project.owner == request.user:
         project.pk = None
-        project.name = project.name + "copy"
-        project.save()
+
+        # Finding a new name unique to user
+        newNameFound = False
+        while not newNameFound:
+            try:
+                project.name = project_name + "copy"
+                project.save()
+                newNameFound = True
+            except:
+                project_name = project_name + "copy"
+
         return redirect("projects")
