@@ -35,7 +35,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
      * @param {*} newParameter - the new value to assign to the attribute.
      */
     constructor(heliostat, attribute, newParameter) {
-        super(heliostat);
+        super();
         this.#heliostat = heliostat;
         this.#attribute = attribute;
         this.#newParameter = newParameter;
@@ -49,7 +49,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
     execute() {
         switch (this.#attribute) {
             case "heliostatName":
-                this.#heliostat.heliostatName = this.#newParameter;
+                this.#heliostat.objectName = this.#newParameter;
                 break;
             case "numberOfFacets":
                 this.#heliostat.numberOfFacets = this.#newParameter;
@@ -70,7 +70,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
     undo() {
         switch (this.#attribute) {
             case "heliostatName":
-                this.#heliostat.heliostatName = this.#oldParameter;
+                this.#heliostat.objectName = this.#oldParameter;
                 break;
             case "numberOfFacets":
                 this.#heliostat.numberOfFacets = this.#oldParameter;
@@ -92,7 +92,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
     #getAttributeValue() {
         switch (this.#attribute) {
             case "heliostatName":
-                return this.#heliostat.heliostatName;
+                return this.#heliostat.objectName;
             case "numberOfFacets":
                 return this.#heliostat.numberOfFacets;
             case "kinematicType":
@@ -136,7 +136,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
      * @param {*} newParameter - The new value to assign to the attribute. This can be of any type depending on the attribute being updated.
      */
     constructor(receiver, attribute, newParameter) {
-        super(receiver);
+        super();
         this.#receiver = receiver;
         this.#attribute = attribute;
         this.#newParameter = newParameter;
@@ -150,7 +150,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
     execute() {
         switch (this.#attribute) {
             case "receiverName":
-                this.#receiver.receiverName = this.#newParameter;
+                this.#receiver.objectName = this.#newParameter;
                 break;
             case "towerType":
                 this.#receiver.towerType = this.#newParameter;
@@ -189,7 +189,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
     undo() {
         switch (this.#attribute) {
             case "receiverName":
-                this.#receiver.receiverName = this.#oldParameter;
+                this.#receiver.objectName = this.#oldParameter;
                 break;
             case "towerType":
                 this.#receiver.towerType = this.#oldParameter;
@@ -229,7 +229,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
     #getAttributeValue() {
         switch (this.#attribute) {
             case "receiverName":
-                return this.#receiver.receiverName;
+                return this.#receiver.objectName;
             case "towerType":
                 return this.#receiver.towerType;
             case "normalVector":
@@ -284,7 +284,7 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
      * @param {*} newParameter - The new value to assign to the attribute.
      */
     constructor(lightSource, attribute, newParameter) {
-        super(lightSource);
+        super();
         this.#lightsource = lightSource;
         this.#attribute = attribute;
         this.#newParameter = newParameter;
@@ -298,7 +298,7 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
     execute() {
         switch (this.#attribute) {
             case "lightsourceName":
-                this.#lightsource.lightsourceName = this.#newParameter;
+                this.#lightsource.objectName = this.#newParameter;
                 break;
             case "numberOfRays":
                 this.#lightsource.numberOfRays = this.#newParameter;
@@ -328,7 +328,7 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
     undo() {
         switch (this.#attribute) {
             case "lightsourceName":
-                this.#lightsource.lightsourceName = this.#oldParameter;
+                this.#lightsource.objectName = this.#oldParameter;
                 break;
             case "numberOfRays":
                 this.#lightsource.numberOfRays = this.#oldParameter;
@@ -359,7 +359,7 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
     #getAttributeValue() {
         switch (this.#attribute) {
             case "lightsourceName":
-                return this.#lightsource.lightsourceName;
+                return this.#lightsource.objectName;
             case "numberOfRays":
                 return this.#lightsource.numberOfRays;
             case "lightSourceType":
