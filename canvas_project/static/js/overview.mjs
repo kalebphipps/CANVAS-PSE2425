@@ -26,7 +26,7 @@ export class OverviewHandler {
     #objectType = Object.freeze({
         HELIOSTAT: "heliostat",
         RECEIVER: "receiver",
-        LIGHTSOURCE: "lightsource",
+        LIGHTSOURCE: "light source",
     });
 
     /**
@@ -345,7 +345,7 @@ export class OverviewHandler {
      * Adds edit functionality to a given button.
      * @param {HTMLButtonElement} button the button to open the edit field.
      * @param {SelectableObject} object the object you want to edit.
-     * @param {"heliostat" | "receiver" | "lightsource"} type the type of object you want to edit the of.
+     * @param {"heliostat" | "receiver" | "light source"} type the type of object you want to edit the of.
      */
     #addEditFunctionality(button, object, type) {
         button.addEventListener("click", (event) => {
@@ -357,7 +357,7 @@ export class OverviewHandler {
     /**
      * Opens a new edit field for the given input
      * @param {SelectableObject} object the object you want rename.
-     * @param {"heliostat" | "receiver" | "lightsource"} type the type of object you want to edit the of.
+     * @param {"heliostat" | "receiver" | "light source"} type the type of object you want to edit the of.
      */
     #openEditInput(object, type) {
         const entry = this.#objectToHtml.get(object);
