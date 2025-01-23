@@ -30,10 +30,22 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
 
     async execute() {
         await this.#editor.addHeliostat(this.#heliostatCopy);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemCreatedOrDeleted", {
+                detail: { heliostat: this.#heliostat },
+            })
+        );
     }
 
     undo() {
         this.#editor.deleteHeliostat(this.#heliostatCopy);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemCreatedOrDeleted", {
+                detail: { heliostat: this.#heliostat },
+            })
+        );
     }
 }
 
@@ -71,10 +83,22 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
 
     async execute() {
         await this.#editor.addReceiver(this.#receiverCopy);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemCreatedOrDeleted", {
+                detail: { receiver: this.#receiver },
+            })
+        );
     }
 
     undo() {
         this.#editor.deleteReceiver(this.#receiverCopy);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemCreatedOrDeleted", {
+                detail: { receiver: this.#receiver },
+            })
+        );
     }
 }
 
@@ -107,9 +131,21 @@ export class DuplicateLightSourceCommand extends SingleObjectCommand {
 
     async execute() {
         await this.#editor.addLightsource(this.#lightsourceCopy);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemCreatedOrDeleted", {
+                detail: { lightsource: this.#lightsource },
+            })
+        );
     }
 
     undo() {
         this.#editor.deleteLightsource(this.#lightsourceCopy);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemCreatedOrDeleted", {
+                detail: { lightsource: this.#lightsource },
+            })
+        );
     }
 }
