@@ -277,7 +277,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
             case "rotationY":
                 return this.#receiver.rotationY;
             case "position":
-                return this.#receiver.position.clone();
+                return this.#receiver.getPosition().clone();
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
