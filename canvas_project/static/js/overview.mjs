@@ -386,6 +386,7 @@ export class OverviewHandler {
             }
         });
 
+        // TODO: ensure type real typesafety, but will work for now, hopefully
         inputField.addEventListener("blur", () => {
             switch (type) {
                 case this.#objectType.HELIOSTAT:
