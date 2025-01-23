@@ -68,6 +68,16 @@ export class Heliostat extends SelectableObject {
         this.#numberOfFacets = numberOfFacets;
         this.#kinematicType = kinematicType;
     }
+
+    /**
+     * Updates the position of the heliostat
+     * @param {THREE.Vector3} position the new position
+     */
+    updatePosition(position) {
+        this.position.copy(position);
+        this.lookAt(this.#aimPoint.x, 0, this.#aimPoint.z);
+    }
+
     /**
      * Updates the aimPoint of the Heliostat and updates rotation of the Heliostat accordingly
      * @param {THREE.Vector3} aimPoint
