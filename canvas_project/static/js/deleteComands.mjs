@@ -1,6 +1,17 @@
 import { Editor } from "editor";
-import { Heliostat, LightSource, Receiver } from "objects";
+import { Heliostat, LightSource, Receiver, SelectableObject } from "objects";
 import { SingleObjectCommand } from "singleObjectCommands";
+
+export class ItemDeletedEvent extends CustomEvent {
+    /**
+     * Creates a new item deleted event
+     * @param {SelectableObject} item the item that was deleted
+     */
+    constructor(item) {
+        super("itemDeleted");
+        this.detail = { item: item };
+    }
+}
 
 /**
  * Command to handle the deletion of a heliostat.
@@ -21,11 +32,9 @@ export class DeleteHeliostatCommand extends SingleObjectCommand {
     execute() {
         this.#editor.deleteHeliostat(this.#heliostat);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemDeleted", {
-                detail: { item: this.#heliostat },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemDeletedEvent(this.#heliostat));
     }
 
     undo() {
@@ -58,11 +67,9 @@ export class DeleteReceiverCommand extends SingleObjectCommand {
     execute() {
         this.#editor.deleteReceiver(this.#receiver);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemDeleted", {
-                detail: { item: this.#receiver },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemDeletedEvent(this.#receiver));
     }
 
     undo() {
@@ -95,11 +102,9 @@ export class DeleteLightSourceCommand extends SingleObjectCommand {
     execute() {
         this.#editor.deleteLightsource(this.#lightsource);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemDeleted", {
-                detail: { item: this.#lightsource },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemDeletedEvent(this.#lightsource));
     }
 
     undo() {
