@@ -364,7 +364,10 @@ export class OverviewHandler {
         const inputField = document.createElement("input");
         inputField.type = "text";
         inputField.classList.add("form-control", "rounded-1");
-
+        inputField.value =
+            object.objectName != "" && object.objectName
+                ? object.objectName
+                : type.charAt(0).toUpperCase() + type.slice(1, type.length);
         entry.innerHTML = "";
         entry.appendChild(inputField);
         inputField.focus();
@@ -388,34 +391,36 @@ export class OverviewHandler {
 
         // TODO: ensure type real typesafety, but will work for now, hopefully
         inputField.addEventListener("blur", () => {
-            switch (type) {
-                case this.#objectType.HELIOSTAT:
-                    this.#undoRedoHandler.executeCommand(
-                        new UpdateHeliostatCommand(
-                            object,
-                            "objectName",
-                            inputField.value
-                        )
-                    );
-                    break;
-                case this.#objectType.RECEIVER:
-                    this.#undoRedoHandler.executeCommand(
-                        new UpdateReceiverCommand(
-                            object,
-                            "objectName",
-                            inputField.value
-                        )
-                    );
-                    break;
-                case this.#objectType.LIGHTSOURCE:
-                    this.#undoRedoHandler.executeCommand(
-                        new UpdateLightsourceCommand(
-                            object,
-                            "objectName",
-                            inputField.value
-                        )
-                    );
-                    break;
+            if (inputField.value !== object.objectName) {
+                switch (type) {
+                    case this.#objectType.HELIOSTAT:
+                        this.#undoRedoHandler.executeCommand(
+                            new UpdateHeliostatCommand(
+                                object,
+                                "objectName",
+                                inputField.value
+                            )
+                        );
+                        break;
+                    case this.#objectType.RECEIVER:
+                        this.#undoRedoHandler.executeCommand(
+                            new UpdateReceiverCommand(
+                                object,
+                                "objectName",
+                                inputField.value
+                            )
+                        );
+                        break;
+                    case this.#objectType.LIGHTSOURCE:
+                        this.#undoRedoHandler.executeCommand(
+                            new UpdateLightsourceCommand(
+                                object,
+                                "objectName",
+                                inputField.value
+                            )
+                        );
+                        break;
+                }
             }
             this.#render();
         });
