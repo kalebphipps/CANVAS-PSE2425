@@ -57,7 +57,7 @@ export class SaveAndLoadHandler {
             this.#baseAPIUrl + "projects/" + this.#projectID + "/heliostats/";
 
         const body = {
-            name: "",
+            name: heliostat.objectName,
             position_x: heliostat.position.x,
             position_y: heliostat.position.y,
             position_z: heliostat.position.z,
@@ -95,6 +95,7 @@ export class SaveAndLoadHandler {
             this.#baseAPIUrl + "projects/" + this.#projectID + "/receivers/";
 
         const body = {
+            name: receiver.objectName,
             position_x: receiver.top.position.x,
             position_y: receiver.top.position.y,
             position_z: receiver.top.position.z,
@@ -137,6 +138,7 @@ export class SaveAndLoadHandler {
             this.#baseAPIUrl + "projects/" + this.#projectID + "/lightsources/";
 
         const body = {
+            name: lightsource.objectName,
             number_of_rays: lightsource.numberOfRays,
             lightsource_type: lightsource.lightSourceType,
             distribution_type: lightsource.distributionType,
