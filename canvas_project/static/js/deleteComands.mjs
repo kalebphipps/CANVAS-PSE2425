@@ -15,7 +15,7 @@ export class DeleteHeliostatCommand extends SingleObjectCommand {
      * @param {Heliostat} heliostat the heliostat you want to delete
      */
     constructor(heliostat) {
-        super(heliostat);
+        super();
         this.#heliostat = heliostat;
     }
 
@@ -40,7 +40,7 @@ export class DeleteReceiverCommand extends SingleObjectCommand {
      * @param {Receiver} receiver the receiver you want to delete
      */
     constructor(receiver) {
-        super(receiver);
+        super();
         this.#receiver = receiver;
     }
 
@@ -65,7 +65,7 @@ export class DeleteLightSourceCommand extends SingleObjectCommand {
      * @param {LightSource} lightsource the lightsource you want to delete
      */
     constructor(lightsource) {
-        super(lightsource);
+        super();
         this.#lightsource = lightsource;
     }
 
