@@ -371,6 +371,7 @@ export class OverviewHandler {
         entry.innerHTML = "";
         entry.appendChild(inputField);
         inputField.focus();
+        inputField.select();
 
         inputField.addEventListener("click", (event) => {
             event.stopPropagation();
