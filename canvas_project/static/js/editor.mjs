@@ -310,7 +310,9 @@ export class Editor {
     async addHeliostat(heliostat) {
         this.#selectableGroup.add(heliostat);
         this.#heliostatList.push(heliostat);
-        this.#saveAndLoadHandler.createHeliostat(heliostat);
+        heliostat.apiID = (
+            await this.#saveAndLoadHandler.createHeliostat(heliostat)
+        )["id"];
     }
 
     /**
@@ -320,7 +322,9 @@ export class Editor {
     async addReceiver(receiver) {
         this.#selectableGroup.add(receiver);
         this.#receiverList.push(receiver);
-        this.#saveAndLoadHandler.createReceiver(receiver);
+        receiver.apiID = (
+            await this.#saveAndLoadHandler.createReceiver(receiver)
+        )["id"];
     }
 
     /**
@@ -330,7 +334,9 @@ export class Editor {
     async addLightsource(lightsource) {
         this.#selectableGroup.add(lightsource);
         this.#lightsourceList.push(lightsource);
-        this.#saveAndLoadHandler.createLightSource(lightsource);
+        lightsource.apiID = (
+            await this.#saveAndLoadHandler.createLightSource(lightsource)
+        )["id"];
     }
 
     /**
@@ -347,7 +353,7 @@ export class Editor {
      * Deletes the receiver from the scene and from the database
      * @param {Receiver} receiver the receiver you want to delete
      */
-    async deletereceiver(receiver) {
+    async deleteReceiver(receiver) {
         this.#selectableGroup.remove(receiver);
         this.#receiverList.splice(this.#receiverList.indexOf(receiver), 1);
         this.#saveAndLoadHandler.deleteReceiver(receiver);
@@ -357,7 +363,7 @@ export class Editor {
      * Deletes the light source from the scene and from the database
      * @param {LightSource} lightsource the light source you want to delete
      */
-    async deletelightsource(lightsource) {
+    async deleteLightsource(lightsource) {
         this.#selectableGroup.remove(lightsource);
         this.#lightsourceList.splice(
             this.#lightsourceList.indexOf(lightsource),
