@@ -68,6 +68,16 @@ export class Heliostat extends SelectableObject {
         this.#numberOfFacets = numberOfFacets;
         this.#kinematicType = kinematicType;
     }
+
+    /**
+     * Updates the position of the heliostat
+     * @param {THREE.Vector3} position the new position
+     */
+    updatePosition(position) {
+        this.position.copy(position);
+        this.lookAt(this.#aimPoint.x, 0, this.#aimPoint.z);
+    }
+
     /**
      * Updates the aimPoint of the Heliostat and updates rotation of the Heliostat accordingly
      * @param {THREE.Vector3} aimPoint
@@ -119,7 +129,10 @@ export class Receiver extends SelectableObject {
     #resolutionU;
     #curvatureE;
     #curvatureU;
-    #rotationY;
+    #rotationY = 0;
+
+    #top;
+    #base;
 
     /**
      * Creates a Receiver object
@@ -152,13 +165,13 @@ export class Receiver extends SelectableObject {
     ) {
         super(receiverName);
         // place the 3D object
-        this.base = new ReceiverBase();
-        this.base.position.copy(new THREE.Vector3(position.x, 0, position.z));
-        this.add(this.base);
+        this.#base = new ReceiverBase();
+        this.#base.position.copy(new THREE.Vector3(position.x, 0, position.z));
+        this.add(this.#base);
 
-        this.top = new ReceiverTop();
-        this.top.position.copy(position);
-        this.add(this.top);
+        this.#top = new ReceiverTop();
+        this.#top.position.copy(position);
+        this.add(this.#top);
 
         this.rotateY(rotationY);
         this.#apiID = apiID;
@@ -178,9 +191,12 @@ export class Receiver extends SelectableObject {
      * @param {THREE.Vector3} position the new position of the receiver
      */
     updatePosition(position) {
-        this.position.set(position.x, position.y, position.z);
-        this.base.position.set(position.x, 0, position.z);
-        this.top.position.set(position.x, position.y, position.z);
+        this.#base.position.set(position.x, 0, position.z);
+        this.#top.position.set(position.x, position.y, position.z);
+    }
+
+    getPosition() {
+        return this.#top.position;
     }
 
     get apiID() {
@@ -261,6 +277,8 @@ export class Receiver extends SelectableObject {
 
     set rotationY(rotation) {
         this.#rotationY = rotation;
+        this.#base.rotation.y = rotation;
+        this.#top.rotation.y = rotation;
     }
 }
 
