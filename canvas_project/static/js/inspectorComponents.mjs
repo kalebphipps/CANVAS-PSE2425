@@ -1,3 +1,6 @@
+/**
+ * Represents a single component of the inspector
+ */
 export class InspectorComponent {
     constructor() {
         if (new.target == InspectorComponent) {
@@ -8,6 +11,7 @@ export class InspectorComponent {
     }
 
     /**
+     * Renders the component and also adds the necessary logic to updating and saving.
      * @returns {HTMLElement}
      */
     render() {
@@ -17,6 +21,9 @@ export class InspectorComponent {
     }
 }
 
+/**
+ * A single field component consists out of a name and the corresponding input field
+ */
 export class SingleFieldInspectorComponent extends InspectorComponent {
     #fieldName;
     #fieldType;
@@ -24,11 +31,11 @@ export class SingleFieldInspectorComponent extends InspectorComponent {
     #saveFunc;
 
     /**
-     *
+     * Creates a new single field component.
      * @param {String} fieldName the name of the field this components going to change
-     * @param {"text" | "number"} fieldType
-     * @param {Function} getFieldValueFunc
-     * @param {Function} saveFunc
+     * @param {"text" | "number"} fieldType is the type of the input field
+     * @param {Function} getFieldValueFunc is the function to get the field value
+     * @param {Function} saveFunc is the function to update the field value
      */
     constructor(fieldName, fieldType, getFieldValueFunc, saveFunc) {
         super();
@@ -74,14 +81,17 @@ export class SingleFieldInspectorComponent extends InspectorComponent {
     }
 }
 
+/**
+ * A multi field component bundles a set of single field components
+ */
 export class MultiFieldInspectorComponent extends InspectorComponent {
     #componentList;
     #title;
 
     /**
-     *
-     * @param {String} title
-     * @param {InspectorComponent[]} componentList
+     * Creates a new multi field component.
+     * @param {String} title is the title of the field
+     * @param {InspectorComponent[]} componentList ar the single fields bundeled in the multi field
      */
     constructor(title, componentList) {
         super();
@@ -122,6 +132,9 @@ export class MultiFieldInspectorComponent extends InspectorComponent {
     }
 }
 
+/**
+ * A select field component is a dropdown were the user can choose out of a number of predefined values.
+ */
 export class SelectFieldInspectorComponent extends InspectorComponent {
     #fieldName;
     #options;
@@ -129,11 +142,11 @@ export class SelectFieldInspectorComponent extends InspectorComponent {
     #saveFunc;
 
     /**
-     *
+     * Creates a new single field component
      * @param {String} fieldName the name of the field
      * @param {{label: String, value: any}[]} options an array of options the user can choose from
-     * @param {Function} getFieldValueFunc
-     * @param {Function} saveFunc
+     * @param {Function} getFieldValueFunc the function to get the value of the field
+     * @param {Function} saveFunc the function to save the value
      */
     constructor(fieldName, options, getFieldValueFunc, saveFunc) {
         super();
@@ -177,31 +190,31 @@ export class SelectFieldInspectorComponent extends InspectorComponent {
     }
 }
 
+/**
+ * A slider field component consists out of a number input and a slider.
+ */
 export class SliderFieldInspectorComponent extends InspectorComponent {
     #fieldName;
     #step;
     #min;
     #max;
     #getFieldValueFunc;
-    #updateFunc;
     #saveFunc;
 
     /**
-     *
-     * @param {String} fieldName
-     * @param {Number} min
-     * @param {Number} max
-     * @param {Function} getFieldValueFunc
-     * @param {Function} updateFunc
-     * @param {Function} saveFunc
-     * @param {Number} [step=undefined]
+     * Creates a new slider component
+     * @param {String} fieldName the name of the field
+     * @param {Number} min the min value of the field
+     * @param {Number} max the max value of the field
+     * @param {Function} getFieldValueFunc the function to get the value of the field
+     * @param {Function} saveFunc the function to save the value
+     * @param {Number} [step=undefined] the step the slider uses
      */
     constructor(
         fieldName,
         min,
         max,
         getFieldValueFunc,
-        updateFunc,
         saveFunc,
         step = undefined
     ) {
@@ -211,7 +224,6 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
         this.#max = max;
         this.#step = step;
         this.#getFieldValueFunc = getFieldValueFunc;
-        this.#updateFunc = updateFunc;
         this.#saveFunc = saveFunc;
     }
 
