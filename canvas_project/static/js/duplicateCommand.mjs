@@ -33,7 +33,7 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
 
         document.getElementById("canvas").dispatchEvent(
             new CustomEvent("itemCreated", {
-                detail: { heliostat: this.#heliostat },
+                detail: { item: this.#heliostat },
             })
         );
     }
@@ -43,7 +43,7 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
 
         document.getElementById("canvas").dispatchEvent(
             new CustomEvent("itemDeleted", {
-                detail: { heliostat: this.#heliostat },
+                detail: { item: this.#heliostat },
             })
         );
     }
@@ -86,7 +86,7 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
 
         document.getElementById("canvas").dispatchEvent(
             new CustomEvent("itemCreated", {
-                detail: { receiver: this.#receiver },
+                detail: { item: this.#receiver },
             })
         );
     }
@@ -96,7 +96,7 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
 
         document.getElementById("canvas").dispatchEvent(
             new CustomEvent("itemDeleted", {
-                detail: { receiver: this.#receiver },
+                detail: { item: this.#receiver },
             })
         );
     }
@@ -134,7 +134,7 @@ export class DuplicateLightSourceCommand extends SingleObjectCommand {
 
         document.getElementById("canvas").dispatchEvent(
             new CustomEvent("itemCreated", {
-                detail: { lightsource: this.#lightsource },
+                detail: { item: this.#lightsource },
             })
         );
     }
@@ -144,7 +144,7 @@ export class DuplicateLightSourceCommand extends SingleObjectCommand {
 
         document.getElementById("canvas").dispatchEvent(
             new CustomEvent("itemDeleted", {
-                detail: { lightsource: this.#lightsource },
+                detail: { item: this.#lightsource },
             })
         );
     }
