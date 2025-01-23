@@ -22,7 +22,8 @@
             "bulkObjectCommands": ["static/js/bulkObjectCommands.mjs"],
             "overview": ["static/js/overview.mjs"],
             "editor": ["static/js/editor.mjs"],
-            "updateCommands": ["static/js/updateCommands.mjs"]
+            "updateCommands": ["static/js/updateCommands.mjs"],
+            "deleteCommands": ["static/js/deleteCommands.mjs"]
         }
     }
 }
