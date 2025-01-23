@@ -391,7 +391,11 @@ export class OverviewHandler {
 
         // TODO: ensure type real typesafety, but will work for now, hopefully
         inputField.addEventListener("blur", () => {
-            if (inputField.value !== object.objectName) {
+            if (
+                inputField.value !== object.objectName &&
+                // case sensitivity when only changing the upper or lower case writing of the default name is lost
+                inputField.value.toLowerCase() !== type
+            ) {
                 switch (type) {
                     case this.#objectType.HELIOSTAT:
                         this.#undoRedoHandler.executeCommand(
