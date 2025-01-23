@@ -32,7 +32,7 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
         await this.#editor.addHeliostat(this.#heliostatCopy);
 
         document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemCreatedOrDeleted", {
+            new CustomEvent("itemCreated", {
                 detail: { heliostat: this.#heliostat },
             })
         );
@@ -42,7 +42,7 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
         this.#editor.deleteHeliostat(this.#heliostatCopy);
 
         document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemCreatedOrDeleted", {
+            new CustomEvent("itemDeleted", {
                 detail: { heliostat: this.#heliostat },
             })
         );
@@ -85,7 +85,7 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
         await this.#editor.addReceiver(this.#receiverCopy);
 
         document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemCreatedOrDeleted", {
+            new CustomEvent("itemCreated", {
                 detail: { receiver: this.#receiver },
             })
         );
@@ -95,7 +95,7 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
         this.#editor.deleteReceiver(this.#receiverCopy);
 
         document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemCreatedOrDeleted", {
+            new CustomEvent("itemDeleted", {
                 detail: { receiver: this.#receiver },
             })
         );
@@ -133,7 +133,7 @@ export class DuplicateLightSourceCommand extends SingleObjectCommand {
         await this.#editor.addLightsource(this.#lightsourceCopy);
 
         document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemCreatedOrDeleted", {
+            new CustomEvent("itemCreated", {
                 detail: { lightsource: this.#lightsource },
             })
         );
@@ -143,7 +143,7 @@ export class DuplicateLightSourceCommand extends SingleObjectCommand {
         this.#editor.deleteLightsource(this.#lightsourceCopy);
 
         document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemCreatedOrDeleted", {
+            new CustomEvent("itemDeleted", {
                 detail: { lightsource: this.#lightsource },
             })
         );
