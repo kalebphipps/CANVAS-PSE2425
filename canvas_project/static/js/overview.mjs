@@ -55,16 +55,25 @@ export class OverviewHandler {
                 }
             });
 
-        // re-render when object is created or deleted
+        // re-render when object is created
         document
             .getElementById("canvas")
-            .addEventListener("itemCreatedOrDeleted", () => {
+            .addEventListener("itemCreated", () => {
                 if (this.#overviewButton.classList.contains("active")) {
                     this.#render();
                 }
             });
 
-        // re-render when object is created or deleted
+        // re-render when object is deleted
+        document
+            .getElementById("canvas")
+            .addEventListener("itemDeleted", () => {
+                if (this.#overviewButton.classList.contains("active")) {
+                    this.#render();
+                }
+            });
+
+        // re-render when object is updated
         document
             .getElementById("canvas")
             .addEventListener("itemUpdated", () => {
