@@ -20,10 +20,22 @@ export class DeleteHeliostatCommand extends SingleObjectCommand {
 
     execute() {
         this.#editor.deleteHeliostat(this.#heliostat);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemDeleted", {
+                detail: { item: this.#heliostat },
+            })
+        );
     }
 
     undo() {
         this.#editor.addHeliostat(this.#heliostat);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemCreated", {
+                detail: { item: this.#heliostat },
+            })
+        );
     }
 }
 
@@ -45,10 +57,22 @@ export class DeleteReceiverCommand extends SingleObjectCommand {
 
     execute() {
         this.#editor.deleteReceiver(this.#receiver);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemDeleted", {
+                detail: { item: this.#receiver },
+            })
+        );
     }
 
     undo() {
         this.#editor.addReceiver(this.#receiver);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemCreated", {
+                detail: { item: this.#receiver },
+            })
+        );
     }
 }
 
@@ -70,9 +94,21 @@ export class DeleteLightSourceCommand extends SingleObjectCommand {
 
     execute() {
         this.#editor.deleteLightsource(this.#lightsource);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemDeleted", {
+                detail: { item: this.#lightsource },
+            })
+        );
     }
 
     undo() {
         this.#editor.deleteLightsource(this.#lightsource);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemCreated", {
+                detail: { item: this.#lightsource },
+            })
+        );
     }
 }
