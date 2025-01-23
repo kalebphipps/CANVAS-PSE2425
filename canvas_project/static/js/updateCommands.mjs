@@ -68,6 +68,12 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
         }
 
         await this.#saveAndLoadHandler.updateHeliostat(this.#heliostat);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemUpdated", {
+                detail: { heliostat: this.#heliostat },
+            })
+        );
     }
 
     /**
@@ -95,6 +101,12 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
         }
 
         await this.#saveAndLoadHandler.updateHeliostat(this.#heliostat);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemUpdated", {
+                detail: { heliostat: this.#heliostat },
+            })
+        );
     }
 
     /**
@@ -203,6 +215,12 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
         }
 
         this.#saveAndLoadHandler.updateReceiver(this.#receiver);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemUpdated", {
+                detail: { receiver: this.#receiver },
+            })
+        );
     }
 
     /**
@@ -248,6 +266,12 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
         }
 
         this.#saveAndLoadHandler.updateReceiver(this.#receiver);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemUpdated", {
+                detail: { receiver: this.#receiver },
+            })
+        );
     }
 
     /**
@@ -352,6 +376,12 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
         }
 
         this.#saveAndLoadHandler.updateLightsource(this.#lightsource);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemUpdated", {
+                detail: { lightsource: this.#lightsource },
+            })
+        );
     }
 
     /**
@@ -382,6 +412,12 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
         }
 
         this.#saveAndLoadHandler.updateLightsource(this.#lightsource);
+
+        document.getElementById("canvas").dispatchEvent(
+            new CustomEvent("itemUpdated", {
+                detail: { lightsource: this.#lightsource },
+            })
+        );
     }
 
     /**
