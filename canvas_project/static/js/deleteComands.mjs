@@ -1,6 +1,5 @@
 import { Editor } from "editor";
 import { Heliostat, LightSource, Receiver } from "objects";
-import { SaveAndLoadHandler } from "saveAndLoadHandler";
 import { SingleObjectCommand } from "singleObjectCommands";
 
 /**
