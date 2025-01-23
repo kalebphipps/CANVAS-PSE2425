@@ -58,7 +58,7 @@ export class OverviewHandler {
         // re-render when object is created or deleted
         document
             .getElementById("canvas")
-            .addEventListener("createOrDelete", () => {
+            .addEventListener("itemCreatedOrDeleted", () => {
                 if (this.#overviewButton.classList.contains("active")) {
                     this.#render();
                 }
