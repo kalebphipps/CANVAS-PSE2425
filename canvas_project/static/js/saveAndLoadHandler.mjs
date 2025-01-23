@@ -284,7 +284,7 @@ export class SaveAndLoadHandler {
 
         const body = {
             id: heliostat.apiID,
-            name: "",
+            name: heliostat.objectName,
             position_x: heliostat.position.x,
             position_y: heliostat.position.y,
             position_z: heliostat.position.z,
@@ -332,9 +332,10 @@ export class SaveAndLoadHandler {
 
         const body = {
             id: receiver.apiID,
-            position_x: receiver.top.position.x,
-            position_y: receiver.top.position.y,
-            position_z: receiver.top.position.z,
+            name: receiver.objectName,
+            position_x: receiver.getPosition().x,
+            position_y: receiver.getPosition().y,
+            position_z: receiver.getPosition().z,
             normal_x: receiver.normalVector.x,
             normal_y: receiver.normalVector.y,
             normal_z: receiver.normalVector.z,
@@ -384,6 +385,7 @@ export class SaveAndLoadHandler {
 
         const body = {
             id: lightsource.apiID,
+            name: lightsource.name,
             number_of_rays: lightsource.numberOfRays,
             lightsource_type: lightsource.lightSourceType,
             distribution_type: lightsource.distributionType,

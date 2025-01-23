@@ -1,6 +1,12 @@
 import { Editor } from "editor";
 import { Heliostat, LightSource, Receiver, SelectableObject } from "objects";
 import { Picker } from "picker";
+import { UndoRedoHandler } from "undoRedoHandler";
+import {
+    UpdateHeliostatCommand,
+    UpdateLightsourceCommand,
+    UpdateReceiverCommand,
+} from "updateCommands";
 
 export class OverviewHandler {
     #editor;
@@ -15,6 +21,7 @@ export class OverviewHandler {
     #lightsourceList;
     #htmlToObject = new Map();
     #objectToHtml = new Map();
+    #undoRedoHandler = new UndoRedoHandler();
 
     #objectType = Object.freeze({
         HELIOSTAT: "heliostat",
@@ -43,6 +50,24 @@ export class OverviewHandler {
         document
             .getElementById("canvas")
             .addEventListener("itemSelected", () => {
+                if (this.#overviewButton.classList.contains("active")) {
+                    this.#render();
+                }
+            });
+
+        // re-render when object is created or deleted
+        document
+            .getElementById("canvas")
+            .addEventListener("createOrDelete", () => {
+                if (this.#overviewButton.classList.contains("active")) {
+                    this.#render();
+                }
+            });
+
+        // re-render when object is created or deleted
+        document
+            .getElementById("canvas")
+            .addEventListener("itemUpdated", () => {
                 if (this.#overviewButton.classList.contains("active")) {
                     this.#render();
                 }
@@ -355,16 +380,33 @@ export class OverviewHandler {
         inputField.addEventListener("blur", () => {
             switch (type) {
                 case this.#objectType.HELIOSTAT:
-                    object.objectName = inputField.value;
+                    this.#undoRedoHandler.executeCommand(
+                        new UpdateHeliostatCommand(
+                            object,
+                            "objectName",
+                            inputField.value
+                        )
+                    );
                     break;
                 case this.#objectType.RECEIVER:
-                    object.objectName = inputField.value;
+                    this.#undoRedoHandler.executeCommand(
+                        new UpdateReceiverCommand(
+                            object,
+                            "objectName",
+                            inputField.value
+                        )
+                    );
                     break;
                 case this.#objectType.LIGHTSOURCE:
-                    object.objectName = inputField.value;
+                    this.#undoRedoHandler.executeCommand(
+                        new UpdateLightsourceCommand(
+                            object,
+                            "objectName",
+                            inputField.value
+                        )
+                    );
                     break;
             }
-            // TODO: Make change through command when command exists
             this.#render();
         });
     }
