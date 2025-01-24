@@ -296,3 +296,69 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
         return wrapper;
     }
 }
+
+/**
+ * The header inspector component consist out of the title and an edit button
+ */
+export class HeaderInspectorComponent extends InspectorComponent {
+    #getFieldValueFunc;
+    #saveFunc;
+
+    /**
+     * Creates a new header component.
+     * @param {Function} getFieldValueFunc the function to get the title
+     * @param {Function} saveFunc the function to update the titlte
+     */
+    constructor(getFieldValueFunc, saveFunc) {
+        super();
+        this.#getFieldValueFunc = getFieldValueFunc;
+        this.#saveFunc = saveFunc;
+    }
+
+    render() {
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("d-flex");
+
+        const title = document.createElement("div");
+        title.classList.add("fw-bolder", "fs-4");
+        title.innerHTML = this.#getFieldValueFunc();
+        wrapper.appendChild(title);
+
+        const editButton = document.createElement("div");
+        editButton.classList.add("btn");
+        const buttonIcon = document.createElement("i");
+        buttonIcon.classList.add("bi", "bi-pencil-square");
+        editButton.appendChild(buttonIcon);
+
+        wrapper.appendChild(editButton);
+
+        const inputField = document.createElement("input");
+        inputField.type = "text";
+        inputField.classList.add("form-control", "rounded-1");
+
+        editButton.addEventListener("click", () => {
+            title.innerHTML = "";
+            inputField.value = this.#getFieldValueFunc();
+            title.appendChild(inputField);
+            inputField.focus();
+            inputField.select();
+        });
+
+        inputField.addEventListener("change", () => {
+            this.#saveFunc(inputField.value);
+            inputField.blur();
+        });
+
+        inputField.addEventListener("keyup", (event) => {
+            if (event.key == "Escape" || event.key == "Enter") {
+                inputField.blur();
+            }
+        });
+
+        inputField.addEventListener("blur", () => {
+            title.innerHTML = this.#getFieldValueFunc();
+        });
+
+        return wrapper;
+    }
+}
