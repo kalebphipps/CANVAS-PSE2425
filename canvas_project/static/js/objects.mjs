@@ -177,7 +177,11 @@ export class Heliostat extends SelectableObject {
                     new UpdateHeliostatCommand(
                         this,
                         "aimPoint",
-                        new Vector3(newValue, this.position.y, this.position.z)
+                        new Vector3(
+                            newValue,
+                            this.#aimPoint.y,
+                            this.#aimPoint.z
+                        )
                     )
                 );
             }

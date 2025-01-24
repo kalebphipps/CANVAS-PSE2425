@@ -46,22 +46,37 @@ export class Inspector {
                     this.#render();
             }
         );
+
+        this.#render();
     }
 
     #render() {
         this.#objectList = this.#picker.getSelectedObjects();
+        this.#inspectorElem.innerHTML = "";
 
         if (this.#objectList.length == 0) {
-            this.#inspectorElem.innerHTML =
-                "Select an object by clicking on it";
+            const wrapper = document.createElement("div");
+            wrapper.classList.add(
+                "text-secondary",
+                "d-flex",
+                "justify-content-center"
+            );
+            wrapper.innerHTML = "Select an object by clicking on it";
+            this.#inspectorElem.appendChild(wrapper);
         } else if (this.#objectList.length == 1) {
             this.#inspectorElem.innerHTML = "";
             this.#objectList[0].inspectorComponents.forEach((component) => {
                 this.#inspectorElem.appendChild(component.render());
             });
         } else {
-            this.#inspectorElem.innerHTML =
-                "Multi selection is not yet supported :(";
+            const wrapper = document.createElement("div");
+            wrapper.classList.add(
+                "text-secondary",
+                "d-flex",
+                "justify-content-center"
+            );
+            wrapper.innerHTML = "Multi selection is not yet supported :(";
+            this.#inspectorElem.appendChild(wrapper);
         }
     }
 }

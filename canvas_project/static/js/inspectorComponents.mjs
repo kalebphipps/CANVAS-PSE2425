@@ -19,6 +19,12 @@ export class InspectorComponent {
             "This method must be implemented in every subclass of InspectorComponent"
         );
     }
+
+    disableBorder() {
+        throw new Error(
+            "This method must be implemented in every subclass of InspectorComponent"
+        );
+    }
 }
 
 /**
@@ -29,6 +35,7 @@ export class SingleFieldInspectorComponent extends InspectorComponent {
     #fieldType;
     #getFieldValueFunc;
     #saveFunc;
+    #hasBorder;
 
     /**
      * Creates a new single field component.
@@ -43,14 +50,18 @@ export class SingleFieldInspectorComponent extends InspectorComponent {
         this.#fieldType = fieldType;
         this.#getFieldValueFunc = getFieldValueFunc;
         this.#saveFunc = saveFunc;
+        this.#hasBorder = true;
     }
 
     render() {
         const wrapper = document.createElement("div");
-        wrapper.classList.add("d-flex", "p-2", "bg-body", "rounded-3", "gap-2");
+        wrapper.classList.add("d-flex", "p-2", "bg-body", "rounded-2", "gap-2");
+        if (this.#hasBorder) {
+            wrapper.classList.add("border");
+        }
 
         const fieldName = document.createElement("div");
-        fieldName.classList.add("d-flex", "align-items-center");
+        fieldName.classList.add("d-flex", "align-items-center", "text-nowrap");
         fieldName.innerHTML = this.#fieldName + ":";
         wrapper.appendChild(fieldName);
 
@@ -78,6 +89,10 @@ export class SingleFieldInspectorComponent extends InspectorComponent {
         });
 
         return wrapper;
+    }
+
+    disableBorder() {
+        this.#hasBorder = false;
     }
 }
 
@@ -114,7 +129,7 @@ export class MultiFieldInspectorComponent extends InspectorComponent {
         accordionItem.appendChild(header);
 
         const headerButton = document.createElement("button");
-        headerButton.classList.add("accordion-button");
+        headerButton.classList.add("accordion-button", "fw-bold");
         headerButton.type = "button";
         headerButton.dataset.bsTarget =
             "#" + this.#title.replace(" ", "") + "Collapse";
@@ -150,6 +165,7 @@ export class MultiFieldInspectorComponent extends InspectorComponent {
         bodyWrapper.appendChild(body);
 
         this.#componentList.forEach((component) => {
+            component.disableBorder();
             body.appendChild(component.render());
         });
 
@@ -165,6 +181,7 @@ export class SelectFieldInspectorComponent extends InspectorComponent {
     #options;
     #getFieldValueFunc;
     #saveFunc;
+    #hasBorder;
 
     /**
      * Creates a new single field component
@@ -179,14 +196,18 @@ export class SelectFieldInspectorComponent extends InspectorComponent {
         this.#options = options;
         this.#getFieldValueFunc = getFieldValueFunc;
         this.#saveFunc = saveFunc;
+        this.#hasBorder = true;
     }
 
     render() {
         const wrapper = document.createElement("div");
         wrapper.classList.add("d-flex", "p-2", "bg-body", "rounded-3", "gap-2");
+        if (this.#hasBorder) {
+            wrapper.classList.add("border");
+        }
 
         const fieldName = document.createElement("div");
-        fieldName.classList.add("d-flex", "align-items-center");
+        fieldName.classList.add("d-flex", "align-items-center", "text-nowrap");
         fieldName.innerHTML = this.#fieldName + ":";
         wrapper.appendChild(fieldName);
 
@@ -213,6 +234,10 @@ export class SelectFieldInspectorComponent extends InspectorComponent {
 
         return wrapper;
     }
+
+    disableBorder() {
+        this.#hasBorder = false;
+    }
 }
 
 /**
@@ -225,6 +250,7 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
     #max;
     #getFieldValueFunc;
     #saveFunc;
+    #hasBorder;
 
     /**
      * Creates a new slider component
@@ -250,6 +276,7 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
         this.#step = step;
         this.#getFieldValueFunc = getFieldValueFunc;
         this.#saveFunc = saveFunc;
+        this.#hasBorder = true;
     }
 
     render() {
@@ -262,13 +289,16 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
             "rounded-3",
             "gap-2"
         );
+        if (this.#hasBorder) {
+            wrapper.classList.add("border");
+        }
 
         const header = document.createElement("div");
         header.classList.add("d-flex", "gap-2");
         wrapper.appendChild(header);
 
         const fieldName = document.createElement("div");
-        fieldName.classList.add("d-flex", "align-items-center");
+        fieldName.classList.add("d-flex", "align-items-center", "text-nowrap");
         fieldName.innerHTML = this.#fieldName + ":";
         header.appendChild(fieldName);
 
@@ -320,6 +350,10 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
 
         return wrapper;
     }
+
+    disableBorder() {
+        this.#hasBorder = false;
+    }
 }
 
 /**
@@ -342,7 +376,7 @@ export class HeaderInspectorComponent extends InspectorComponent {
 
     render() {
         const wrapper = document.createElement("div");
-        wrapper.classList.add("d-flex");
+        wrapper.classList.add("d-flex", "px-1");
 
         const title = document.createElement("div");
         title.classList.add("fw-bolder", "fs-4");
