@@ -101,18 +101,30 @@ export class MultiFieldInspectorComponent extends InspectorComponent {
 
     render() {
         const wrapper = document.createElement("div");
-        wrapper.classList.add(
-            "d-flex",
-            "flex-column",
-            "p-2",
-            "bg-body",
-            "rounded-3"
-        );
+        wrapper.classList.add("accordion");
+        wrapper.id = this.#title;
 
-        const headline = document.createElement("div");
-        headline.classList.add("fw-bold", "fs-4", "px-2");
-        headline.innerHTML = this.#title;
-        wrapper.appendChild(headline);
+        const accordionItem = document.createElement("div");
+        accordionItem.classList.add("accordion-item");
+        wrapper.append(accordionItem);
+
+        const header = document.createElement("h1");
+        header.classList.add("accordion-header");
+        accordionItem.appendChild(header);
+
+        const headerButton = document.createElement("button");
+        headerButton.classList.add("accordion-button");
+        headerButton.type = "button";
+        headerButton.dataset.bsTarget = "#" + this.#title + "Collapse";
+        headerButton.dataset.bsToggle = "collapse";
+        headerButton.innerHTML = this.#title;
+        header.appendChild(headerButton);
+
+        const bodyWrapper = document.createElement("div");
+        bodyWrapper.id = this.#title + "Collapse";
+        bodyWrapper.classList.add("accordion-collapse", "collapse", "show");
+        bodyWrapper.dataset.bsParent = this.#title;
+        accordionItem.appendChild(bodyWrapper);
 
         const body = document.createElement("div");
         body.classList.add(
@@ -120,9 +132,10 @@ export class MultiFieldInspectorComponent extends InspectorComponent {
             "flex-column",
             "bg-body",
             "rounded-3",
-            "gap-2"
+            "gap-2",
+            "accordion-body"
         );
-        wrapper.appendChild(body);
+        bodyWrapper.appendChild(body);
 
         this.#componentList.forEach((component) => {
             body.appendChild(component.render());
