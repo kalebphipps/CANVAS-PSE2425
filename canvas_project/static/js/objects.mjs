@@ -1,7 +1,16 @@
-import { InspectorComponent } from "inspectorComponents";
+import {
+    HeaderInspectorComponent,
+    InspectorComponent,
+    MultiFieldInspectorComponent,
+    SelectFieldInspectorComponent,
+    SingleFieldInspectorComponent,
+} from "inspectorComponents";
 import * as THREE from "three";
+import { Vector3 } from "three";
 import { Object3D } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { UndoRedoHandler } from "undoRedoHandler";
+import { UpdateHeliostatCommand } from "updateCommands";
 
 export class SelectableObject extends Object3D {
     #objectName;
@@ -51,6 +60,12 @@ export class Heliostat extends SelectableObject {
     #aimPoint;
     #numberOfFacets;
     #kinematicType;
+    #undoRedoHandler;
+    #headerComponent;
+    #positionComponent;
+    #aimPointComponent;
+    #numberOfFacetsComponent;
+    #kinematicTypeComponent;
 
     /**
      * Creates a Heliostat object
@@ -87,6 +102,145 @@ export class Heliostat extends SelectableObject {
         this.#aimPoint = aimPoint;
         this.#numberOfFacets = numberOfFacets;
         this.#kinematicType = kinematicType;
+        this.#undoRedoHandler = new UndoRedoHandler();
+
+        // create components for inspector
+        this.#headerComponent = new HeaderInspectorComponent(
+            () => this.objectName,
+            (name) => this.updateAndSaveObjectName(name)
+        );
+
+        const nCoordinate = new SingleFieldInspectorComponent(
+            "N",
+            "number",
+            () => this.position.x,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(
+                        this,
+                        "position",
+                        new Vector3(newValue, this.position.y, this.position.z)
+                    )
+                );
+            }
+        );
+
+        const uCoordinate = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.position.y,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(
+                        this,
+                        "position",
+                        new Vector3(this.position.x, newValue, this.position.z)
+                    )
+                );
+            }
+        );
+
+        const eCoordinate = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.position.z,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(
+                        this,
+                        "position",
+                        new Vector3(this.position.x, this.position.y, newValue)
+                    )
+                );
+            }
+        );
+
+        this.#positionComponent = new MultiFieldInspectorComponent("Position", [
+            nCoordinate,
+            uCoordinate,
+            eCoordinate,
+        ]);
+
+        const nAimpoint = new SingleFieldInspectorComponent(
+            "N",
+            "number",
+            () => this.#aimPoint.x,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(
+                        this,
+                        "aimPoint",
+                        new Vector3(newValue, this.position.y, this.position.z)
+                    )
+                );
+            }
+        );
+
+        const uAimpoint = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.#aimPoint.y,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(
+                        this,
+                        "aimPoint",
+                        new Vector3(
+                            this.#aimPoint.x,
+                            newValue,
+                            this.#aimPoint.z
+                        )
+                    )
+                );
+            }
+        );
+
+        const eAimpoint = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.#aimPoint.z,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(
+                        this,
+                        "aimPoint",
+                        new Vector3(
+                            this.#aimPoint.x,
+                            this.#aimPoint.y,
+                            newValue
+                        )
+                    )
+                );
+            }
+        );
+
+        this.#aimPointComponent = new MultiFieldInspectorComponent("Aimpoint", [
+            nAimpoint,
+            uAimpoint,
+            eAimpoint,
+        ]);
+
+        this.#numberOfFacetsComponent = new SingleFieldInspectorComponent(
+            "Number of facets",
+            "number",
+            () => this.#numberOfFacets,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(this, "numberOfFacets", newValue)
+                );
+            }
+        );
+
+        this.#kinematicTypeComponent = new SelectFieldInspectorComponent(
+            "Kinematic type",
+            [{ label: "ideal", value: "ideal" }],
+            () => this.#kinematicType,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(this, "kinematicType", newValue)
+                );
+            }
+        );
     }
 
     /**
@@ -96,6 +250,15 @@ export class Heliostat extends SelectableObject {
     updatePosition(position) {
         this.position.copy(position);
         this.lookAt(this.#aimPoint.x, 0, this.#aimPoint.z);
+    }
+
+    /**
+     * @param {String} name the new name for the object
+     */
+    updateAndSaveObjectName(name) {
+        this.#undoRedoHandler.executeCommand(
+            new UpdateHeliostatCommand(this, "objectName", name)
+        );
     }
 
     /**
@@ -133,6 +296,16 @@ export class Heliostat extends SelectableObject {
 
     set kinematicType(kinematicType) {
         this.#kinematicType = kinematicType;
+    }
+
+    get inspectorComponents() {
+        return [
+            this.#headerComponent,
+            this.#positionComponent,
+            this.#aimPointComponent,
+            this.#numberOfFacetsComponent,
+            this.#kinematicTypeComponent,
+        ];
     }
 }
 

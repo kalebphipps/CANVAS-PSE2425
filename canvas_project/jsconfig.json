@@ -25,7 +25,8 @@
             "updateCommands": ["static/js/updateCommands.mjs"],
             "duplicateCommands": ["static/js/duplicateCommands.mjs"],
             "deleteCommands": ["static/js/deleteCommands.mjs"],
-            "inspectorComponents": ["static/js/inspectorComponents.mjs"]
+            "inspectorComponents": ["static/js/inspectorComponents.mjs"],
+            "inspector": ["static/js/inspector.mjs"]
         }
     }
 }

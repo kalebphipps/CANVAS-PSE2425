@@ -13,7 +13,7 @@ import { Picker } from "picker";
 //import { ProjectSettingManager } from "projectSettingManager";
 //import { QuickSelector } from "quickSelector";
 //import { JobInterface } from "jobInterface";
-//import { Inspector } from "inspector";
+import { Inspector } from "inspector";
 
 import { Heliostat, Receiver, LightSource, Terrain } from "objects";
 
@@ -75,7 +75,7 @@ export class Editor {
         //this.#projectSettingManager = new ProjectSettingManager();
         //this.#quickSelector = new QuickSelector();
         //this.#jobInterface = new JobInterface();
-        //this.#inspector = new Inspector(this.#picker);
+        this.#inspector = new Inspector(this.#picker);
 
         window.addEventListener("resize", () => this.onWindowResize());
 
