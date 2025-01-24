@@ -409,13 +409,17 @@ export class Receiver extends SelectableObject {
         const nCoordinate = new SingleFieldInspectorComponent(
             "N",
             "number",
-            () => this.position.x,
+            () => this.getPosition().x,
             (newValue) => {
                 this.#undoRedoHandler.executeCommand(
                     new UpdateReceiverCommand(
                         this,
                         "position",
-                        new Vector3(newValue, this.position.y, this.position.z)
+                        new Vector3(
+                            newValue,
+                            this.#top.position.y,
+                            this.#top.position.z
+                        )
                     )
                 );
             }
@@ -424,13 +428,17 @@ export class Receiver extends SelectableObject {
         const uCoordinate = new SingleFieldInspectorComponent(
             "U",
             "number",
-            () => this.position.y,
+            () => this.getPosition().y,
             (newValue) => {
                 this.#undoRedoHandler.executeCommand(
                     new UpdateReceiverCommand(
                         this,
                         "position",
-                        new Vector3(this.position.x, newValue, this.position.z)
+                        new Vector3(
+                            this.#top.position.x,
+                            newValue,
+                            this.#top.position.z
+                        )
                     )
                 );
             }
@@ -439,13 +447,17 @@ export class Receiver extends SelectableObject {
         const eCoordinate = new SingleFieldInspectorComponent(
             "E",
             "number",
-            () => this.position.z,
+            () => this.getPosition().z,
             (newValue) => {
                 this.#undoRedoHandler.executeCommand(
                     new UpdateReceiverCommand(
                         this,
                         "position",
-                        new Vector3(this.position.x, this.position.y, newValue)
+                        new Vector3(
+                            this.#top.position.x,
+                            this.#top.position.y,
+                            newValue
+                        )
                     )
                 );
             }
