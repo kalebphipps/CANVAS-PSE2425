@@ -162,7 +162,7 @@ export class Editor {
         this.#directionalLight.shadow.camera.bottom = -200;
         this.#directionalLight.shadow.camera.left = 400;
         this.#directionalLight.shadow.camera.right = -400;
-        this.#directionalLight.shadow.camera.far = 1000;
+        this.#directionalLight.shadow.camera.far = 2000;
 
         // Helpers
         this.#compass = new ViewHelper(
