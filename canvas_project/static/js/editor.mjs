@@ -151,7 +151,7 @@ export class Editor {
         this.#scene.add(this.#terrain);
 
         this.#directionalLight = new THREE.DirectionalLight(0xffffff, 5);
-        this.#directionalLight.position.set(200, 100, 200);
+        this.#directionalLight.position.set(90 * 4, 400, 200 * 4);
         this.#directionalLight.castShadow = true;
         this.#scene.add(this.#directionalLight);
 
