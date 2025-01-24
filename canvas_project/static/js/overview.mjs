@@ -380,7 +380,7 @@ export class OverviewHandler {
         inputField.addEventListener("keyup", (event) => {
             if (event.key == "Escape") {
                 inputField.value = object.objectName;
-                this.#render();
+                inputField.blur();
             }
         });
 
