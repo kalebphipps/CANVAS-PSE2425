@@ -4,13 +4,14 @@ import {
     MultiFieldInspectorComponent,
     SelectFieldInspectorComponent,
     SingleFieldInspectorComponent,
+    SliderFieldInspectorComponent,
 } from "inspectorComponents";
 import * as THREE from "three";
 import { Vector3 } from "three";
 import { Object3D } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { UndoRedoHandler } from "undoRedoHandler";
-import { UpdateHeliostatCommand } from "updateCommands";
+import { UpdateHeliostatCommand, UpdateReceiverCommand } from "updateCommands";
 
 export class SelectableObject extends Object3D {
     #objectName;
@@ -60,12 +61,12 @@ export class Heliostat extends SelectableObject {
     #aimPoint;
     #numberOfFacets;
     #kinematicType;
-    #undoRedoHandler;
     #headerComponent;
     #positionComponent;
     #aimPointComponent;
     #numberOfFacetsComponent;
     #kinematicTypeComponent;
+    #undoRedoHandler = new UndoRedoHandler();
 
     /**
      * Creates a Heliostat object
@@ -102,11 +103,13 @@ export class Heliostat extends SelectableObject {
         this.#aimPoint = aimPoint;
         this.#numberOfFacets = numberOfFacets;
         this.#kinematicType = kinematicType;
-        this.#undoRedoHandler = new UndoRedoHandler();
 
         // create components for inspector
         this.#headerComponent = new HeaderInspectorComponent(
-            () => this.objectName,
+            () =>
+                this.objectName !== "" && this.objectName
+                    ? this.objectName
+                    : "Heliostat",
             (name) => this.updateAndSaveObjectName(name)
         );
 
@@ -323,9 +326,19 @@ export class Receiver extends SelectableObject {
     #curvatureE;
     #curvatureU;
     #rotationY = 0;
+    #undoRedoHandler = new UndoRedoHandler();
 
     #top;
     #base;
+
+    #headerComponent;
+    #positionComponent;
+    #rotationUComponent;
+    #normalVectorComponent;
+    #towerTypeComponent;
+    #curvatureComponent;
+    #planeComponent;
+    #resolutionComponent;
 
     /**
      * Creates a Receiver object
@@ -377,6 +390,234 @@ export class Receiver extends SelectableObject {
         this.#curvatureE = curvatureE;
         this.#curvatureU = curvatureU;
         this.#rotationY = rotationY;
+
+        // create components for the inspector
+        this.#headerComponent = new HeaderInspectorComponent(
+            () =>
+                this.objectName !== "" && this.objectName
+                    ? this.objectName
+                    : "Receiver",
+            (name) => this.updateAndSaveObjectName(name)
+        );
+
+        const nCoordinate = new SingleFieldInspectorComponent(
+            "N",
+            "number",
+            () => this.position.x,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(
+                        this,
+                        "position",
+                        new Vector3(newValue, this.position.y, this.position.z)
+                    )
+                );
+            }
+        );
+
+        const uCoordinate = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.position.y,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(
+                        this,
+                        "position",
+                        new Vector3(this.position.x, newValue, this.position.z)
+                    )
+                );
+            }
+        );
+
+        const eCoordinate = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.position.z,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(
+                        this,
+                        "position",
+                        new Vector3(this.position.x, this.position.y, newValue)
+                    )
+                );
+            }
+        );
+
+        this.#positionComponent = new MultiFieldInspectorComponent("Position", [
+            nCoordinate,
+            uCoordinate,
+            eCoordinate,
+        ]);
+
+        this.#rotationUComponent = new SliderFieldInspectorComponent(
+            "Rotation U",
+            0,
+            360,
+            () => THREE.MathUtils.radToDeg(this.#rotationY),
+            (newValue) => {
+                newValue = THREE.MathUtils.degToRad(newValue);
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "rotationY", newValue)
+                );
+            },
+            15
+        );
+
+        const nNormalVector = new SingleFieldInspectorComponent(
+            "N",
+            "number",
+            () => this.#normalVector.x,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(
+                        this,
+                        "normalVector",
+                        new Vector3(
+                            newValue,
+                            this.#normalVector.y,
+                            this.#normalVector.z
+                        )
+                    )
+                );
+            }
+        );
+
+        const uNormalVector = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.#normalVector.y,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(
+                        this,
+                        "normalVector",
+                        new Vector3(
+                            this.#normalVector.x,
+                            newValue,
+                            this.#normalVector.z
+                        )
+                    )
+                );
+            }
+        );
+
+        const eNormalVector = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.#normalVector.z,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(
+                        this,
+                        "normalVector",
+                        new Vector3(
+                            this.#normalVector.x,
+                            this.#normalVector.y,
+                            newValue
+                        )
+                    )
+                );
+            }
+        );
+
+        this.#normalVectorComponent = new MultiFieldInspectorComponent(
+            "Normal Vector",
+            [nNormalVector, uNormalVector, eNormalVector]
+        );
+
+        this.#towerTypeComponent = new SelectFieldInspectorComponent(
+            "Type",
+            [{ label: "planar", value: "planar" }],
+            () => this.#towerType,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "towerType", newValue)
+                );
+            }
+        );
+
+        const eCurvature = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.#curvatureE,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "curvatureE", newValue)
+                );
+            }
+        );
+
+        const uCurvature = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.#curvatureU,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "curvatureU", newValue)
+                );
+            }
+        );
+
+        this.#curvatureComponent = new MultiFieldInspectorComponent(
+            "Curvature",
+            [eCurvature, uCurvature]
+        );
+
+        const ePlane = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.#planeE,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "planeE", newValue)
+                );
+            }
+        );
+
+        const uPlane = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.#planeU,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "planeU", newValue)
+                );
+            }
+        );
+
+        this.#planeComponent = new MultiFieldInspectorComponent("Plane", [
+            ePlane,
+            uPlane,
+        ]);
+
+        const eResolution = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.#resolutionE,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "resolutionE", newValue)
+                );
+            }
+        );
+
+        const uResolution = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.#resolutionU,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "resolutionU", newValue)
+                );
+            }
+        );
+
+        this.#resolutionComponent = new MultiFieldInspectorComponent(
+            "Resolution",
+            [eResolution, uResolution]
+        );
     }
 
     /**
@@ -390,6 +631,15 @@ export class Receiver extends SelectableObject {
 
     getPosition() {
         return this.#top.position;
+    }
+
+    /**
+     * @param {String} name the new name
+     */
+    updateAndSaveObjectName(name) {
+        this.#undoRedoHandler.executeCommand(
+            new UpdateReceiverCommand(this, "objectName", name)
+        );
     }
 
     get apiID() {
@@ -472,6 +722,19 @@ export class Receiver extends SelectableObject {
         this.#rotationY = rotation;
         this.#base.rotation.y = rotation;
         this.#top.rotation.y = rotation;
+    }
+
+    get inspectorComponents() {
+        return [
+            this.#headerComponent,
+            this.#positionComponent,
+            this.#rotationUComponent,
+            this.#normalVectorComponent,
+            this.#towerTypeComponent,
+            this.#curvatureComponent,
+            this.#planeComponent,
+            this.#resolutionComponent,
+        ];
     }
 }
 

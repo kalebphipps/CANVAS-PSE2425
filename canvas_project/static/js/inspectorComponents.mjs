@@ -115,13 +115,14 @@ export class MultiFieldInspectorComponent extends InspectorComponent {
         const headerButton = document.createElement("button");
         headerButton.classList.add("accordion-button");
         headerButton.type = "button";
-        headerButton.dataset.bsTarget = "#" + this.#title + "Collapse";
+        headerButton.dataset.bsTarget =
+            "#" + this.#title.replace(" ", "") + "Collapse";
         headerButton.dataset.bsToggle = "collapse";
         headerButton.innerHTML = this.#title;
         header.appendChild(headerButton);
 
         const bodyWrapper = document.createElement("div");
-        bodyWrapper.id = this.#title + "Collapse";
+        bodyWrapper.id = this.#title.replace(" ", "") + "Collapse";
         bodyWrapper.classList.add("accordion-collapse", "collapse", "show");
         bodyWrapper.dataset.bsParent = this.#title;
         accordionItem.appendChild(bodyWrapper);
