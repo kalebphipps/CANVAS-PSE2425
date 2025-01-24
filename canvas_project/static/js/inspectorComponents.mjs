@@ -87,6 +87,7 @@ export class SingleFieldInspectorComponent extends InspectorComponent {
 export class MultiFieldInspectorComponent extends InspectorComponent {
     #componentList;
     #title;
+    #isOpen = true;
 
     /**
      * Creates a new multi field component.
@@ -121,9 +122,19 @@ export class MultiFieldInspectorComponent extends InspectorComponent {
         headerButton.innerHTML = this.#title;
         header.appendChild(headerButton);
 
+        headerButton.addEventListener("click", () => {
+            this.#isOpen = !this.#isOpen;
+        });
+
         const bodyWrapper = document.createElement("div");
         bodyWrapper.id = this.#title.replace(" ", "") + "Collapse";
-        bodyWrapper.classList.add("accordion-collapse", "collapse", "show");
+        bodyWrapper.classList.add("accordion-collapse");
+        if (this.#isOpen) {
+            bodyWrapper.classList.add("collapse", "show");
+        } else {
+            bodyWrapper.classList.add("collapse");
+            headerButton.classList.add("collapsed");
+        }
         bodyWrapper.dataset.bsParent = this.#title;
         accordionItem.appendChild(bodyWrapper);
 
