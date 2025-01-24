@@ -11,7 +11,11 @@ import { Vector3 } from "three";
 import { Object3D } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { UndoRedoHandler } from "undoRedoHandler";
-import { UpdateHeliostatCommand, UpdateReceiverCommand } from "updateCommands";
+import {
+    UpdateHeliostatCommand,
+    UpdateLightsourceCommand,
+    UpdateReceiverCommand,
+} from "updateCommands";
 
 export class SelectableObject extends Object3D {
     #objectName;
@@ -379,7 +383,9 @@ export class Receiver extends SelectableObject {
         this.#top.position.copy(position);
         this.add(this.#top);
 
-        this.rotateY(rotationY);
+        this.#base.rotation.y = rotationY;
+        this.#top.rotation.y = rotationY;
+
         this.#apiID = apiID;
         this.#towerType = towerType;
         this.#normalVector = normalVector;
@@ -787,6 +793,15 @@ export class LightSource extends SelectableObject {
     #distributionMean;
     #distributionCovariance;
 
+    #header;
+    #numberOfRaysComponent;
+    #lightsourceTypeComponent;
+    #distributionTypeComponent;
+    #distributionMeanComponent;
+    #distributionCovarianceComponent;
+
+    #undoRedoHandler = new UndoRedoHandler();
+
     /**
      * @param {Number} [apiID=null] the id for api usage
      * @param {String} lightsourceName the name of the lightsource
@@ -812,6 +827,95 @@ export class LightSource extends SelectableObject {
         this.#distributionType = distributionType;
         this.#distributionMean = distributionMean;
         this.#distributionCovariance = distributionCovariance;
+
+        this.#header = new HeaderInspectorComponent(
+            () =>
+                this.objectName !== "" && this.objectName
+                    ? this.objectName
+                    : "Light source",
+            (newValue) => this.updateAndSaveObjectName(newValue)
+        );
+
+        this.#numberOfRaysComponent = new SingleFieldInspectorComponent(
+            "Number of rays",
+            "number",
+            () => this.#numberOfRays,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateLightsourceCommand(this, "numberOfRays", newValue)
+                );
+            }
+        );
+
+        this.#lightsourceTypeComponent = new SelectFieldInspectorComponent(
+            "Lightsource Type",
+            [{ label: "sun", value: "sun" }],
+            () => this.#lightSourceType,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateLightsourceCommand(
+                        this,
+                        "lightSourceType",
+                        newValue
+                    )
+                );
+            }
+        );
+
+        this.#distributionTypeComponent = new SelectFieldInspectorComponent(
+            "Distribution Type",
+            [{ label: "normal", value: "normal" }],
+            () => this.#distributionType,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateLightsourceCommand(
+                        this,
+                        "distributionType",
+                        newValue
+                    )
+                );
+            }
+        );
+
+        this.#distributionMeanComponent = new SingleFieldInspectorComponent(
+            "Mean",
+            "number",
+            () => this.#distributionMean,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateLightsourceCommand(
+                        this,
+                        "distributionMean",
+                        newValue
+                    )
+                );
+            }
+        );
+
+        this.#distributionCovarianceComponent =
+            new SingleFieldInspectorComponent(
+                "Covariance",
+                "number",
+                () => this.#distributionCovariance,
+                (newValue) => {
+                    this.#undoRedoHandler.executeCommand(
+                        new UpdateLightsourceCommand(
+                            this,
+                            "distributionCovariance",
+                            newValue
+                        )
+                    );
+                }
+            );
+    }
+
+    /**
+     * @param {String} name the new name
+     */
+    updateAndSaveObjectName(name) {
+        this.#undoRedoHandler.executeCommand(
+            new UpdateLightsourceCommand(this, "objectName", name)
+        );
     }
 
     get apiID() {
@@ -860,6 +964,17 @@ export class LightSource extends SelectableObject {
 
     set distributionCovariance(number) {
         this.#distributionCovariance = number;
+    }
+
+    get inspectorComponents() {
+        return [
+            this.#header,
+            this.#numberOfRaysComponent,
+            this.#lightsourceTypeComponent,
+            this.#distributionTypeComponent,
+            this.#distributionMeanComponent,
+            this.#distributionCovarianceComponent,
+        ];
     }
 }
 

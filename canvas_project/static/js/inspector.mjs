@@ -61,7 +61,7 @@ export class Inspector {
             });
         } else {
             this.#inspectorElem.innerHTML =
-                "Multi selection is not yet supported";
+                "Multi selection is not yet supported :(";
         }
     }
 }
