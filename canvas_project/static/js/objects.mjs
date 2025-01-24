@@ -1,15 +1,20 @@
+import { InspectorComponent } from "inspectorComponents";
 import * as THREE from "three";
 import { Object3D } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 export class SelectableObject extends Object3D {
     #objectName;
+    /**
+     * @type {InspectorComponent[]}
+     */
+    #inspectorComponents;
 
     /**
      * Creates a new selectable object
      * @param {String} name the name of the object
      */
-    constructor(name) {
+    constructor(name, Inspe) {
         super();
         this.#objectName = name;
     }
@@ -20,6 +25,21 @@ export class SelectableObject extends Object3D {
 
     set objectName(name) {
         this.#objectName = name;
+    }
+
+    /**
+     * @returns {InspectorComponent[]}
+     */
+    get inspectorComponents() {
+        throw new Error("This method must be implemented in all subclasses");
+    }
+
+    /**
+     * Updates an saves the new name through a command
+     * @param {String} name the new name you want to save and update
+     */
+    updateAndSaveObjectName(name) {
+        throw new Error("This method must be implemented in all subclasses");
     }
 }
 
