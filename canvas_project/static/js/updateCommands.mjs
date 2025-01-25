@@ -1,6 +1,19 @@
 import { SingleObjectCommand } from "singleObjectCommands";
 import { SaveAndLoadHandler } from "saveAndLoadHandler";
-import { Heliostat, Receiver, LightSource } from "objects";
+import { Heliostat, Receiver, LightSource, SelectableObject } from "objects";
+
+/**
+ * Event that signals that an item got updated
+ */
+export class ItemUpdatedEvent extends CustomEvent {
+    /**
+     * Creates a new item updated event
+     * @param {SelectableObject} item the item that got updated
+     */
+    constructor(item) {
+        super("itemUpdated", { detail: { item: item } });
+    }
+}
 
 /**
  * This class  is responsible for updating a specific attribute of a ’Heliostat’ object.
@@ -69,11 +82,9 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
 
         await this.#saveAndLoadHandler.updateHeliostat(this.#heliostat);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemUpdated", {
-                detail: { heliostat: this.#heliostat },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemUpdatedEvent(this.#heliostat));
     }
 
     /**
@@ -102,11 +113,9 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
 
         await this.#saveAndLoadHandler.updateHeliostat(this.#heliostat);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemUpdated", {
-                detail: { heliostat: this.#heliostat },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemUpdatedEvent(this.#heliostat));
     }
 
     /**
@@ -216,11 +225,9 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
 
         this.#saveAndLoadHandler.updateReceiver(this.#receiver);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemUpdated", {
-                detail: { receiver: this.#receiver },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemUpdatedEvent(this.#receiver));
     }
 
     /**
@@ -267,11 +274,9 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
 
         this.#saveAndLoadHandler.updateReceiver(this.#receiver);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemUpdated", {
-                detail: { receiver: this.#receiver },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemUpdatedEvent(this.#receiver));
     }
 
     /**
@@ -377,11 +382,9 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
 
         this.#saveAndLoadHandler.updateLightsource(this.#lightsource);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemUpdated", {
-                detail: { lightsource: this.#lightsource },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemUpdatedEvent(this.#lightsource));
     }
 
     /**
@@ -413,11 +416,9 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
 
         this.#saveAndLoadHandler.updateLightsource(this.#lightsource);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemUpdated", {
-                detail: { lightsource: this.#lightsource },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemUpdatedEvent(this.#lightsource));
     }
 
     /**

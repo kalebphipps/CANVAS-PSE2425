@@ -13,7 +13,7 @@ import { Picker } from "picker";
 //import { ProjectSettingManager } from "projectSettingManager";
 //import { QuickSelector } from "quickSelector";
 //import { JobInterface } from "jobInterface";
-//import { Inspector } from "inspector";
+import { Inspector } from "inspector";
 
 import { Heliostat, Receiver, LightSource, Terrain } from "objects";
 
@@ -75,7 +75,7 @@ export class Editor {
         //this.#projectSettingManager = new ProjectSettingManager();
         //this.#quickSelector = new QuickSelector();
         //this.#jobInterface = new JobInterface();
-        //this.#inspector = new Inspector(this.#picker);
+        this.#inspector = new Inspector(this.#picker);
 
         window.addEventListener("resize", () => this.onWindowResize());
 
@@ -151,7 +151,7 @@ export class Editor {
         this.#scene.add(this.#terrain);
 
         this.#directionalLight = new THREE.DirectionalLight(0xffffff, 5);
-        this.#directionalLight.position.set(200, 100, 200);
+        this.#directionalLight.position.set(90 * 4, 400, 200 * 4);
         this.#directionalLight.castShadow = true;
         this.#scene.add(this.#directionalLight);
 
@@ -162,7 +162,7 @@ export class Editor {
         this.#directionalLight.shadow.camera.bottom = -200;
         this.#directionalLight.shadow.camera.left = 400;
         this.#directionalLight.shadow.camera.right = -400;
-        this.#directionalLight.shadow.camera.far = 1000;
+        this.#directionalLight.shadow.camera.far = 2000;
 
         // Helpers
         this.#compass = new ViewHelper(

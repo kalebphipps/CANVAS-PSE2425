@@ -387,7 +387,7 @@ export class SaveAndLoadHandler {
 
         const body = {
             id: lightsource.apiID,
-            name: lightsource.name,
+            name: lightsource.objectName,
             number_of_rays: lightsource.numberOfRays,
             lightsource_type: lightsource.lightSourceType,
             distribution_type: lightsource.distributionType,

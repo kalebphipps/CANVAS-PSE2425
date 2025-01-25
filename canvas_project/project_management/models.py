@@ -82,8 +82,8 @@ class Receiver(models.Model):
     rotation_y = models.FloatField(default=0)
 
     # optional fields
-    curvature_e = models.FloatField(blank=True, null=True, default=None)
-    curvature_u = models.FloatField(blank=True, null=True, default=None)
+    curvature_e = models.FloatField(default=0)
+    curvature_u = models.FloatField(default=0)
 
     # normal_vector
     plane_e = models.FloatField(default=8.629666667)

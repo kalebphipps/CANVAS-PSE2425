@@ -26,7 +26,9 @@
                 "editor": "{% static 'js/editor.mjs' %}",
                 "updateCommands": "{% static 'js/updateCommands.mjs' %}",
                 "duplicateCommands": "{% static 'js/duplicateCommands.mjs' %}",
-                "deleteCommands": "{% static 'js/deleteCommands.mjs' %}"
+                "deleteCommands": "{% static 'js/deleteCommands.mjs' %}",
+                "inspectorComponents": "{% static 'js/inspectorComponents.mjs' %}",
+                "inspector": "{% static 'js/inspector.mjs' %}"
             }
         }
     </script>
@@ -364,7 +366,7 @@
                          role="tabpanel"
                          aria-labelledby="object-tab"
                          tabindex="0">
-                        <div id="inspector" class="p-2">Select a object by clicking on it</div>
+                        <div id="inspector" class="d-flex flex-column gap-2"></div>
                     </div>
                     <!--Item overview-->
                     <div class="tab-pane fade"

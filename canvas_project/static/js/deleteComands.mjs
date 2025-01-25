@@ -8,8 +8,7 @@ export class ItemDeletedEvent extends CustomEvent {
      * @param {SelectableObject} item the item that was deleted
      */
     constructor(item) {
-        super("itemDeleted");
-        this.detail = { item: item };
+        super("itemDeleted", { detail: { item: item } });
     }
 }
 
