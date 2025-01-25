@@ -69,3 +69,19 @@ def download(request, project_name):
     response["Content-Type"] = "application/octet-stream"
     response["Content-Disposition"] = f'attachment; filename="{project.name}.h5"'
     return response
+
+
+def uploadPreview(request, project_name):
+    """
+    Updates the preview of the project
+    """
+
+    if request.method == "POST":
+        project = get_object_or_404(Project, name=project_name, owner=request.user)
+        file = request.FILES["preview"]
+
+        project.preview.delete()
+        project.preview = file
+        project.save()
+
+        return HttpResponse(status=200)

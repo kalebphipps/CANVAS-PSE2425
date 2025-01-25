@@ -16,6 +16,7 @@ import { Picker } from "picker";
 import { Inspector } from "inspector";
 
 import { Heliostat, Receiver, LightSource, Terrain } from "objects";
+import { PreviewHandler } from "previewHandler";
 
 let editorInstance = null;
 export class Editor {
@@ -29,6 +30,7 @@ export class Editor {
     #quickSelector;
     #jobInterface;
     #inspector;
+    #previewHandler;
 
     #projectId;
     #canvas;
@@ -48,6 +50,9 @@ export class Editor {
     #heliostatList = [];
     #receiverList = [];
     #lightsourceList = [];
+
+    #previewRenderer;
+    #previewCamera;
 
     constructor(projectId) {
         // singleton
@@ -76,6 +81,11 @@ export class Editor {
         //this.#quickSelector = new QuickSelector();
         //this.#jobInterface = new JobInterface();
         this.#inspector = new Inspector(this.#picker);
+        this.#previewHandler = new PreviewHandler(
+            this.#previewRenderer,
+            this.#previewCamera,
+            this.#scene
+        );
 
         window.addEventListener("resize", () => this.onWindowResize());
 
@@ -113,23 +123,48 @@ export class Editor {
         this.#canvas = document.getElementById("canvas");
 
         this.#scene = new THREE.Scene();
+
+        // main camera
         this.#camera = new THREE.PerspectiveCamera(
             75,
             this.#canvas.clientWidth / this.#canvas.clientHeight,
             0.1,
             2000
         );
-        this.#camera.position.set(-7.5, 2.5, 0.75);
+        this.#camera.position.set(130, 50, 0);
 
-        this.#renderer = new THREE.WebGLRenderer({ antialias: true });
-        // since we render multiple times (scene and compass), we need to clear the renderer manually
+        // preview camera
+        this.#previewCamera = new THREE.PerspectiveCamera(
+            75,
+            16 / 9,
+            0.1,
+            2000
+        );
+        this.#previewCamera.position.set(130, 50, 0);
+        this.#previewCamera.lookAt(0, 0, 0);
+
+        // main renderer
+        // since we render multiple times (scene and compass), we need to clear the pre#previewRenderer manually
+        this.#renderer = new THREE.WebGLRenderer({
+            antialias: true,
+        });
+
         this.#renderer.autoClear = false;
+
         this.#renderer.shadowMap.enabled = true;
         this.#renderer.setSize(
             this.#canvas.clientWidth,
             this.#canvas.clientHeight
         );
         this.#canvas.appendChild(this.#renderer.domElement);
+
+        // preview renderer
+        this.#previewRenderer = new THREE.WebGLRenderer({
+            antialias: true,
+            preserveDrawingBuffer: true,
+        });
+        this.#previewRenderer.shadowMap.enabled = true;
+        this.#previewRenderer.setSize(640, 360);
 
         //set up empty scene
         this.#skyboxLoader = new THREE.CubeTextureLoader();

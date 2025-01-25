@@ -43,7 +43,7 @@
         </button>
         <div class="w-100 d-flex justify-content-center gap-4"></div>
     </div>
-    <div class="d-flex flex-column gap-2 overflow-auto px-2 mt-3">
+    <div class="d-flex flex-column gap-2 overflow-auto px-2 mt-3 w-75">
         <div
             class="form-check form-switch position-absolute ms-2"
             style="transform: translateY(-130%)"
@@ -62,7 +62,7 @@
         <div class="px-2">
             <div class="card mb-3 rounded-4 bg-body-tertiary overflow-hidden">
                 <div class="row g-0">
-                    <div class="col-md-4">
+                    <div class="col-md-4 overflow-hidden">
                         <a
                             class="col-md-4"
                             href="{% url 'editor' project.name %}"
@@ -71,6 +71,10 @@
                                 src="{{ project.preview.url }}"
                                 alt="{{ project.name }}"
                                 class="img-fluid"
+                                style="
+                                    object-fit: cover;
+                                    object-position: center;
+                                "
                             />
                         </a>
                     </div>
