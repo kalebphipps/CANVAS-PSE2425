@@ -65,6 +65,7 @@ def duplicateProject(request, project_name):
             + list(project.receivers.all())
             + list(project.lightsources.all())
         )
+        settings = project.settings
         project.pk = None
 
         # Finding a new project name unique to user
@@ -80,9 +81,13 @@ def duplicateProject(request, project_name):
 
         # Copy all objects associated to the project via foreign keys
         for assoc_object in fks_to_copy:
-            print(assoc_object.project, "...", project)
             assoc_object.pk = None
             assoc_object.project = project
             assoc_object.save()
+
+        # Copy settings
+        settings.pk = None
+        settings.project = project
+        settings.save()
 
         return redirect("projects")
