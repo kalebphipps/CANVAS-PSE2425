@@ -107,6 +107,7 @@ export class Heliostat extends SelectableObject {
         this.#aimPoint = aimPoint;
         this.#numberOfFacets = numberOfFacets;
         this.#kinematicType = kinematicType;
+        this.lookAt(this.#aimPoint.x, 0, this.#aimPoint.z);
 
         // create components for inspector
         this.#headerComponent = new HeaderInspectorComponent(

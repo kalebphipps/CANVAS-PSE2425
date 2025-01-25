@@ -404,12 +404,15 @@ export class HeaderInspectorComponent extends InspectorComponent {
         });
 
         inputField.addEventListener("change", () => {
-            this.#saveFunc(inputField.value);
+            if (inputField.value !== this.#getFieldValueFunc()) {
+                this.#saveFunc(inputField.value);
+            }
             inputField.blur();
         });
 
         inputField.addEventListener("keyup", (event) => {
             if (event.key == "Escape" || event.key == "Enter") {
+                inputField.value = this.#getFieldValueFunc();
                 inputField.blur();
             }
         });
