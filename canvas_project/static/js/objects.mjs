@@ -1,23 +1,76 @@
+import {
+    HeaderInspectorComponent,
+    InspectorComponent,
+    MultiFieldInspectorComponent,
+    SelectFieldInspectorComponent,
+    SingleFieldInspectorComponent,
+    SliderFieldInspectorComponent,
+} from "inspectorComponents";
 import * as THREE from "three";
+import { Vector3 } from "three";
 import { Object3D } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { UndoRedoHandler } from "undoRedoHandler";
+import {
+    UpdateHeliostatCommand,
+    UpdateLightsourceCommand,
+    UpdateReceiverCommand,
+} from "updateCommands";
 
-export const ObjectType = Object.freeze({
-    HELIOSTAT: "heliostat",
-    RECEIVER: "receiver",
-    LIGHTSOURCE: "lightsource",
-});
+export class SelectableObject extends Object3D {
+    #objectName;
+    /**
+     * @type {InspectorComponent[]}
+     */
+    #inspectorComponents;
+
+    /**
+     * Creates a new selectable object
+     * @param {String} name the name of the object
+     */
+    constructor(name, Inspe) {
+        super();
+        this.#objectName = name;
+    }
+
+    get objectName() {
+        return this.#objectName;
+    }
+
+    set objectName(name) {
+        this.#objectName = name;
+    }
+
+    /**
+     * @returns {InspectorComponent[]}
+     */
+    get inspectorComponents() {
+        throw new Error("This method must be implemented in all subclasses");
+    }
+
+    /**
+     * Updates an saves the new name through a command
+     * @param {String} name the new name you want to save and update
+     */
+    updateAndSaveObjectName(name) {
+        throw new Error("This method must be implemented in all subclasses");
+    }
+}
 
 /**
  *  Class that represents the Heliostat object
  */
-export class Heliostat extends Object3D {
+export class Heliostat extends SelectableObject {
     #apiID;
     #aimPoint;
     #numberOfFacets;
     #kinematicType;
-    #objectType;
-    #heliostatName;
+    #headerComponent;
+    #positionComponent;
+    #aimPointComponent;
+    #numberOfFacetsComponent;
+    #kinematicTypeComponent;
+    #undoRedoHandler = new UndoRedoHandler();
 
     /**
      * Creates a Heliostat object
@@ -30,14 +83,14 @@ export class Heliostat extends Object3D {
      */
 
     constructor(
-        apiId = null,
         heliostatName,
         position,
         aimPoint,
         numberOfFacets,
-        kinematicType
+        kinematicType,
+        apiID = null
     ) {
-        super();
+        super(heliostatName);
         this.loader = new GLTFLoader();
         this.mesh;
         this.loader.load("/static/models/heliostat.glb", (gltf) => {
@@ -50,13 +103,176 @@ export class Heliostat extends Object3D {
             this.add(this.mesh);
         });
         this.position.copy(position);
-        this.#apiID = apiId;
-        this.#heliostatName = heliostatName;
+        this.#apiID = apiID;
         this.#aimPoint = aimPoint;
         this.#numberOfFacets = numberOfFacets;
         this.#kinematicType = kinematicType;
-        this.#objectType = ObjectType.HELIOSTAT;
+        this.lookAt(this.#aimPoint.x, 0, this.#aimPoint.z);
+
+        // create components for inspector
+        this.#headerComponent = new HeaderInspectorComponent(
+            () =>
+                this.objectName !== "" && this.objectName
+                    ? this.objectName
+                    : "Heliostat",
+            (name) => this.updateAndSaveObjectName(name)
+        );
+
+        const nCoordinate = new SingleFieldInspectorComponent(
+            "N",
+            "number",
+            () => this.position.x,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(
+                        this,
+                        "position",
+                        new Vector3(newValue, this.position.y, this.position.z)
+                    )
+                );
+            }
+        );
+
+        const uCoordinate = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.position.y,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(
+                        this,
+                        "position",
+                        new Vector3(this.position.x, newValue, this.position.z)
+                    )
+                );
+            }
+        );
+
+        const eCoordinate = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.position.z,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(
+                        this,
+                        "position",
+                        new Vector3(this.position.x, this.position.y, newValue)
+                    )
+                );
+            }
+        );
+
+        this.#positionComponent = new MultiFieldInspectorComponent("Position", [
+            nCoordinate,
+            uCoordinate,
+            eCoordinate,
+        ]);
+
+        const nAimpoint = new SingleFieldInspectorComponent(
+            "N",
+            "number",
+            () => this.#aimPoint.x,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(
+                        this,
+                        "aimPoint",
+                        new Vector3(
+                            newValue,
+                            this.#aimPoint.y,
+                            this.#aimPoint.z
+                        )
+                    )
+                );
+            }
+        );
+
+        const uAimpoint = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.#aimPoint.y,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(
+                        this,
+                        "aimPoint",
+                        new Vector3(
+                            this.#aimPoint.x,
+                            newValue,
+                            this.#aimPoint.z
+                        )
+                    )
+                );
+            }
+        );
+
+        const eAimpoint = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.#aimPoint.z,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(
+                        this,
+                        "aimPoint",
+                        new Vector3(
+                            this.#aimPoint.x,
+                            this.#aimPoint.y,
+                            newValue
+                        )
+                    )
+                );
+            }
+        );
+
+        this.#aimPointComponent = new MultiFieldInspectorComponent("Aimpoint", [
+            nAimpoint,
+            uAimpoint,
+            eAimpoint,
+        ]);
+
+        this.#numberOfFacetsComponent = new SingleFieldInspectorComponent(
+            "Number of facets",
+            "number",
+            () => this.#numberOfFacets,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(this, "numberOfFacets", newValue)
+                );
+            }
+        );
+
+        this.#kinematicTypeComponent = new SelectFieldInspectorComponent(
+            "Kinematic type",
+            [{ label: "ideal", value: "ideal" }],
+            () => this.#kinematicType,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateHeliostatCommand(this, "kinematicType", newValue)
+                );
+            }
+        );
     }
+
+    /**
+     * Updates the position of the heliostat
+     * @param {THREE.Vector3} position the new position
+     */
+    updatePosition(position) {
+        this.position.copy(position);
+        this.lookAt(this.#aimPoint.x, 0, this.#aimPoint.z);
+    }
+
+    /**
+     * @param {String} name the new name for the object
+     */
+    updateAndSaveObjectName(name) {
+        this.#undoRedoHandler.executeCommand(
+            new UpdateHeliostatCommand(this, "objectName", name)
+        );
+    }
+
     /**
      * Updates the aimPoint of the Heliostat and updates rotation of the Heliostat accordingly
      * @param {THREE.Vector3} aimPoint
@@ -78,14 +294,6 @@ export class Heliostat extends Object3D {
         this.#apiID = value;
     }
 
-    get heliostatName() {
-        return this.#heliostatName;
-    }
-
-    set heliostatName(name) {
-        this.#heliostatName = name;
-    }
-
     get numberOfFacets() {
         return this.#numberOfFacets;
     }
@@ -102,17 +310,22 @@ export class Heliostat extends Object3D {
         this.#kinematicType = kinematicType;
     }
 
-    get objectType() {
-        return this.#objectType;
+    get inspectorComponents() {
+        return [
+            this.#headerComponent,
+            this.#positionComponent,
+            this.#aimPointComponent,
+            this.#numberOfFacetsComponent,
+            this.#kinematicTypeComponent,
+        ];
     }
 }
 
 /**
  * Class that represents the receiver object
  */
-export class Receiver extends Object3D {
+export class Receiver extends SelectableObject {
     #apiID;
-    #receiverName;
     #towerType;
     #normalVector;
     #planeE;
@@ -121,8 +334,20 @@ export class Receiver extends Object3D {
     #resolutionU;
     #curvatureE;
     #curvatureU;
-    #rotationY;
-    #objectType;
+    #rotationY = 0;
+    #undoRedoHandler = new UndoRedoHandler();
+
+    #top;
+    #base;
+
+    #headerComponent;
+    #positionComponent;
+    #rotationUComponent;
+    #normalVectorComponent;
+    #towerTypeComponent;
+    #curvatureComponent;
+    #planeComponent;
+    #resolutionComponent;
 
     /**
      * Creates a Receiver object
@@ -140,7 +365,6 @@ export class Receiver extends Object3D {
      * @param {Number} curvatureU the curvature U of the receiver
      */
     constructor(
-        apiID = null,
         receiverName,
         position,
         rotationY,
@@ -151,21 +375,23 @@ export class Receiver extends Object3D {
         resolutionE,
         resolutionU,
         curvatureE,
-        curvatureU
+        curvatureU,
+        apiID = null
     ) {
-        super();
+        super(receiverName);
         // place the 3D object
-        this.base = new ReceiverBase();
-        this.base.position.copy(new THREE.Vector3(position.x, 0, position.z));
-        this.add(this.base);
+        this.#base = new ReceiverBase();
+        this.#base.position.copy(new THREE.Vector3(position.x, 0, position.z));
+        this.add(this.#base);
 
-        this.top = new ReceiverTop();
-        this.top.position.copy(position);
-        this.add(this.top);
+        this.#top = new ReceiverTop();
+        this.#top.position.copy(position);
+        this.add(this.#top);
 
-        this.rotateY(rotationY);
+        this.#base.rotation.y = rotationY;
+        this.#top.rotation.y = rotationY;
+
         this.#apiID = apiID;
-        this.#receiverName = receiverName;
         this.#towerType = towerType;
         this.#normalVector = normalVector;
         this.#planeE = planeE;
@@ -175,7 +401,246 @@ export class Receiver extends Object3D {
         this.#curvatureE = curvatureE;
         this.#curvatureU = curvatureU;
         this.#rotationY = rotationY;
-        this.#objectType = ObjectType.RECEIVER;
+
+        // create components for the inspector
+        this.#headerComponent = new HeaderInspectorComponent(
+            () =>
+                this.objectName !== "" && this.objectName
+                    ? this.objectName
+                    : "Receiver",
+            (name) => this.updateAndSaveObjectName(name)
+        );
+
+        const nCoordinate = new SingleFieldInspectorComponent(
+            "N",
+            "number",
+            () => this.getPosition().x,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(
+                        this,
+                        "position",
+                        new Vector3(
+                            newValue,
+                            this.#top.position.y,
+                            this.#top.position.z
+                        )
+                    )
+                );
+            }
+        );
+
+        const uCoordinate = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.getPosition().y,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(
+                        this,
+                        "position",
+                        new Vector3(
+                            this.#top.position.x,
+                            newValue,
+                            this.#top.position.z
+                        )
+                    )
+                );
+            }
+        );
+
+        const eCoordinate = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.getPosition().z,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(
+                        this,
+                        "position",
+                        new Vector3(
+                            this.#top.position.x,
+                            this.#top.position.y,
+                            newValue
+                        )
+                    )
+                );
+            }
+        );
+
+        this.#positionComponent = new MultiFieldInspectorComponent("Position", [
+            nCoordinate,
+            uCoordinate,
+            eCoordinate,
+        ]);
+
+        this.#rotationUComponent = new SliderFieldInspectorComponent(
+            "Rotation U",
+            0,
+            360,
+            () => THREE.MathUtils.radToDeg(this.#rotationY),
+            (newValue) => {
+                newValue = THREE.MathUtils.degToRad(newValue);
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "rotationY", newValue)
+                );
+            },
+            15
+        );
+
+        const nNormalVector = new SingleFieldInspectorComponent(
+            "N",
+            "number",
+            () => this.#normalVector.x,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(
+                        this,
+                        "normalVector",
+                        new Vector3(
+                            newValue,
+                            this.#normalVector.y,
+                            this.#normalVector.z
+                        )
+                    )
+                );
+            }
+        );
+
+        const uNormalVector = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.#normalVector.y,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(
+                        this,
+                        "normalVector",
+                        new Vector3(
+                            this.#normalVector.x,
+                            newValue,
+                            this.#normalVector.z
+                        )
+                    )
+                );
+            }
+        );
+
+        const eNormalVector = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.#normalVector.z,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(
+                        this,
+                        "normalVector",
+                        new Vector3(
+                            this.#normalVector.x,
+                            this.#normalVector.y,
+                            newValue
+                        )
+                    )
+                );
+            }
+        );
+
+        this.#normalVectorComponent = new MultiFieldInspectorComponent(
+            "Normal Vector",
+            [nNormalVector, uNormalVector, eNormalVector]
+        );
+
+        this.#towerTypeComponent = new SelectFieldInspectorComponent(
+            "Type",
+            [{ label: "planar", value: "planar" }],
+            () => this.#towerType,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "towerType", newValue)
+                );
+            }
+        );
+
+        const eCurvature = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.#curvatureE,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "curvatureE", newValue)
+                );
+            }
+        );
+
+        const uCurvature = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.#curvatureU,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "curvatureU", newValue)
+                );
+            }
+        );
+
+        this.#curvatureComponent = new MultiFieldInspectorComponent(
+            "Curvature",
+            [eCurvature, uCurvature]
+        );
+
+        const ePlane = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.#planeE,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "planeE", newValue)
+                );
+            }
+        );
+
+        const uPlane = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.#planeU,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "planeU", newValue)
+                );
+            }
+        );
+
+        this.#planeComponent = new MultiFieldInspectorComponent("Plane", [
+            ePlane,
+            uPlane,
+        ]);
+
+        const eResolution = new SingleFieldInspectorComponent(
+            "E",
+            "number",
+            () => this.#resolutionE,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "resolutionE", newValue)
+                );
+            }
+        );
+
+        const uResolution = new SingleFieldInspectorComponent(
+            "U",
+            "number",
+            () => this.#resolutionU,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateReceiverCommand(this, "resolutionU", newValue)
+                );
+            }
+        );
+
+        this.#resolutionComponent = new MultiFieldInspectorComponent(
+            "Resolution",
+            [eResolution, uResolution]
+        );
     }
 
     /**
@@ -183,9 +648,21 @@ export class Receiver extends Object3D {
      * @param {THREE.Vector3} position the new position of the receiver
      */
     updatePosition(position) {
-        this.position.set(position.x, position.y, position.z);
-        this.base.position.set(position.x, 0, position.z);
-        this.top.position.set(position.x, position.y, position.z);
+        this.#base.position.set(position.x, 0, position.z);
+        this.#top.position.set(position.x, position.y, position.z);
+    }
+
+    getPosition() {
+        return this.#top.position;
+    }
+
+    /**
+     * @param {String} name the new name
+     */
+    updateAndSaveObjectName(name) {
+        this.#undoRedoHandler.executeCommand(
+            new UpdateReceiverCommand(this, "objectName", name)
+        );
     }
 
     get apiID() {
@@ -194,14 +671,6 @@ export class Receiver extends Object3D {
 
     set apiID(value) {
         this.#apiID = value;
-    }
-
-    get receiverName() {
-        return this.#receiverName;
-    }
-
-    set receiverName(name) {
-        this.#receiverName = name;
     }
 
     get towerType() {
@@ -274,10 +743,21 @@ export class Receiver extends Object3D {
 
     set rotationY(rotation) {
         this.#rotationY = rotation;
+        this.#base.rotation.y = rotation;
+        this.#top.rotation.y = rotation;
     }
 
-    get objectType() {
-        return this.#objectType;
+    get inspectorComponents() {
+        return [
+            this.#headerComponent,
+            this.#positionComponent,
+            this.#rotationUComponent,
+            this.#normalVectorComponent,
+            this.#towerTypeComponent,
+            this.#curvatureComponent,
+            this.#planeComponent,
+            this.#resolutionComponent,
+        ];
     }
 }
 
@@ -322,15 +802,22 @@ export class ReceiverTop extends Object3D {
 /**
  * Class that represents the light source object
  */
-export class LightSource extends Object3D {
+export class LightSource extends SelectableObject {
     #apiID;
-    #lightsourceName;
     #numberOfRays;
     #lightSourceType;
     #distributionType;
     #distributionMean;
     #distributionCovariance;
-    #objectType;
+
+    #header;
+    #numberOfRaysComponent;
+    #lightsourceTypeComponent;
+    #distributionTypeComponent;
+    #distributionMeanComponent;
+    #distributionCovarianceComponent;
+
+    #undoRedoHandler = new UndoRedoHandler();
 
     /**
      * @param {Number} [apiID=null] the id for api usage
@@ -342,23 +829,110 @@ export class LightSource extends Object3D {
      * @param {Number} distributionCovariance the covariance of the distribution
      */
     constructor(
-        apiID = null,
         lightsourceName,
         numberOfRays,
         lightSourceType,
         distributionType,
         distributionMean,
-        distributionCovariance
+        distributionCovariance,
+        apiID = null
     ) {
-        super();
+        super(lightsourceName);
         this.#apiID = apiID;
-        this.#lightsourceName = lightsourceName;
         this.#numberOfRays = numberOfRays;
         this.#lightSourceType = lightSourceType;
         this.#distributionType = distributionType;
         this.#distributionMean = distributionMean;
         this.#distributionCovariance = distributionCovariance;
-        this.#objectType = ObjectType.LIGHTSOURCE;
+
+        this.#header = new HeaderInspectorComponent(
+            () =>
+                this.objectName !== "" && this.objectName
+                    ? this.objectName
+                    : "Light source",
+            (newValue) => this.updateAndSaveObjectName(newValue)
+        );
+
+        this.#numberOfRaysComponent = new SingleFieldInspectorComponent(
+            "Number of rays",
+            "number",
+            () => this.#numberOfRays,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateLightsourceCommand(this, "numberOfRays", newValue)
+                );
+            }
+        );
+
+        this.#lightsourceTypeComponent = new SelectFieldInspectorComponent(
+            "Lightsource Type",
+            [{ label: "sun", value: "sun" }],
+            () => this.#lightSourceType,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateLightsourceCommand(
+                        this,
+                        "lightSourceType",
+                        newValue
+                    )
+                );
+            }
+        );
+
+        this.#distributionTypeComponent = new SelectFieldInspectorComponent(
+            "Distribution Type",
+            [{ label: "normal", value: "normal" }],
+            () => this.#distributionType,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateLightsourceCommand(
+                        this,
+                        "distributionType",
+                        newValue
+                    )
+                );
+            }
+        );
+
+        this.#distributionMeanComponent = new SingleFieldInspectorComponent(
+            "Mean",
+            "number",
+            () => this.#distributionMean,
+            (newValue) => {
+                this.#undoRedoHandler.executeCommand(
+                    new UpdateLightsourceCommand(
+                        this,
+                        "distributionMean",
+                        newValue
+                    )
+                );
+            }
+        );
+
+        this.#distributionCovarianceComponent =
+            new SingleFieldInspectorComponent(
+                "Covariance",
+                "number",
+                () => this.#distributionCovariance,
+                (newValue) => {
+                    this.#undoRedoHandler.executeCommand(
+                        new UpdateLightsourceCommand(
+                            this,
+                            "distributionCovariance",
+                            newValue
+                        )
+                    );
+                }
+            );
+    }
+
+    /**
+     * @param {String} name the new name
+     */
+    updateAndSaveObjectName(name) {
+        this.#undoRedoHandler.executeCommand(
+            new UpdateLightsourceCommand(this, "objectName", name)
+        );
     }
 
     get apiID() {
@@ -367,14 +941,6 @@ export class LightSource extends Object3D {
 
     set apiID(id) {
         this.#apiID = id;
-    }
-
-    get lightsourceName() {
-        return this.#lightsourceName;
-    }
-
-    set lightsourceName(name) {
-        this.#lightsourceName = name;
     }
 
     get numberOfRays() {
@@ -417,8 +983,15 @@ export class LightSource extends Object3D {
         this.#distributionCovariance = number;
     }
 
-    get objectType() {
-        return this.#objectType;
+    get inspectorComponents() {
+        return [
+            this.#header,
+            this.#numberOfRaysComponent,
+            this.#lightsourceTypeComponent,
+            this.#distributionTypeComponent,
+            this.#distributionMeanComponent,
+            this.#distributionCovarianceComponent,
+        ];
     }
 }
 
@@ -426,6 +999,10 @@ export class LightSource extends Object3D {
  * Creates the terrain for the scene
  */
 export class Terrain extends Object3D {
+    /**
+     * Creates a new terrain.
+     * @param {Number} size the size of the terrain.
+     */
     constructor(size) {
         super();
 
