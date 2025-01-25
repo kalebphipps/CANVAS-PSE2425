@@ -446,35 +446,7 @@
                                             aria-controls="collapseTwo">Graphic Settings</button>
                                 </h2>
                                 <div id="collapseTwo" class="accordion-collapse collapse">
-                                    <div class="accordion-body">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="shadowCheckbox">
-                                        <label class="form-check-label" for="shadowCheckbox">
-                                            Shadow
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="fogCheckbox">
-                                        <label class="form-check-label" for="fogCheckbox">
-                                            Fog
-                                        </label>
-                                    </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <script>
-                                const projectSettingsManager = new ProjectSettingsManager();
-
-                                document.getElementById("shadowCheckbox").addEventListener("change", (event) => {
-                                    const shadow = event.target.checked;
-                                    projectSettingsManager.toggleShadow(shadow);
-                                });
-                                
-                                document.getElementById("fogCheckbox").addEventListener("change", (event) => {
-                                    const fog = event.target.checked;
-                                    projectSettingsManager.toggleFog(fog);
-                                });
-                            </script>
+                                    <div class="accordion-body"></div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed"
