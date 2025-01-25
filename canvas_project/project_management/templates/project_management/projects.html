@@ -22,8 +22,10 @@
         </div>
     </div>
 </div>
+
 <!--settings modal-->
 {% include "settings.html" %}
+
 <!--project overview-->
 <div
     class="d-flex flex-column w-100 justify-content-between align-items-center vh-100 gap-2"
@@ -44,10 +46,7 @@
         <div class="w-100 d-flex justify-content-center gap-4"></div>
     </div>
     <div class="d-flex flex-column gap-2 overflow-auto px-2 mt-3">
-        <div
-            class="form-check form-switch position-absolute ms-2"
-            style="transform: translateY(-130%)"
-        >
+        <div class="form-check form-switch position-relative mx-auto">
             <input
                 class="form-check-input"
                 type="checkbox"
@@ -60,7 +59,10 @@
         </div>
         {% for project in projects %}
         <div class="px-2">
-            <div class="card mb-3 rounded-4 bg-body-tertiary overflow-hidden">
+            <div
+                class="card mb-3 rounded-4 bg-body-tertiary overflow-hidden mx-auto"
+                style="width: 65%"
+            >
                 <div class="row g-0">
                     <div class="col-md-4">
                         <a
