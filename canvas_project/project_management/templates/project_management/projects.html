@@ -67,6 +67,7 @@
                             class="col-md-4"
                             href="{% url 'editor' project.name %}"
                         >
+                            {% if project.preview %}
                             <img
                                 src="{{ project.preview.url }}"
                                 alt="{{ project.name }}"
@@ -76,6 +77,17 @@
                                     object-position: center;
                                 "
                             />
+                            {% else %}
+                            <img
+                                src="{% static 'img/emptyEditor.png' %}"
+                                alt="{{ project.name }}"
+                                class="img-fluid"
+                                style="
+                                    object-fit: cover;
+                                    object-position: center;
+                                "
+                            />
+                            {% endif %}
                         </a>
                     </div>
                     <div class="col-md-8">
