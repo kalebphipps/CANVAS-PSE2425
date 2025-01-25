@@ -94,7 +94,7 @@
                                     {% if project.favorite == "true" %}
                                     <a
                                         href="{% url 'defavorProject' project.name %}"
-                                        class="btn btn-primary"
+                                        class="btn btn-primary custom-btn shadow"
                                         ><i
                                             class="bi bi-star-fill text-warning"
                                         ></i
@@ -102,7 +102,7 @@
                                     {% else %}
                                     <a
                                         href="{% url 'favorProject' project.name %}"
-                                        class="btn btn-primary"
+                                        class="btn btn-primary custom-btn shadow"
                                         ><i class="bi bi-star"></i
                                     ></a>
                                     {% endif %}
