@@ -10,7 +10,7 @@ export class ProjectSettingsManager {
 
     constructor() {
         this.#editor = new Editor();
-        this.#graphicsButton = document.getElementById("graphic-setting");
+        this.#graphicsButton = document.getElementById("graphic-settings");
         //how do I get this from the editor??
         this.#shadowEnabled = this.#editor.shadowEnabled;
         this.#fogEnabled = this.#editor.fogEnabled;
