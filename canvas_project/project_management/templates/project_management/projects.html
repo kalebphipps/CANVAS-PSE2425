@@ -117,7 +117,12 @@
                                 >
 
                                 <!-- Edit Button -->
-                                <button class="btn btn-primary custom-btn">
+                                <button
+                                    type="button"
+                                    class="btn btn-primary custom-btn shadow"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editModal-{{ project.name }}"
+                                >
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
 
@@ -128,6 +133,51 @@
                                 >
                                     <i class="bi bi-copy"></i>
                                 </a>
+
+                                <div
+                                    class="modal fade"
+                                    id="editModal-{{ project.name }}"
+                                    tabindex="-1"
+                                    aria-labelledby="editModal"
+                                    aria-hidden="true"
+                                >
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1
+                                                    class="modal-title fs-5"
+                                                    id="deleteModalHeader"
+                                                >
+                                                    Edit Project
+                                                </h1>
+                                                <button
+                                                    type="button"
+                                                    class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Close"
+                                                ></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Edit the name and description
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-secondary"
+                                                    data-bs-dismiss="modal"
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <a
+                                                    href="{% url 'deleteProject' project.name %}"
+                                                    class="btn btn-danger"
+                                                >
+                                                    Edit {{project.name}}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <!-- Share Button -->
                                 <button

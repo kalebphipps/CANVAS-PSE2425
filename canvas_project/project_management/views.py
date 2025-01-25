@@ -60,9 +60,14 @@ def defavorProject(request, project_name):
 def duplicateProject(request, project_name):
     project = Project.objects.get(owner=request.user, name=project_name)
     if project.owner == request.user:
+        fks_to_copy = (
+            list(project.heliostats.all())
+            + list(project.receivers.all())
+            + list(project.lightsources.all())
+        )
         project.pk = None
 
-        # Finding a new name unique to user
+        # Finding a new project name unique to user
         newNameFound = False
         while not newNameFound:
             try:
@@ -72,5 +77,12 @@ def duplicateProject(request, project_name):
                 project.name = project_name
                 project.save()
                 newNameFound = True
+
+        # Copy all objects associated to the project via foreign keys
+        for assoc_object in fks_to_copy:
+            print(assoc_object.project, "...", project)
+            assoc_object.pk = None
+            assoc_object.project = project
+            assoc_object.save()
 
         return redirect("projects")
