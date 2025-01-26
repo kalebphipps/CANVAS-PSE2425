@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import redirect, render
 from .models import Project
-from .forms import ProjectForm
+from .forms import ProjectForm, UpdateProjectForm
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 
@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 def projects(request):
     form = ProjectForm()
     if request.method == "GET":
-        all_projects = Project.objects.order_by("last_edited")
+        all_projects = Project.objects.order_by("-last_edited")
         context = {"projects": all_projects, "form": form}
         return render(request, "project_management/projects.html", context)
     elif request.method == "POST":
@@ -24,6 +24,22 @@ def projects(request):
             form.save()
             return HttpResponseRedirect(reverse("projects"))
         return render(request, "project", {"form": form})
+
+
+@login_required
+def updateProject(request, project_name):
+    print("test")
+    if request.method == "POST":
+        project = Project.objects.get(owner=request.user, name=project_name)
+        if project.owner == request.user:
+            form = UpdateProjectForm(request.POST, instance=project)
+            if form.is_valid:
+                if project.name != project_name:
+                    project.last_edited = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    form.save()
+                    return HttpResponseRedirect(reverse("projects"))
+                return redirect("projects")
+    return render(request, "project", {"form": form, project_name: project_name})
 
 
 # Deleting a project

@@ -123,24 +123,16 @@
                                     type="button"
                                     class="btn btn-primary custom-btn shadow"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#editModal-{{ project.name }}"
+                                    data-bs-target="#updateModal-{{ project.name }}"
                                 >
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
 
-                                <!-- Duplicate Button -->
-                                <a
-                                    href="{% url 'duplicateProject' project_name=project.name %}"
-                                    class="btn btn-primary custom-btn shadow"
-                                >
-                                    <i class="bi bi-copy"></i>
-                                </a>
-
                                 <div
                                     class="modal fade"
-                                    id="editModal-{{ project.name }}"
+                                    id="updateModal-{{ project.name }}"
                                     tabindex="-1"
-                                    aria-labelledby="editModal"
+                                    aria-labelledby="updateModal"
                                     aria-hidden="true"
                                 >
                                     <div class="modal-dialog">
@@ -151,7 +143,14 @@
                                                     id="deleteModalHeader"
                                                 >
                                                     Edit Project
+                                                    <div>
+                                                        The project will not be
+                                                        updated if a different
+                                                        project with the entered
+                                                        name already exists!
+                                                    </div>
                                                 </h1>
+
                                                 <button
                                                     type="button"
                                                     class="btn-close"
@@ -160,26 +159,32 @@
                                                 ></button>
                                             </div>
                                             <div class="modal-body">
-                                                Edit the name and description
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button
-                                                    type="button"
-                                                    class="btn btn-secondary"
-                                                    data-bs-dismiss="modal"
+                                                <form
+                                                    action="{% url 'updateProject' project_name=project.name %}"
+                                                    method="POST"
+                                                    class="d-flex flex-column"
                                                 >
-                                                    Cancel
-                                                </button>
-                                                <a
-                                                    href="{% url 'deleteProject' project.name %}"
-                                                    class="btn btn-danger"
-                                                >
-                                                    Edit {{project.name}}
-                                                </a>
+                                                    {% csrf_token %} {{form}}
+                                                    <br />
+                                                    <button
+                                                        class="btn btn-primary rounded-3"
+                                                        type="submit"
+                                                    >
+                                                        Save
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Duplicate Button -->
+                                <a
+                                    href="{% url 'duplicateProject' project_name=project.name %}"
+                                    class="btn btn-primary custom-btn shadow"
+                                >
+                                    <i class="bi bi-copy"></i>
+                                </a>
 
                                 <!-- Share Button -->
                                 <button
