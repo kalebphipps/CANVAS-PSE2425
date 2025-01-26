@@ -31,8 +31,8 @@ export class CreateHeliostatCommand extends SingleObjectCommand {
     /**
      * The heliostat is added to the scene
      */
-    execute() {
-        this.#editor.addHeliostat(this.#heliostat);
+    async execute() {
+        await this.#editor.addHeliostat(this.#heliostat);
 
         document
             .getElementById("canvas")
@@ -42,8 +42,8 @@ export class CreateHeliostatCommand extends SingleObjectCommand {
     /**
      * The heliostat is removed from the scene.
      */
-    undo() {
-        this.#editor.deleteHeliostat(this.#heliostat);
+    async undo() {
+        await this.#editor.deleteHeliostat(this.#heliostat);
 
         document.getElementById("canvas").dispatchEvent(
             new CustomEvent("itemDeleted", {
@@ -62,7 +62,7 @@ export class CreateReceiverCommand extends SingleObjectCommand {
 
     /**
      * Initializes a new CreateReceiverCommand with the specified receiver to create.
-     * @param {Receiver} receiver - the receider to be created
+     * @param {Receiver} receiver - the receiver to be created
      */
     constructor(receiver) {
         super();
@@ -72,8 +72,8 @@ export class CreateReceiverCommand extends SingleObjectCommand {
     /**
      * The receiver is added to the scene.
      */
-    execute() {
-        this.#editor.addReceiver(this.#receiver);
+    async execute() {
+        await this.#editor.addReceiver(this.#receiver);
 
         document
             .getElementById("canvas")
@@ -83,8 +83,8 @@ export class CreateReceiverCommand extends SingleObjectCommand {
     /**
      * The receiver is removed from the scene.
      */
-    undo() {
-        this.#editor.deleteReceiver(this.#receiver);
+    async undo() {
+        await this.#editor.deleteReceiver(this.#receiver);
 
         document.getElementById("canvas").dispatchEvent(
             new CustomEvent("itemDeleted", {
@@ -113,8 +113,8 @@ export class CreateLightSourceCommand extends SingleObjectCommand {
     /**
      * The light source is added to the scene.
      */
-    execute() {
-        this.#editor.addLightsource(this.#lightsource);
+    async execute() {
+        await this.#editor.addLightsource(this.#lightsource);
 
         document
             .getElementById("canvas")
@@ -124,8 +124,8 @@ export class CreateLightSourceCommand extends SingleObjectCommand {
     /**
      * The light source is removed from the scene.
      */
-    undo() {
-        this.#editor.deleteLightsource(this.#lightsource);
+    async undo() {
+        await this.#editor.deleteLightsource(this.#lightsource);
 
         document.getElementById("canvas").dispatchEvent(
             new CustomEvent("itemDeleted", {
