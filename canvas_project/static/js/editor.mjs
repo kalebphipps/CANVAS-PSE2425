@@ -13,7 +13,7 @@ import { Picker } from "picker";
 //import { ProjectSettingManager } from "projectSettingManager";
 //import { QuickSelector } from "quickSelector";
 //import { JobInterface } from "jobInterface";
-import { Inspector } from "inspector";
+import { Inspector } from "inspectorClass";
 
 import { Heliostat, Receiver, LightSource, Terrain } from "objects";
 
