@@ -9,23 +9,33 @@ export class ProjectSettingsManager {
     #shadowEnabled;
     #fogEnabled;
     #editor;
+    #saveAndLoadHandler;
 
     constructor() {
         console.log("ProjectSettingsManager constructor");
         this.#editor = new Editor();
+        this.#saveAndLoadHandler = new SaveAndLoadHandler();
+
+        this.#getPresets();
+
         this.#graphicsSettingsButton = document.getElementById(
             "graphic-settings-button"
         );
         this.#graphicsSettingsEntry =
             document.getElementById("graphic-settings");
-        //how do I get this from the editor??
-        this.#shadowEnabled = this.#editor.shadowEnabled;
-        this.#fogEnabled = this.#editor.fogEnabled;
 
         this.#graphicsSettingsButton.addEventListener("click", () => {
             console.log("Button clicked, rendering...");
             this.#render();
         });
+    }
+
+    async #getPresets() {
+        const projectJson = await this.#saveAndLoadHandler.getProjectData();
+
+        const settingsList = projectJson["settings"];
+        this.#shadowEnabled = settingsList["shadow"];
+        this.#fogEnabled = settingsList["fog"];
     }
 
     #render() {
@@ -38,6 +48,10 @@ export class ProjectSettingsManager {
             (isChecked) => {
                 this.#shadowEnabled = isChecked;
                 this.#editor.setShadows(isChecked);
+                this.#saveAndLoadHandler.updateSettings(
+                    "shadow",
+                    this.#shadowEnabled
+                );
             }
         );
 
@@ -48,6 +62,10 @@ export class ProjectSettingsManager {
             (isChecked) => {
                 this.#fogEnabled = isChecked;
                 this.#editor.setFog(isChecked);
+                this.#saveAndLoadHandler.updateSettings(
+                    "fog",
+                    this.#shadowEnabled
+                );
             }
         );
 

@@ -305,19 +305,6 @@ export class Editor {
     }
 
     /**
-     * @return {Boolean} if the shadows are enabled
-     */
-    get shadowEnabled() {
-        return this.#renderer.shadowMap.enabled;
-    }
-
-    /**
-     * @return {Boolean} if the fog is enabled
-     */
-    get fogEnabled() {
-        return this.#scene.fog !== null;
-    }
-    /**
      * Adds the given heliostat to the scene and saves it.
      * @param {Heliostat} heliostat the heliostat you want to add.
      */
