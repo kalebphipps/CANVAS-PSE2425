@@ -1,6 +1,7 @@
 import { Editor } from "editor";
 import { Heliostat, LightSource, Receiver, SelectableObject } from "objects";
 import { SingleObjectCommand } from "singleObjectCommands";
+import { ItemCreatedEvent } from "createCommands";
 
 export class ItemDeletedEvent extends CustomEvent {
     /**
@@ -39,11 +40,9 @@ export class DeleteHeliostatCommand extends SingleObjectCommand {
     undo() {
         this.#editor.addHeliostat(this.#heliostat);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemCreated", {
-                detail: { item: this.#heliostat },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemCreatedEvent(this.#heliostat));
     }
 }
 
@@ -74,11 +73,9 @@ export class DeleteReceiverCommand extends SingleObjectCommand {
     undo() {
         this.#editor.addReceiver(this.#receiver);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemCreated", {
-                detail: { item: this.#receiver },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemCreatedEvent(this.#receiver));
     }
 }
 
@@ -109,10 +106,8 @@ export class DeleteLightSourceCommand extends SingleObjectCommand {
     undo() {
         this.#editor.deleteLightsource(this.#lightsource);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemCreated", {
-                detail: { item: this.#lightsource },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemCreatedEvent(this.#lightsource));
     }
 }
