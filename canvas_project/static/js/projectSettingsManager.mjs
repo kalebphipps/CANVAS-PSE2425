@@ -42,6 +42,7 @@ export class ProjectSettingsManager {
         this.#shadowEnabled = settingsList["shadow"];
         console.log("shadow enabled: " + this.#shadowEnabled);
         this.#fogEnabled = settingsList["fog"];
+        console.log("fog enabled: " + this.#fogEnabled);
     }
 
     /**
