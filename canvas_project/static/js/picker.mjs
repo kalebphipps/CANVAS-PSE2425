@@ -1,10 +1,9 @@
-import { SelectableObject } from "objects";
 import * as THREE from "three";
+import { SelectableObject } from "objects";
 
 export const Mode = Object.freeze({
     NONE: "none",
     SINGLE: "single",
-    RECTANGLE: "rectangle",
     ROTATE: "rotate",
 });
 
@@ -16,6 +15,18 @@ export class Picker {
     #selectedObjects;
     #raycaster;
     #mode;
+
+    // Additional fields
+    #canvas;
+    #mouse;
+    #mouseDownPos;
+    #isTransformDragging;
+    #isDragging;
+    #selectedObject;
+    // A helper group for multi-selection
+    #multiSelectionGroup;
+    // A map to store each object's original parent when moved into multiSelectionGroup
+    #originalParents;
 
     /**
      * Creates a new Picker object
@@ -33,110 +44,55 @@ export class Picker {
         this.#raycaster = new THREE.Raycaster();
         this.#mode = Mode.SINGLE;
 
-        this.canvas = document.getElementById("canvas");
-        this.mouse = new THREE.Vector2();
-        var startingPoint = new THREE.Vector2();
-        var endPoint = new THREE.Vector2();
-        this.isTransformDragging = false;
-        this.selectedObject = null;
+        this.#canvas = document.getElementById("canvas");
+        this.#mouse = new THREE.Vector2();
+        this.#mouseDownPos = { x: 0, y: 0 };
+        this.#isTransformDragging = false;
+        this.#isDragging = false;
+        this.#selectedObject = null;
 
-        
+        // Group used to move multiple selected objects together
+        this.#multiSelectionGroup = new THREE.Group();
+        this.#selectableGroup.add(this.#multiSelectionGroup);
+        this.#originalParents = new Map();
 
-        // TODO: Event listener for click
-        window.addEventListener("click", (event) => {
-            
-            //check if the correct mode is applied
-            if (this.#mode != Mode.SINGLE) { 
-                transformControls.detach();
-                for (Object of this.#selectedObjects) {
-                    if (Object) {
-                        Object.traverse((child) => {
-                            if (child.type == "Mesh") {
-                                child.material.emissive.set(0x000000);
-                            }
-                        });
-                    }
-                }
-                this.#selectedObjects = [];
-                return; 
-            }
+        // Mouse event listeners on the canvas
+        this.#canvas.addEventListener("mousedown", (event) =>
+            this.#onMouseDown(event)
+        );
+        this.#canvas.addEventListener("mousemove", (event) =>
+            this.#onMouseMove(event)
+        );
+        this.#canvas.addEventListener("mouseup", (event) =>
+            this.#onMouseUp(event)
+        );
 
-            if (this.isTransformDragging) { return; } // während oder kurz nach Dragging nichts machen
-            
-            //gets the mouse position
-            this.mouse = this.#mouseposition({ x: event.clientX, y: event.clientY });
-
-            //checks if the transformationControls are currently dragging, if so calls the itemSelectedEvent to update the selected objects in the canvas
-            if (this.#transformControls.dragging) { 
-                this.#itemSelectedEvent();
-                return;
-            }
-            
-            //gets the selected object
-            this.selectedObject = this.#getSelectedObject(this.mouse, this.#camera);
-
-            // updates the selected objects according to the situation
-            if (event.shiftKey) {
-                if (this.selectedObject != null) {
-                    if (this.#selectedObjects.includes(this.selectedObject)) {
-                        this.#transformControls.attach(this.selectedObject);
-                    } else {
-                        this.#selectedObjects.push(this.selectedObject);
-                        this.#transformControls.attach(this.selectedObject);
-                    }
-                } else {
-                    this.#transformControls.detach();
-                }
-            } else {
-                this.#transformControls.detach();
-                for (Object of this.#selectedObjects) {
-                    if (Object) {
-                        Object.traverse((child) => {
-                            if (child.type == "Mesh") {
-                                child.material.emissive.set(0x000000);
-                            }
-                        });
-                    }
-                }
-                this.#selectedObjects = [];
-
-                if (this.selectedObject != null) {
-                    this.#selectedObjects.push(this.selectedObject);
-                    this.#transformControls.attach(this.selectedObject);
-                }
-            }
-
-            this.#itemSelectedEvent();
-        });
-
-        this.#transformControls.addEventListener("dragging-changed", (event) => {
-            this.isTransformDragging = !event.value;
-            console.log("dragging-changed");
-            setTimeout(() => {
-                this.isTransformDragging = false;
-            }, 100);
-
-        });
-
-
-
-        // TODO: Event listener for Rectangular selection
+        // TODO: Event listener for Rectangular selection (not yet implemented)
     }
 
     /**
-     * Sets the selection mode and updats the tranformControls
+     * Sets the selection mode and updates the transformControls
      * @param {Mode} mode The selection mode
      */
     setMode(mode, transformMode) {
         this.#mode = mode;
         if (mode === Mode.NONE) {
             this.#transformControls.detach();
-            this.#selectionBox.visible = false;
-        } else if (mode === Mode.SINGLE || mode === Mode.RECTANGLE) {
+        } else if (mode === Mode.SINGLE) {
             this.#transformControls.setMode("translate");
         } else {
             this.#transformControls.setMode("rotate");
         }
+    }
+
+    /**
+     * Inform the canvas that an item has been selected
+     */
+    #itemSelectedEvent() {
+        const event = new CustomEvent("itemSelected", {
+            detail: { object: this.#selectedObjects },
+        });
+        document.getElementById("canvas").dispatchEvent(event);
     }
 
     /**
@@ -158,23 +114,172 @@ export class Picker {
         this.#itemSelectedEvent();
     }
 
-    // TODO: sigle pick selection
-    pick(normalizedPosition, camera) {
-        this.#itemSelectedEvent();
+    #onMouseDown(event) {
+        this.#isDragging = false;
+        this.#mouseDownPos.x = event.clientX;
+        this.#mouseDownPos.y = event.clientY;
     }
 
-    // TODO: Rectangular selection
-    pickMultiSelection(start, end) {
+    #onMouseMove(event) {
+        if (event.buttons !== 0) {
+            const x = event.clientX - this.#mouseDownPos.x;
+            const y = event.clientY - this.#mouseDownPos.y;
+            if (Math.sqrt(x * x + y * y) > 5) {
+                this.#isDragging = true;
+            }
+        }
+    }
+
+    #onMouseUp(event) {
+        // Only calls onClick if it was a real click  and not a drag
+        if (!this.#isDragging && !this.#isTransformDragging) {
+            this.#onClick(event);
+        }
+    }
+
+    /**
+     * Handles the click event on the canvas
+     */
+    #onClick(event) {
+        if (this.#mode !== Mode.SINGLE) {
+            this.#deselectAll();
+            return;
+        }
+
+        // Get normalized mouse position
+        this.#mouse = this.#mouseposition({
+            x: event.clientX,
+            y: event.clientY,
+        });
+
+        // Raycast to find the clicked object
+        this.#selectedObject = this.#select(this.#mouse, this.#camera);
+
+        // Update selection (handles shift-key and multi-selection)
+        this.#updateSelection(event.shiftKey);
+
         this.#itemSelectedEvent();
     }
 
     /**
-     * Inform the canvas that an item has been selected
+     * Selects an object based on the mouse position and camera
      */
-    #itemSelectedEvent() {
-        const event = new CustomEvent("itemSelected", {
-            detail: { object: this.#selectedObjects },
-        });
-        document.getElementById("canvas").dispatchEvent(event);
+    #select(mouse, camera) {
+        // Raycast from the camera through the mouse position
+        this.#raycaster.setFromCamera(mouse, camera);
+        const intersects = this.#raycaster.intersectObjects(
+            this.#selectableGroup.children,
+            true
+        );
+
+        if (intersects.length > 0) {
+            for (let i = 0; i < intersects.length; i++) {
+                const hit = intersects[i];
+                if (hit.object.type === "Mesh") {
+                    // Move up the hierarchy until we find a SelectableObject
+                    while (
+                        hit.object.parent &&
+                        !(hit.object.parent instanceof SelectableObject)
+                    ) {
+                        hit.object = hit.object.parent;
+                    }
+
+                    const topParent = hit.object.parent;
+
+                    // 1. Posibility using Boxhelper
+                    //this.#selectionBox.setFromObject(topParent);
+
+                    // 2. Possibility using emissive color
+                    topParent.traverse((child) => {
+                        if (child.type === "Mesh") {
+                            child.material.emissive.set(0xff0000);
+                        }
+                    });
+                    return topParent;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Deselects all objects, removes transformControls, and un-highlights them.
+     */
+    #deselectAll() {
+        // Detach transformControls
+        this.#transformControls.detach();
+
+        // 1. Possibility using Boxhelper
+        //this.#selectionBox.setFromObject(new THREE.Object3D());
+
+        // 2. Possibility using emissive color
+        for (const obj of this.#selectedObjects) {
+            if (obj) {
+                obj.traverse((child) => {
+                    if (child.type === "Mesh") {
+                        child.material.emissive.set(0x000000);
+                    }
+                });
+            }
+        }
+        this.#selectedObjects = [];
+    }
+
+    /*
+     * Updates the selection based on the shift key
+     * @param {Boolean} shiftKey The state of the shift key
+     */
+    #updateSelection(shiftKey) {
+        // No object was clicked
+        if (!this.#selectedObject) {
+            if (!shiftKey) {
+                this.#deselectAll();
+            }
+            return;
+        }
+
+        // Object was clicked
+        if (shiftKey) {
+            // If object is already in the selection, just attach transformControls
+            if (this.#selectedObjects.includes(this.#selectedObject)) {
+                this.#attachTransform();
+            } else {
+                // Add it to the selection
+                this.#selectedObjects.push(this.#selectedObject);
+                this.#attachTransform();
+            }
+        } else {
+            // deselect everything, then select the clicked object
+            this.#deselectAll();
+            this.#selectedObjects.push(this.#selectedObject);
+            this.#attachTransform();
+        }
+    }
+
+    /**
+     * Decides whether to attach transformControls to a single object
+     * or a multiSelectionGroup that contains all currently selected objects.
+     */
+    #attachTransform() {
+        if (this.#selectedObjects.length === 0) {
+            this.#transformControls.detach();
+        } else if (this.#selectedObjects.length === 1) {
+            this.#transformControls.attach(this.#selectedObjects[0]);
+        } else {
+            // TODO: Implement multi-selection
+        }
+    }
+
+    /**
+     * Calculates the normalized mouse position based on the canvas
+     * @param {THREE.Vector2} position of the mouse
+     * @returns {THREE.Vector2} normalized mouse position
+     */
+    #mouseposition(position) {
+        const rect = this.#canvas.getBoundingClientRect();
+        return {
+            x: ((position.x - rect.left) / rect.width) * 2 - 1,
+            y: -((position.y - rect.top) / rect.height) * 2 + 1,
+        };
     }
 }
