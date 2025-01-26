@@ -1,3 +1,4 @@
+import { SelectableObject } from "objects";
 import * as THREE from "three";
 
 export const Mode = Object.freeze({
@@ -120,7 +121,6 @@ export class Picker {
 
 
         // TODO: Event listener for Rectangular selection
-
     }
 
     /**
@@ -132,15 +132,12 @@ export class Picker {
         if (mode === Mode.NONE) {
             this.#transformControls.detach();
             this.#selectionBox.visible = false;
-        }
-        else if (mode === Mode.SINGLE || mode === Mode.RECTANGLE) {
+        } else if (mode === Mode.SINGLE || mode === Mode.RECTANGLE) {
             this.#transformControls.setMode("translate");
-        }
-        else {
+        } else {
             this.#transformControls.setMode("rotate");
         }
     }
-
 
     /**
      * Returns the list of selected objects
@@ -152,7 +149,7 @@ export class Picker {
 
     /**
      * Sets the list of selected objects
-     * @param {Array<THREE.Object3D>} objectList 
+     * @param {Array<SelectableObject>} objectList
      */
     setSelection(objectList) {
         this.#selectedObjects = objectList;
@@ -163,13 +160,11 @@ export class Picker {
 
     // TODO: sigle pick selection
     pick(normalizedPosition, camera) {
-
         this.#itemSelectedEvent();
     }
 
     // TODO: Rectangular selection
     pickMultiSelection(start, end) {
-
         this.#itemSelectedEvent();
     }
 
@@ -179,37 +174,7 @@ export class Picker {
     #itemSelectedEvent() {
         const event = new CustomEvent("itemSelected", {
             detail: { object: this.#selectedObjects },
-          });
-          document.getElementById("canvas").dispatchEvent(event);
+        });
+        document.getElementById("canvas").dispatchEvent(event);
     }
-
-    #mouseposition(position) {
-        var rect = this.canvas.getBoundingClientRect();
-        return {
-            x: ((position.x - rect.left) / rect.width) * 2 - 1,
-            y: -((position.y - rect.top) / rect.height) * 2 + 1
-        };
-    }
-
-
-    #getSelectedObject(mouse, camera) {
-        this.#raycaster.setFromCamera(mouse, camera);
-        const intersects = this.#raycaster.intersectObjects(this.#selectableGroup.children);
-
-        if (intersects.length > 0) {
-            for (let i = 0; i < intersects.length; i++) {
-                if (intersects[i].object.type == "Mesh") {
-                  // bubble up to parent -> only two times (mesh -> group -> parent)
-                  intersects[i].object.parent.parent.traverse((child) => {
-                    if (child.type == "Mesh") {
-                        child.material.emissive.set(0xff0000);
-                    }
-                  });
-                return intersects[i].object.parent.parent;
-              }
-            }
-        }
-        return null;
-    }
-    
 }

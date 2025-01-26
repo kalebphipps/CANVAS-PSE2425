@@ -21,8 +21,14 @@
                 "singleObjectCommands": "{% static 'js/singleObjectCommands.mjs' %}",
                 "picker": "{% static 'js/picker.mjs' %}",
                 "saveAndLoadHandler": "{% static 'js/saveAndLoadHandler.mjs' %}",
-                "bulkObjectCommands": "{% static 'js/bulkObjectCommands.mjs' %}"
-
+                "bulkObjectCommands": "{% static 'js/bulkObjectCommands.mjs' %}",
+                "overview": "{% static 'js/overview.mjs' %}",
+                "editor": "{% static 'js/editor.mjs' %}",
+                "updateCommands": "{% static 'js/updateCommands.mjs' %}",
+                "duplicateCommands": "{% static 'js/duplicateCommands.mjs' %}",
+                "deleteCommands": "{% static 'js/deleteCommands.mjs' %}",
+                "inspectorComponents": "{% static 'js/inspectorComponents.mjs' %}",
+                "inspector": "{% static 'js/inspector.mjs' %}"
             }
         }
     </script>
@@ -136,7 +142,10 @@
     <!-- navigation bar -->
     <nav class="navbar navbar-expand-sm navbar-light">
         <a class="navbar-brand ms-4" href="/projects">
-            <div class="rounded-circle bg-primary" style="width: 32px; height: 32px"></div>
+            <img src="{% static "img/logo_canvas_round.svg" %}"
+                 alt="canvas logo"
+                 width="32px"
+                 height="32px">
         </a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
@@ -357,7 +366,7 @@
                          role="tabpanel"
                          aria-labelledby="object-tab"
                          tabindex="0">
-                        <div id="inspector" class="p-2">Select a object by clicking on it</div>
+                        <div id="inspector" class="d-flex flex-column gap-2"></div>
                     </div>
                     <!--Item overview-->
                     <div class="tab-pane fade"
