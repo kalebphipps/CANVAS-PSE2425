@@ -4,19 +4,20 @@ import { SaveAndLoadHandler } from "saveAndLoadHandler";
 export class ProjectSettingsManager {
     #graphicsSettingsButton;
     #graphicsSettingsEntry;
-    #shadowCheckbox;
-    #fogCheckbox;
     #shadowEnabled;
     #fogEnabled;
     #editor;
     #saveAndLoadHandler;
 
     constructor() {
-        console.log("ProjectSettingsManager constructor");
+        this.initialize();
+    }
+
+    async initialize() {
         this.#editor = new Editor();
         this.#saveAndLoadHandler = new SaveAndLoadHandler();
 
-        this.#getPresets();
+        await this.#getPresets();
 
         this.#graphicsSettingsButton = document.getElementById(
             "graphic-settings-button"
@@ -24,20 +25,28 @@ export class ProjectSettingsManager {
         this.#graphicsSettingsEntry =
             document.getElementById("graphic-settings");
 
+        //Event listener for the button
         this.#graphicsSettingsButton.addEventListener("click", () => {
-            console.log("Button clicked, rendering...");
             this.#render();
         });
     }
 
+    /**
+     * Method to get the presets for shadows and fog from the project settings
+     */
     async #getPresets() {
         const projectJson = await this.#saveAndLoadHandler.getProjectData();
 
+        console.log("project");
         const settingsList = projectJson["settings"];
         this.#shadowEnabled = settingsList["shadow"];
+        console.log("shadow enabled: " + this.#shadowEnabled);
         this.#fogEnabled = settingsList["fog"];
     }
 
+    /**
+     * Method to render the graphics settings
+     */
     #render() {
         this.#graphicsSettingsEntry.innerHTML = "";
 
@@ -64,7 +73,7 @@ export class ProjectSettingsManager {
                 this.#editor.setFog(isChecked);
                 this.#saveAndLoadHandler.updateSettings(
                     "fog",
-                    this.#shadowEnabled
+                    this.#fogEnabled
                 );
             }
         );
@@ -73,6 +82,13 @@ export class ProjectSettingsManager {
         this.#graphicsSettingsEntry.appendChild(fogCheckbox);
     }
 
+    /**
+     * Method to create a checkbox
+     * @param {string} label
+     * @param {boolean} isChecked
+     * @param {*} onChange
+     * @returns {HTMLDivElement} Wrapper for the checkbox
+     */
     #createCheckbox(label, isChecked, onChange) {
         //Wrapper for the checkbox
         const wrapper = document.createElement("div");

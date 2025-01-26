@@ -290,7 +290,7 @@ export class Editor {
     setShadows(mode) {
         this.#renderer.shadowMap.enabled = mode;
         this.#saveAndLoadHandler.updateSettings("shadows", mode);
-        console.log("Shadow");
+        console.log("Shadow changed to: " + mode);
         return this;
     }
 
@@ -301,6 +301,7 @@ export class Editor {
     setFog(mode) {
         this.#scene.fog = mode ? new THREE.Fog(0xdde0e0, 100, 2200) : null;
         this.#saveAndLoadHandler.updateSettings("fog", mode);
+        console.log("Fog changed to: " + mode);
         return this;
     }
 
