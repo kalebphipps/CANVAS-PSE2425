@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 
 
 def editor(request):
@@ -74,6 +74,18 @@ def download(request, project_name):
 def uploadPreview(request, project_name):
     """
     Updates the preview of the project
+
+    Parameters
+    ----------
+    request : HttpRequest
+        The request the user send to get here.
+
+    Returns
+    -------
+    HttpResponse : status 200
+        On successfull POST request
+    HttpResponse : status 404
+        on all other occasions
     """
 
     if request.method == "POST":
@@ -85,3 +97,4 @@ def uploadPreview(request, project_name):
         project.save()
 
         return HttpResponse(status=200)
+    return Http404

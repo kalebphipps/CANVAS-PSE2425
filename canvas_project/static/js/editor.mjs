@@ -51,9 +51,6 @@ export class Editor {
     #receiverList = [];
     #lightsourceList = [];
 
-    #previewRenderer;
-    #previewCamera;
-
     constructor(projectId) {
         // singleton
         if (editorInstance) return editorInstance;
@@ -81,11 +78,7 @@ export class Editor {
         //this.#quickSelector = new QuickSelector();
         //this.#jobInterface = new JobInterface();
         this.#inspector = new Inspector(this.#picker);
-        this.#previewHandler = new PreviewHandler(
-            this.#previewRenderer,
-            this.#previewCamera,
-            this.#scene
-        );
+        this.#previewHandler = new PreviewHandler(this.#scene);
 
         window.addEventListener("resize", () => this.onWindowResize());
 
@@ -124,7 +117,6 @@ export class Editor {
 
         this.#scene = new THREE.Scene();
 
-        // main camera
         this.#camera = new THREE.PerspectiveCamera(
             75,
             this.#canvas.clientWidth / this.#canvas.clientHeight,
@@ -133,17 +125,6 @@ export class Editor {
         );
         this.#camera.position.set(130, 50, 0);
 
-        // preview camera
-        this.#previewCamera = new THREE.PerspectiveCamera(
-            75,
-            16 / 9,
-            0.1,
-            2000
-        );
-        this.#previewCamera.position.set(130, 50, 0);
-        this.#previewCamera.lookAt(0, 0, 0);
-
-        // main renderer
         // since we render multiple times (scene and compass), we need to clear the pre#previewRenderer manually
         this.#renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -157,14 +138,6 @@ export class Editor {
             this.#canvas.clientHeight
         );
         this.#canvas.appendChild(this.#renderer.domElement);
-
-        // preview renderer
-        this.#previewRenderer = new THREE.WebGLRenderer({
-            antialias: true,
-            preserveDrawingBuffer: true,
-        });
-        this.#previewRenderer.shadowMap.enabled = true;
-        this.#previewRenderer.setSize(640, 360);
 
         //set up empty scene
         this.#skyboxLoader = new THREE.CubeTextureLoader();
