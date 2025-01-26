@@ -37,12 +37,9 @@ export class ProjectSettingsManager {
     async #getPresets() {
         const projectJson = await this.#saveAndLoadHandler.getProjectData();
 
-        console.log("project");
         const settingsList = projectJson["settings"];
-        this.#shadowEnabled = settingsList["shadow"];
-        console.log("shadow enabled: " + this.#shadowEnabled);
+        this.#shadowEnabled = settingsList["shadows"];
         this.#fogEnabled = settingsList["fog"];
-        console.log("fog enabled: " + this.#fogEnabled);
     }
 
     /**
