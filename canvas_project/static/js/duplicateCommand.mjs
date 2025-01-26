@@ -1,6 +1,8 @@
 import { Editor } from "editor";
 import { Heliostat, LightSource, Receiver } from "objects";
 import { SingleObjectCommand } from "singleObjectCommands";
+import { ItemCreatedEvent } from "createCommands";
+import { ItemDeletedEvent } from "deleteCommands";
 
 /**
  * Command to duplicate a heliostat.
@@ -31,21 +33,17 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
     async execute() {
         await this.#editor.addHeliostat(this.#heliostatCopy);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemCreated", {
-                detail: { item: this.#heliostat },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemCreatedEvent(this.#heliostat));
     }
 
     undo() {
         this.#editor.deleteHeliostat(this.#heliostatCopy);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemDeleted", {
-                detail: { item: this.#heliostat },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemDeletedEvent(this.#heliostat));
     }
 }
 
@@ -84,21 +82,17 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
     async execute() {
         await this.#editor.addReceiver(this.#receiverCopy);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemCreated", {
-                detail: { item: this.#receiver },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemCreatedEvent(this.#receiver));
     }
 
     undo() {
         this.#editor.deleteReceiver(this.#receiverCopy);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemDeleted", {
-                detail: { item: this.#receiver },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemDeletedEvent(this.#receiver));
     }
 }
 
@@ -132,20 +126,16 @@ export class DuplicateLightSourceCommand extends SingleObjectCommand {
     async execute() {
         await this.#editor.addLightsource(this.#lightsourceCopy);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemCreated", {
-                detail: { item: this.#lightsource },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemCreatedEvent(this.#lightsource));
     }
 
     undo() {
         this.#editor.deleteLightsource(this.#lightsourceCopy);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemDeleted", {
-                detail: { item: this.#lightsource },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemDeletedEvent(this.#lightsource));
     }
 }
