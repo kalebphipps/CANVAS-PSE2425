@@ -37,7 +37,7 @@
         import { Editor } from "{% static 'js/editor.mjs' %}";
 
         window.addEventListener('DOMContentLoaded', (_) => {
-            new Editor({{ project_id }});
+            new Editor("{{ project_id }}");
         });
     </script>
 {% endblock %}
@@ -255,7 +255,7 @@
              id="canvas">
             <!--mode selector-->
             <div class="position-absolute mt-4 ms-4 fs-5">
-                <ul class="nav nav-pills flex-column p-2 gap-1 shadow-sm small bg-body-secondary bg-opacity-75 rounded-4 border" id="pillNav2" role="tablist" style="backdrop-filter: blur(0.7rem)"
+                <ul class="nav nav-pills flex-column p-2 gap-1 shadow-sm small bg-body-secondary bg-opacity-95 rounded-4 border" id="pillNav2" role="tablist" style="backdrop-filter: blur(0.7rem)"
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active rounded-3"
                                 id="home-tab2"
@@ -264,16 +264,6 @@
                                 role="tab"
                                 aria-selected="true">
                             <i class="bi bi-cursor"></i>
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link rounded-3"
-                                id="contact-tab2"
-                                data-bs-toggle="tab"
-                                type="button"
-                                role="tab"
-                                aria-selected="false">
-                            <i class="bi bi-bounding-box-circles"></i>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -302,16 +292,16 @@
             <div class="position-absolute bottom-0 mb-4 fs-5 d-flex justify-content-center w-100">
                 <div class="p-2 gap-2 shadow-sm bg-body-secondary bg-opacity-75 rounded-4 border d-flex"
                      style="backdrop-filter: blur(0.7rem)">
-                    <button class="btn btn-primary custom-btn d-flex gap-1 text-reset">
-                        <i class="bi bi-arrow-up-right-square"></i>
+                     <button class="btn btn-primary d-flex gap-1 text-reset">
+                        <img src="{% static 'img/Icons/HeliostatIcon.png' %}" alt="heliostat icon" style="width: 1.5rem; height: fit-content;">
                     </button>
-                    <button class="btn btn-primary custom-btn d-flex gap-1 text-reset">
-                        <i class="bi bi-align-bottom"></i>
+                    <button class="btn btn-primary d-flex gap-1 text-reset">
+                        <img src="{% static 'img/Icons/ReceiverIcon.png' %}" alt="Receiver icon" style="width: 1.5rem; height: fit-content;">
                     </button>
-                    <button class="btn btn-primary custom-btn d-flex gap-1 text-reset">
-                        <i class="bi bi-lightbulb"></i>
+                    <button class="btn btn-primary d-flex gap-1 text-reset">
+                        <i class="bi bi-lightbulb text-white"></i>
                     </button>
-                    <button class="btn btn-primary rounded-3 fw-bolder">Render</button>
+                    <button class="btn btn-primary rounded-3 fw-bolder bg-blue">Render</button>
                 </div>
             </div>
         </div>
