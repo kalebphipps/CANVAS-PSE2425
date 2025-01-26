@@ -29,7 +29,7 @@
                 "deleteCommands": "{% static 'js/deleteCommands.mjs' %}",
                 "inspectorComponents": "{% static 'js/inspectorComponents.mjs' %}",
                 "inspectorClass": "{% static 'js/inspector.mjs' %}",
-                "createCommands": "{% static 'js/createCommands' %}"
+                "createCommands": "{% static 'js/createCommands.mjs' %}"
             }
         }
     </script>
@@ -292,11 +292,17 @@
             <div class="position-absolute bottom-0 mb-4 fs-5 d-flex justify-content-center w-100">
                 <div class="p-2 gap-2 shadow-sm bg-body-secondary bg-opacity-75 rounded-4 border d-flex"
                      style="backdrop-filter: blur(0.7rem)">
-                     <button class="btn btn-primary d-flex gap-1 text-reset">
-                        <img src="{% static 'img/Icons/HeliostatIcon.png' %}" alt="heliostat icon" style="width: 1.5rem; height: fit-content;">
+                    <button class="btn btn-primary d-flex gap-1 text-reset">
+                        <img src="{% static 'img/Icons/HeliostatIcon.png' %}"
+                             alt="heliostat icon"
+                             style="width: 1.5rem;
+                                    height: fit-content">
                     </button>
                     <button class="btn btn-primary d-flex gap-1 text-reset">
-                        <img src="{% static 'img/Icons/ReceiverIcon.png' %}" alt="Receiver icon" style="width: 1.5rem; height: fit-content;">
+                        <img src="{% static 'img/Icons/ReceiverIcon.png' %}"
+                             alt="Receiver icon"
+                             style="width: 1.5rem;
+                                    height: fit-content">
                     </button>
                     <button class="btn btn-primary d-flex gap-1 text-reset">
                         <i class="bi bi-lightbulb text-white"></i>
