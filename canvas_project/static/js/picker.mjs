@@ -105,12 +105,22 @@ export class Picker {
 
     /**
      * Sets the list of selected objects
-     * @param {Array<SelectableObject>} objectList
+     * @param {Array<THREE.Object3D>} objectList
      */
     setSelection(objectList) {
+        this.#deselectAll();
         this.#selectedObjects = objectList;
-        // TODO: mark all newly selected objects
-
+        if (objectList) {
+            this.#selectedObject = objectList[0];
+        }
+        this.#attachTransform();
+        for (const object of objectList) {
+            object.traverse((child) => {
+                if (child.type === "Mesh") {
+                    child.material.emissive.set(0xff0000);
+                }
+            });
+        }
         this.#itemSelectedEvent();
     }
 
