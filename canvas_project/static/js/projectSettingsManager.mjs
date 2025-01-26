@@ -1,4 +1,5 @@
 import { Editor } from "editor";
+import { SaveAndLoadHandler } from "saveAndLoadHandler";
 
 export class ProjectSettingsManager {
     #graphicsSettingsButton;
@@ -10,6 +11,7 @@ export class ProjectSettingsManager {
     #editor;
 
     constructor() {
+        console.log("ProjectSettingsManager constructor");
         this.#editor = new Editor();
         this.#graphicsSettingsButton = document.getElementById(
             "graphic-settings-button"

@@ -290,6 +290,7 @@ export class Editor {
     setShadows(mode) {
         this.#renderer.shadowMap.enabled = mode;
         this.#saveAndLoadHandler.updateSettings("shadows", mode);
+        console.log("Shadow");
         return this;
     }
 
@@ -314,7 +315,7 @@ export class Editor {
      * @return {Boolean} if the fog is enabled
      */
     get fogEnabled() {
-        return this.#renderer.fogMap.enabled;
+        return this.#scene.fog !== null;
     }
     /**
      * Adds the given heliostat to the scene and saves it.
