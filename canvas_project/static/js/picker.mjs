@@ -112,15 +112,24 @@ export class Picker {
         this.#selectedObjects = objectList;
         if (objectList) {
             this.#selectedObject = objectList[0];
+            this.#attachTransform();
+
+            // 1. Possibility using Boxhelper
+            this.#selectionBox.setFromObject(this.#selectedObject);
+            this.#selectionBox.visible = true;
+            /*
+            // 2. Possibility using emissive color
+            for (const object of objectList) {
+                object.traverse((child) => {
+                    if (child.type === "Mesh") {
+                        child.material.emissive.set(0xff0000);
+                    }
+                });
+            }
+            */
         }
-        this.#attachTransform();
-        for (const object of objectList) {
-            object.traverse((child) => {
-                if (child.type === "Mesh") {
-                    child.material.emissive.set(0xff0000);
-                }
-            });
-        }
+        
+
         this.#itemSelectedEvent();
     }
 
@@ -195,16 +204,6 @@ export class Picker {
                     }
 
                     const topParent = hit.object.parent;
-
-                    // 1. Posibility using Boxhelper
-                    //this.#selectionBox.setFromObject(topParent);
-
-                    // 2. Possibility using emissive color
-                    topParent.traverse((child) => {
-                        if (child.type === "Mesh") {
-                            child.material.emissive.set(0xff0000);
-                        }
-                    });
                     return topParent;
                 }
             }
@@ -219,9 +218,13 @@ export class Picker {
         // Detach transformControls
         this.#transformControls.detach();
 
+        if (this.#selectedObjects.length === 0) {
+            return;
+        }
         // 1. Possibility using Boxhelper
-        //this.#selectionBox.setFromObject(new THREE.Object3D());
+        this.#selectionBox.visible = false;
 
+        /*
         // 2. Possibility using emissive color
         for (const obj of this.#selectedObjects) {
             if (obj) {
@@ -232,6 +235,7 @@ export class Picker {
                 });
             }
         }
+        */
         this.#selectedObjects = [];
     }
 
@@ -247,6 +251,7 @@ export class Picker {
             }
             return;
         }
+
 
         // Object was clicked
         if (shiftKey) {
@@ -275,6 +280,18 @@ export class Picker {
             this.#transformControls.detach();
         } else if (this.#selectedObjects.length === 1) {
             this.#transformControls.attach(this.#selectedObjects[0]);
+            // 1. Posibility using Boxhelper
+            this.#selectionBox.setFromObject(this.#selectedObject);
+            this.#selectionBox.visible = true;
+
+            /*
+            // 2. Possibility using emissive color
+            this.#selectedObject.traverse((child) => {
+                if (child.type === "Mesh") {
+                    child.material.emissive.set(0xff0000);
+                }
+            });
+            */
         } else {
             // TODO: Implement multi-selection
         }
