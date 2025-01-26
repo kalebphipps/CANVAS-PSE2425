@@ -1,6 +1,7 @@
 import { SingleObjectCommand } from "singleObjectCommands";
 import { Editor } from "editor";
 import { Heliostat, Receiver, LightSource, SelectableObject } from "objects";
+import { ItemDeletedEvent } from "deleteCommands";
 
 export class ItemCreatedEvent extends CustomEvent {
     /**
@@ -45,11 +46,9 @@ export class CreateHeliostatCommand extends SingleObjectCommand {
     async undo() {
         await this.#editor.deleteHeliostat(this.#heliostat);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemDeleted", {
-                detail: { item: this.#heliostat },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemDeletedEvent(this.#heliostat));
     }
 }
 
@@ -86,11 +85,9 @@ export class CreateReceiverCommand extends SingleObjectCommand {
     async undo() {
         await this.#editor.deleteReceiver(this.#receiver);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemDeleted", {
-                detail: { item: this.#receiver },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemDeletedEvent(this.#receiver));
     }
 }
 
@@ -127,10 +124,8 @@ export class CreateLightSourceCommand extends SingleObjectCommand {
     async undo() {
         await this.#editor.deleteLightsource(this.#lightsource);
 
-        document.getElementById("canvas").dispatchEvent(
-            new CustomEvent("itemDeleted", {
-                detail: { item: this.#lightsource },
-            })
-        );
+        document
+            .getElementById("canvas")
+            .dispatchEvent(new ItemDeletedEvent(this.#lightsource));
     }
 }
