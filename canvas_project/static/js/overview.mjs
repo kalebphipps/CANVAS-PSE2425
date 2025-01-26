@@ -1,18 +1,33 @@
 import { Editor } from "editor";
-import { Heliostat, LightSource, ObjectType, Receiver } from "objects";
+import { Heliostat, LightSource, Receiver, SelectableObject } from "objects";
 import { Picker } from "picker";
+import { UndoRedoHandler } from "undoRedoHandler";
+import {
+    UpdateHeliostatCommand,
+    UpdateLightsourceCommand,
+    UpdateReceiverCommand,
+} from "updateCommands";
 
 export class OverviewHandler {
     #editor;
     #picker;
     #overviewButton;
-    #selectedItems = [];
+    /**
+     * @type {SelectableObject[]}
+     */
+    #selectedObjects = [];
     #heliostatList;
     #receiverList;
     #lightsourceList;
-    #heliostatMap = new Map();
-    #receiverMap = new Map();
-    #lightsourceMap = new Map();
+    #htmlToObject = new Map();
+    #objectToHtml = new Map();
+    #undoRedoHandler = new UndoRedoHandler();
+
+    #objectType = Object.freeze({
+        HELIOSTAT: "heliostat",
+        RECEIVER: "receiver",
+        LIGHTSOURCE: "lightsource",
+    });
 
     /**
      * Creates a new overview handler.
@@ -40,44 +55,49 @@ export class OverviewHandler {
                 }
             });
 
-        this.#handleUserInput();
+        // re-render when object is created
+        document
+            .getElementById("canvas")
+            .addEventListener("itemCreated", () => {
+                if (this.#overviewButton.classList.contains("active")) {
+                    this.#render();
+                }
+            });
 
-        // F2 to rename current selected object
-        document.addEventListener("keydown", (event) => {
+        // re-render when object is deleted
+        document
+            .getElementById("canvas")
+            .addEventListener("itemDeleted", () => {
+                if (this.#overviewButton.classList.contains("active")) {
+                    this.#render();
+                }
+            });
+
+        // re-render when object is updated
+        document
+            .getElementById("canvas")
+            .addEventListener("itemUpdated", () => {
+                if (this.#overviewButton.classList.contains("active")) {
+                    this.#render();
+                }
+            });
+
+        // handle F2 to rename
+        document.addEventListener("keyup", (event) => {
             if (
                 event.key == "F2" &&
                 this.#overviewButton.classList.contains("active")
             ) {
-                if (this.#selectedItems.length !== 1) {
-                    alert(
-                        "To rename an object exactly one item must be selected"
-                    );
+                if (this.#selectedObjects.length !== 1) {
+                    alert("Exactly one object must selected to rename it");
                 } else {
-                    const entry = this.#selectedItems[0];
-                    let object;
-                    switch (entry.dataset.objectType) {
-                        case ObjectType.HELIOSTAT:
-                            object = this.#heliostatMap.get(
-                                entry.dataset.apiId
-                            );
-                            break;
-                        case ObjectType.RECEIVER:
-                            object = this.#receiverMap.get(entry.dataset.apiId);
-                            break;
-                        case ObjectType.LIGHTSOURCE:
-                            object = this.#lightsourceMap.get(
-                                entry.dataset.apiId
-                            );
-                            break;
-                        default:
-                            console.warn(
-                                `Unknown object type: ${object.objectType}`
-                            );
-                    }
-                    this.#openEditInput(object, entry);
+                    const object = this.#selectedObjects[0];
+                    const type = this.#objectToHtml.get(object).dataset.type;
+                    this.#openEditInput(this.#selectedObjects[0], type);
                 }
             }
         });
+        this.#handleUserInput();
     }
 
     #render() {
@@ -89,51 +109,45 @@ export class OverviewHandler {
         const objects = this.#editor.objects;
         const selectedObjects = this.#picker.getSelectedObjects();
 
-        // reset the selected items list, to be filled with the items specified by selectedObjects
-        this.#selectedItems = [];
-
         // render the objects
-        objects.forEach((element) => {
-            const selected = selectedObjects.includes(element);
+        objects.heliostatList.forEach((heliostat) => {
+            const selected = selectedObjects.includes(heliostat);
+            this.#heliostatList.appendChild(
+                this.#createHeliostatEntry(heliostat, selected)
+            );
+        });
 
-            switch (element.objectType) {
-                case ObjectType.HELIOSTAT:
-                    this.#heliostatList.appendChild(
-                        this.#createHeliostatEntry(element, selected)
-                    );
-                    break;
-                case ObjectType.RECEIVER:
-                    this.#receiverList.appendChild(
-                        this.#createReceiverEntry(element, selected)
-                    );
-                    break;
-                case ObjectType.LIGHTSOURCE:
-                    this.#lightsourceList.appendChild(
-                        this.#createLightsourceEntry(element, selected)
-                    );
-                    break;
-                default:
-                    console.warn(`Unknown object type: ${element.objectType}`);
-            }
+        objects.receiverList.forEach((receiver) => {
+            const selected = selectedObjects.includes(receiver);
+            this.#receiverList.appendChild(
+                this.#createReceiverEntry(receiver, selected)
+            );
+        });
+
+        objects.lightsourceList.forEach((lightsource) => {
+            const selected = selectedObjects.includes(lightsource);
+            this.#lightsourceList.appendChild(
+                this.#createLightsourceEntry(lightsource, selected)
+            );
         });
 
         if (this.#heliostatList.children.length == 0) {
             const text = document.createElement("i");
-            text.classList = "text-secondary";
+            text.classList.add("text-secondary");
             text.innerHTML = "No heliostats in this scene";
             this.#heliostatList.appendChild(text);
         }
 
         if (this.#receiverList.children.length == 0) {
             const text = document.createElement("i");
-            text.classList = "text-secondary";
+            text.classList.add("text-secondary");
             text.innerHTML = "No receivers in this scene";
             this.#receiverList.appendChild(text);
         }
 
         if (this.#lightsourceList.children.length == 0) {
             const text = document.createElement("i");
-            text.classList = "text-secondary";
+            text.classList.add("text-secondary");
             text.innerHTML = "No light sources in this scene";
             this.#lightsourceList.appendChild(text);
         }
@@ -146,43 +160,48 @@ export class OverviewHandler {
      * @returns the html element
      */
     #createHeliostatEntry(object, selected) {
-        this.#heliostatMap.set(`${object.apiID}`, object);
-
         // create the html element to render
         const heliostatEntry = document.createElement("div");
         heliostatEntry.role = "button";
-        heliostatEntry.classList =
-            "d-flex gap-2 p-2 rounded-2 overviewElem " +
-            (selected ? "bg-primary-subtle" : "bg-body-secondary");
+        heliostatEntry.classList.add(
+            "d-flex",
+            "gap-2",
+            "p-2",
+            "rounded-2",
+            "overviewElem",
+            selected ? "bg-primary-subtle" : "bg-body-secondary"
+        );
 
         const icon = document.createElement("i");
-        icon.classList = "bi-arrow-up-right-square d-flex align-items-center";
+        icon.classList.add(
+            "bi-arrow-up-right-square",
+            "d-flex",
+            "align-items-center"
+        );
         heliostatEntry.appendChild(icon);
 
         const text = document.createElement("div");
-        text.classList = "w-100 d-flex align-items-center";
+        text.classList.add("w-100", "d-flex", "align-items-center");
         text.innerHTML =
-            object.heliostatName !== "" && object.heliostatName !== ""
-                ? object.heliostatName
+            object.objectName !== "" && object.objectName !== ""
+                ? object.objectName
                 : "Heliostat";
         heliostatEntry.appendChild(text);
 
         const button = document.createElement("button");
-        button.classList = "btn btn-primary custom-btn";
+        button.classList.add("btn", "btn-primary", "custom-btn");
         const buttonIcon = document.createElement("i");
-        buttonIcon.classList = "bi bi-pencil-square";
+        buttonIcon.classList.add("bi", "bi-pencil-square");
         button.appendChild(buttonIcon);
         heliostatEntry.appendChild(button);
 
-        this.#addEditFunctionality(button, object);
+        this.#addEditFunctionality(button, object, this.#objectType.HELIOSTAT);
 
-        heliostatEntry.dataset.apiId = object.apiID;
-        heliostatEntry.dataset.objectType = ObjectType.HELIOSTAT;
+        heliostatEntry.dataset.apiId = object.apiID.toString();
+        heliostatEntry.dataset.type = this.#objectType.HELIOSTAT;
 
-        if (selected) {
-            this.#selectedItems.push(heliostatEntry);
-        }
-
+        this.#htmlToObject.set(heliostatEntry, object);
+        this.#objectToHtml.set(object, heliostatEntry);
         return heliostatEntry;
     }
 
@@ -193,43 +212,49 @@ export class OverviewHandler {
      * @returns the html element
      */
     #createReceiverEntry(object, selected) {
-        this.#receiverMap.set(`${object.apiID}`, object);
-
         // create the html element to render
         const receiverEntry = document.createElement("div");
         receiverEntry.role = "button";
-        receiverEntry.classList =
-            "d-flex gap-2 p-2 rounded-2 overviewElem " +
-            (selected ? "bg-primary-subtle" : "bg-body-secondary");
+        receiverEntry.classList.add(
+            "d-flex",
+            "gap-2",
+            "p-2",
+            "rounded-2",
+            "overviewElem",
+            selected ? "bg-primary-subtle" : "bg-body-secondary"
+        );
 
         const icon = document.createElement("i");
-        icon.classList = "bi bi-align-bottom d-flex align-items-center";
+        icon.classList.add(
+            "bi",
+            "bi-align-bottom",
+            "d-flex",
+            "align-items-center"
+        );
         receiverEntry.appendChild(icon);
 
         const text = document.createElement("div");
-        text.classList = "w-100 d-flex align-items-center";
+        text.classList.add("w-100", "d-flex", "align-items-center");
         text.innerHTML =
-            object.receiverName !== "" && object.receiverName
-                ? object.receiverName
+            object.objectName !== "" && object.objectName
+                ? object.objectName
                 : "Receiver";
         receiverEntry.appendChild(text);
 
         const button = document.createElement("button");
-        button.classList = "btn btn-primary custom-btn";
+        button.classList.add("btn", "btn-primary", "custom-btn");
         const buttonIcon = document.createElement("i");
-        buttonIcon.classList = "bi bi-pencil-square";
+        buttonIcon.classList.add("bi", "bi-pencil-square");
         button.appendChild(buttonIcon);
         receiverEntry.appendChild(button);
 
-        this.#addEditFunctionality(button, object);
+        this.#addEditFunctionality(button, object, this.#objectType.RECEIVER);
 
-        receiverEntry.dataset.apiId = object.apiID;
-        receiverEntry.dataset.objectType = ObjectType.RECEIVER;
+        receiverEntry.dataset.apiId = object.apiID.toString();
+        receiverEntry.dataset.type = this.#objectType.RECEIVER;
 
-        if (selected) {
-            this.#selectedItems.push(receiverEntry);
-        }
-
+        this.#htmlToObject.set(receiverEntry, object);
+        this.#objectToHtml.set(object, receiverEntry);
         return receiverEntry;
     }
 
@@ -240,43 +265,53 @@ export class OverviewHandler {
      * @returns the html element
      */
     #createLightsourceEntry(object, selected) {
-        this.#lightsourceMap.set(`${object.apiID}`, object);
-
         // create the html element to render
         const lightsourceEntry = document.createElement("div");
         lightsourceEntry.role = "button";
-        lightsourceEntry.classList =
-            "d-flex gap-2 p-2 rounded-2 overviewElem " +
-            (selected ? "bg-primary-subtle" : "bg-body-secondary");
+        lightsourceEntry.classList.add(
+            "d-flex",
+            "gap-2",
+            "p-2",
+            "rounded-2",
+            "overviewElem",
+            selected ? "bg-primary-subtle" : "bg-body-secondary"
+        );
 
         const icon = document.createElement("i");
-        icon.classList = "bi bi-lightbulb d-flex align-items-center";
+        icon.classList.add(
+            "bi",
+            "bi-lightbulb",
+            "d-flex",
+            "align-items-center"
+        );
         lightsourceEntry.appendChild(icon);
 
         const text = document.createElement("div");
-        text.classList = "w-100 d-flex align-items-center";
+        text.classList.add("w-100", "d-flex", "align-items-center");
         text.innerHTML =
-            object.lightsourceName !== "" && object.lightsourceName
-                ? object.lightsourceName
+            object.objectName !== "" && object.objectName
+                ? object.objectName
                 : "Light source";
         lightsourceEntry.appendChild(text);
 
         const button = document.createElement("button");
-        button.classList = "btn btn-primary custom-btn";
+        button.classList.add("btn", "btn-primary", "custom-btn");
         const buttonIcon = document.createElement("i");
-        buttonIcon.classList = "bi bi-pencil-square";
+        buttonIcon.classList.add("bi", "bi-pencil-square");
         button.appendChild(buttonIcon);
         lightsourceEntry.appendChild(button);
 
-        this.#addEditFunctionality(button, object);
+        this.#addEditFunctionality(
+            button,
+            object,
+            this.#objectType.LIGHTSOURCE
+        );
 
-        lightsourceEntry.dataset.apiId = object.apiID;
-        lightsourceEntry.dataset.objectType = ObjectType.LIGHTSOURCE;
+        lightsourceEntry.dataset.apiId = object.apiID.toString();
+        lightsourceEntry.dataset.type = this.#objectType.LIGHTSOURCE;
 
-        if (selected) {
-            this.#selectedItems.push(lightsourceEntry);
-        }
-
+        this.#htmlToObject.set(lightsourceEntry, object);
+        this.#objectToHtml.set(object, lightsourceEntry);
         return lightsourceEntry;
     }
 
@@ -284,91 +319,52 @@ export class OverviewHandler {
         document
             .getElementById("accordionOverview")
             .addEventListener("click", (event) => {
-                // get the closest parent which has the overviewElem class
                 const target = event.target.closest(".overviewElem");
+                const object = this.#htmlToObject.get(target);
 
-                if (target && target.classList.contains("overviewElem")) {
-                    if (event.ctrlKey && !event.shiftKey) {
-                        if (this.#selectedItems.includes(target)) {
-                            this.#selectedItems.splice(
-                                this.#selectedItems.indexOf(target),
+                if (target && object) {
+                    if (event.ctrlKey) {
+                        if (this.#selectedObjects.includes(object)) {
+                            this.#selectedObjects.splice(
+                                this.#selectedObjects.indexOf(object),
                                 1
                             );
                         } else {
-                            this.#selectedItems.push(target);
+                            this.#selectedObjects.push(object);
                         }
-                    } else if (!event.ctrlKey && event.shiftKey) {
-                        //
                     } else {
-                        this.#selectedItems = [target];
+                        this.#selectedObjects = [object];
                     }
 
-                    const selectedObjects = [];
-                    this.#selectedItems.forEach((element) => {
-                        switch (element.dataset.objectType) {
-                            case ObjectType.HELIOSTAT:
-                                selectedObjects.push(
-                                    this.#heliostatMap.get(
-                                        `${element.dataset.apiId}`
-                                    )
-                                );
-                                break;
-                            case ObjectType.RECEIVER:
-                                selectedObjects.push(
-                                    this.#receiverMap.get(
-                                        `${element.dataset.apiId}`
-                                    )
-                                );
-                                break;
-                            case ObjectType.LIGHTSOURCE:
-                                selectedObjects.push(
-                                    this.#lightsourceMap.get(
-                                        `${element.dataset.apiId}`
-                                    )
-                                );
-                                break;
-                            default:
-                                console.warn(
-                                    `Unknown object type: ${element.objectType}`
-                                );
-                        }
-                    });
-                    this.#picker.setSelection(selectedObjects);
+                    this.#picker.setSelection(this.#selectedObjects);
                 }
             });
     }
 
-    #addEditFunctionality(button, object) {
-        const entry = button.parentElement;
+    /**
+     * Adds edit functionality to a given button.
+     * @param {HTMLButtonElement} button the button to open the edit field.
+     * @param {SelectableObject} object the object you want to edit.
+     * @param {"heliostat" | "receiver" | "lightsource"} type the type of object you want to edit the of.
+     */
+    #addEditFunctionality(button, object, type) {
         button.addEventListener("click", (event) => {
             event.stopPropagation();
-            this.#openEditInput(object, entry);
+            this.#openEditInput(object, type);
         });
     }
 
-    #openEditInput(object, entry) {
+    /**
+     * Opens a new edit field for the given input
+     * @param {SelectableObject} object the object you want rename.
+     * @param {"heliostat" | "receiver" | "lightsource"} type the type of object you want to edit the of.
+     */
+    #openEditInput(object, type) {
+        const entry = this.#objectToHtml.get(object);
         const inputField = document.createElement("input");
         inputField.type = "text";
-        inputField.classList = "form-control rounded-1";
-        switch (object.objectType) {
-            case ObjectType.HELIOSTAT:
-                inputField.value =
-                    object.heliostatName && object.heliostatName !== ""
-                        ? object.heliostatName
-                        : "Heliostat";
-                break;
-            case ObjectType.RECEIVER:
-                inputField.value =
-                    object.receiverName && object.receiverName !== ""
-                        ? object.receiverName
-                        : "Receiver";
-                break;
-            case ObjectType.LIGHTSOURCE:
-                inputField.value =
-                    object.lightsourceName && object.lightsourceName !== ""
-                        ? object.lightsourceName
-                        : "Light source";
-        }
+        inputField.classList.add("form-control", "rounded-1");
+
         entry.innerHTML = "";
         entry.appendChild(inputField);
         inputField.focus();
@@ -385,32 +381,42 @@ export class OverviewHandler {
 
         inputField.addEventListener("keyup", (event) => {
             if (event.key == "Escape") {
-                switch (object.objectType) {
-                    case ObjectType.HELIOSTAT:
-                        inputField.value = object.heliostatName;
-                        break;
-                    case ObjectType.RECEIVER:
-                        inputField.value = object.receiverName;
-                        break;
-                    case ObjectType.LIGHTSOURCE:
-                        inputField.value = object.lightsourceName;
-                }
+                inputField.value = object.objectName;
                 inputField.blur();
             }
         });
 
+        // TODO: ensure type real typesafety, but will work for now, hopefully
         inputField.addEventListener("blur", () => {
-            switch (object.objectType) {
-                case ObjectType.HELIOSTAT:
-                    object.heliostatName = inputField.value;
+            switch (type) {
+                case this.#objectType.HELIOSTAT:
+                    this.#undoRedoHandler.executeCommand(
+                        new UpdateHeliostatCommand(
+                            object,
+                            "objectName",
+                            inputField.value
+                        )
+                    );
                     break;
-                case ObjectType.RECEIVER:
-                    object.receiverName = inputField.value;
+                case this.#objectType.RECEIVER:
+                    this.#undoRedoHandler.executeCommand(
+                        new UpdateReceiverCommand(
+                            object,
+                            "objectName",
+                            inputField.value
+                        )
+                    );
                     break;
-                case ObjectType.LIGHTSOURCE:
-                    object.lightsourceName = inputField.value;
+                case this.#objectType.LIGHTSOURCE:
+                    this.#undoRedoHandler.executeCommand(
+                        new UpdateLightsourceCommand(
+                            object,
+                            "objectName",
+                            inputField.value
+                        )
+                    );
+                    break;
             }
-            // TODO: Make change through command when command exists
             this.#render();
         });
     }
