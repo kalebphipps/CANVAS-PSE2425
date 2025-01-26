@@ -2,7 +2,7 @@ import { SingleObjectCommand } from "singleObjectCommands";
 import { Editor } from "editor";
 import { Heliostat, Receiver, LightSource, SelectableObject } from "objects";
 
-export class ItemCreateEvent extends CustomEvent {
+export class ItemCreatedEvent extends CustomEvent {
     /**
      * Creates a new item create event.
      * @param {SelectableObject} item - the item that was added.
@@ -36,7 +36,7 @@ export class CreateHeliostatCommand extends SingleObjectCommand {
 
         document
             .getElementById("canvas")
-            .dispatchEvent(new ItemCreateEvent(this.#heliostat));
+            .dispatchEvent(new ItemCreatedEvent(this.#heliostat));
     }
 
     /**
@@ -77,7 +77,7 @@ export class CreateReceiverCommand extends SingleObjectCommand {
 
         document
             .getElementById("canvas")
-            .dispatchEvent(new ItemCreateEvent(this.#receiver));
+            .dispatchEvent(new ItemCreatedEvent(this.#receiver));
     }
 
     /**
@@ -118,7 +118,7 @@ export class CreateLightSourceCommand extends SingleObjectCommand {
 
         document
             .getElementById("canvas")
-            .dispatchEvent(new ItemCreateEvent(this.#lightsource));
+            .dispatchEvent(new ItemCreatedEvent(this.#lightsource));
     }
 
     /**
