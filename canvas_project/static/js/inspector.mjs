@@ -1,5 +1,5 @@
 import { Picker } from "picker";
-import { ItemDeletedEvent } from "./deleteCommands.mjs";
+import { ItemDeletedEvent } from "deleteCommands";
 import { SelectableObject } from "objects";
 import { ItemUpdatedEvent } from "updateCommands";
 
