@@ -28,7 +28,8 @@
                 "duplicateCommands": "{% static 'js/duplicateCommands.mjs' %}",
                 "deleteCommands": "{% static 'js/deleteCommands.mjs' %}",
                 "inspectorComponents": "{% static 'js/inspectorComponents.mjs' %}",
-                "inspector": "{% static 'js/inspector.mjs' %}"
+                "inspector": "{% static 'js/inspector.mjs' %}",
+                "projectSettingsManager": "{% static 'js/projectSettingsManager.mjs' %}"
             }
         }
     </script>
@@ -438,7 +439,8 @@
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed"
+                                    <button id="graphic-settings-button"
+                                            class="accordion-button collapsed"
                                             type="button"
                                             data-bs-toggle="collapse"
                                             data-bs-target="#collapseTwo"

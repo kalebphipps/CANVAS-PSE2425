@@ -26,7 +26,8 @@
             "duplicateCommands": ["static/js/duplicateCommands.mjs"],
             "deleteCommands": ["static/js/deleteCommands.mjs"],
             "inspectorComponents": ["static/js/inspectorComponents.mjs"],
-            "inspector": ["static/js/inspector.mjs"]
+            "inspector": ["static/js/inspector.mjs"],
+            "projectSettingsManager": ["static/js/projectSettingsManager.mjs"]
         }
     }
 }

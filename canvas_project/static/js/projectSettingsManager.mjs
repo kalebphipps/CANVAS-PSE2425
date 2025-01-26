@@ -1,7 +1,8 @@
 import { Editor } from "editor";
 
 export class ProjectSettingsManager {
-    #graphicsButton;
+    #graphicsSettingsButton;
+    #graphicsSettingsEntry;
     #shadowCheckbox;
     #fogCheckbox;
     #shadowEnabled;
@@ -10,22 +11,27 @@ export class ProjectSettingsManager {
 
     constructor() {
         this.#editor = new Editor();
-        this.#graphicsButton = document.getElementById("graphic-settings");
+        this.#graphicsSettingsButton = document.getElementById(
+            "graphic-settings-button"
+        );
+        this.#graphicsSettingsEntry =
+            document.getElementById("graphic-settings");
         //how do I get this from the editor??
         this.#shadowEnabled = this.#editor.shadowEnabled;
         this.#fogEnabled = this.#editor.fogEnabled;
 
-        this.#graphicsButton.addEventListener("click", () => {
+        this.#graphicsSettingsButton.addEventListener("click", () => {
+            console.log("Button clicked, rendering...");
             this.#render();
         });
     }
 
     #render() {
-        this.#graphicsButton.innerHTML = "";
+        this.#graphicsSettingsEntry.innerHTML = "";
 
         //checkbox for shadows
         const shadowCheckbox = this.#createCheckbox(
-            "Shadows",
+            "Shadow",
             this.#shadowEnabled,
             (isChecked) => {
                 this.#shadowEnabled = isChecked;
@@ -43,8 +49,8 @@ export class ProjectSettingsManager {
             }
         );
 
-        this.#graphicsButton.appendChild(shadowCheckbox);
-        this.#graphicsButton.appendChild(fogCheckbox);
+        this.#graphicsSettingsEntry.appendChild(shadowCheckbox);
+        this.#graphicsSettingsEntry.appendChild(fogCheckbox);
     }
 
     #createCheckbox(label, isChecked, onChange) {
