@@ -76,9 +76,9 @@ export class Picker {
      */
     setMode(mode) {
         this.#mode = mode;
-        if (mode === "none") {
+        if (mode === Mode.NONE) {
             this.#transformControls.detach();
-        } else if (mode === "single") {
+        } else if (mode === Mode.SINGLE) {
             this.#transformControls.setMode("translate");
         } else {
             this.#transformControls.setMode("rotate");
@@ -306,8 +306,14 @@ export class Picker {
     }
 }
 
-// Define the custom event class
+/**
+ * Custom event for when an item is selected
+ */
 class ItemSelectedEvent extends CustomEvent {
+    /**
+     * Creates a new ItemSelectedEvent
+     * @param {Array<THREE.Object3D>} selectedObjects The objects that were selected
+     */
     constructor(selectedObjects) {
         super("itemSelected", {
             detail: { object: selectedObjects },
