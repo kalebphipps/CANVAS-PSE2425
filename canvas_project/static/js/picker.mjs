@@ -42,7 +42,7 @@ export class Picker {
         this.#selectableGroup = selectableGroup;
         this.#selectedObjects = [];
         this.#raycaster = new THREE.Raycaster();
-        this.#mode = Mode.SINGLE;
+        this.#mode = "single";
 
         this.#canvas = document.getElementById("canvas");
         this.#mouse = new THREE.Vector2();
@@ -71,14 +71,14 @@ export class Picker {
     }
 
     /**
-     * Sets the selection mode and updates the transformControls
-     * @param {Mode} mode The selection mode
+     * Sets the mode for the picker.
+     * @param {"none" | "single" | "rotate"} mode - The mode to set.
      */
-    setMode(mode, transformMode) {
+    setMode(mode) {
         this.#mode = mode;
-        if (mode === Mode.NONE) {
+        if (mode === "none") {
             this.#transformControls.detach();
-        } else if (mode === Mode.SINGLE) {
+        } else if (mode === "single") {
             this.#transformControls.setMode("translate");
         } else {
             this.#transformControls.setMode("rotate");
@@ -89,9 +89,7 @@ export class Picker {
      * Inform the canvas that an item has been selected
      */
     #itemSelectedEvent() {
-        const event = new CustomEvent("itemSelected", {
-            detail: { object: this.#selectedObjects },
-        });
+        const event = new ItemSelectedEvent(this.#selectedObjects);
         document.getElementById("canvas").dispatchEvent(event);
     }
 
@@ -128,7 +126,6 @@ export class Picker {
             }
             */
         }
-        
 
         this.#itemSelectedEvent();
     }
@@ -166,10 +163,9 @@ export class Picker {
         }
 
         // Get normalized mouse position
-        this.#mouse = this.#mouseposition({
-            x: event.clientX,
-            y: event.clientY,
-        });
+        this.#mouse = this.#mouseposition(
+            new THREE.Vector2(event.clientX, event.clientY)
+        );
 
         // Raycast to find the clicked object
         this.#selectedObject = this.#select(this.#mouse, this.#camera);
@@ -252,7 +248,6 @@ export class Picker {
             return;
         }
 
-
         // Object was clicked
         if (shiftKey) {
             // If object is already in the selection, just attach transformControls
@@ -304,9 +299,18 @@ export class Picker {
      */
     #mouseposition(position) {
         const rect = this.#canvas.getBoundingClientRect();
-        return {
-            x: ((position.x - rect.left) / rect.width) * 2 - 1,
-            y: -((position.y - rect.top) / rect.height) * 2 + 1,
-        };
+        return new THREE.Vector2(
+            ((position.x - rect.left) / rect.width) * 2 - 1,
+            -((position.y - rect.top) / rect.height) * 2 + 1
+        );
+    }
+}
+
+// Define the custom event class
+class ItemSelectedEvent extends CustomEvent {
+    constructor(selectedObjects) {
+        super("itemSelected", {
+            detail: { object: selectedObjects },
+        });
     }
 }
