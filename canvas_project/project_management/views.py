@@ -13,7 +13,15 @@ def projects(request):
     form = ProjectForm()
     if request.method == "GET":
         all_projects = Project.objects.order_by("last_edited")
-        context = {"projects": all_projects, "form": form}
+        context = {
+            "projects": all_projects,
+            "form": form,
+            "user": {
+                "first_name": request.user.first_name,
+                "last_name": request.user.last_name,
+                "email": request.user.email,
+            },
+        }
         return render(request, "project_management/projects.html", context)
     elif request.method == "POST":
         form = ProjectForm(request.POST)

@@ -38,7 +38,15 @@ def editor(request, project_name):
     return render(
         request,
         "editor/editor.html",
-        context={"project_id": project.pk, "project_name": project.name},
+        context={
+            "project_id": project.pk,
+            "project_name": project.name,
+            "user": {
+                "first_name": request.user.first_name,
+                "last_name": request.user.last_name,
+                "email": request.user.email,
+            },
+        },
     )
 
 

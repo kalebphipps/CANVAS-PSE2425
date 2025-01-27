@@ -504,12 +504,12 @@
                     <div class="rounded-circle bg-primary me-2"
                          style="width: 32px;
                                 height: 32px"></div>
-                    <strong class="me-2">Max</strong>
+                    <strong class="me-2">{{ user.first_name }}</strong>
                 </a>
                 <ul class="dropdown-menu text-small">
                     <div class="px-3 gap-1">
-                        <p class="m-0">Max Mustermann</p>
-                        <p class="text-secondary m-0">max.muster@example.com</p>
+                        <p class="m-0">{{ user.first_name }} {{ user.last_name }}</p>
+                        <p class="text-secondary m-0">{{ user.email }}</p>
                     </div>
                     <li>
                         <hr class="dropdown-divider">
