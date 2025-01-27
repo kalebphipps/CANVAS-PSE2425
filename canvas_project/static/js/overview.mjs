@@ -208,8 +208,8 @@ export class OverviewHandler {
     /**
      * Creates an entry for the given receiver
      * @param {Receiver} object the receiver you want to create an entry for
-     * @param {Boolean} selected if the object is selected or not
-     * @returns the html element
+     * @param {Boolean} selected determines if the object is selected or not
+     * @returns {HTMLElement}
      */
     #createReceiverEntry(object, selected) {
         // create the html element to render
@@ -261,8 +261,8 @@ export class OverviewHandler {
     /**
      * Creates an entry for the given light source
      * @param {LightSource} object the light source you want to create an entry for
-     * @param {Boolean} selected if the object is selected or not
-     * @returns the html element
+     * @param {Boolean} selected determines if the object is selected or not
+     * @returns {HTMLElement}
      */
     #createLightsourceEntry(object, selected) {
         // create the html element to render
@@ -342,10 +342,10 @@ export class OverviewHandler {
     }
 
     /**
-     * Adds edit functionality to a given button.
+     * Adds edit functionality to the given button.
      * @param {HTMLButtonElement} button the button to open the edit field.
      * @param {SelectableObject} object the object you want to edit.
-     * @param {"heliostat" | "receiver" | "light source"} type the type of object you want to edit the of.
+     * @param {"heliostat" | "receiver" | "light source"} type the type of object you want to edit the name of.
      */
     #addEditFunctionality(button, object, type) {
         button.addEventListener("click", (event) => {
@@ -355,9 +355,9 @@ export class OverviewHandler {
     }
 
     /**
-     * Opens a new edit field for the given input
+     * Opens a new edit field for the given object
      * @param {SelectableObject} object the object you want rename.
-     * @param {"heliostat" | "receiver" | "light source"} type the type of object you want to edit the of.
+     * @param {"heliostat" | "receiver" | "light source"} type the type of object you want to edit the name of.
      */
     #openEditInput(object, type) {
         const entry = this.#objectToHtml.get(object);
@@ -384,7 +384,7 @@ export class OverviewHandler {
             }
         });
 
-        // TODO: ensure type real typesafety, but will work for now, hopefully
+        // TODO: ensure real type typesafety, but will work for now, hopefully
         inputField.addEventListener("change", () => {
             if (inputField.value !== object.objectName) {
                 switch (type) {
