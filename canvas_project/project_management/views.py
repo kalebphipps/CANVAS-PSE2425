@@ -12,34 +12,52 @@ from django.contrib.auth.decorators import login_required
 def projects(request):
     form = ProjectForm()
     if request.method == "GET":
-        all_projects = Project.objects.order_by("-last_edited")
-        context = {"projects": all_projects, "form": form}
+        allProjects = Project.objects.order_by("-last_edited")
+        context = {"projects": allProjects, "form": form}
         return render(request, "project_management/projects.html", context)
     elif request.method == "POST":
         form = ProjectForm(request.POST)
+        allProjects = Project.objects.all()
         if form.is_valid():
-            form = form.save(commit=False)
-            form.owner = request.user
-            form.last_edited = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            form.save()
-            return HttpResponseRedirect(reverse("projects"))
-        return render(request, "project", {"form": form})
+            nameUnique = True
+            for existingProject in allProjects:
+                if form["name"].value() == existingProject.name:
+                    nameUnique = False
+            if nameUnique:
+                form = form.save(commit=False)
+                form.owner = request.user
+                form.last_edited = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                form.save()
+                return HttpResponseRedirect(reverse("projects"))
+        context = {"projects": allProjects, "form": form}
+        return render(request, "project_management/projects.html", context)
 
 
 @login_required
 def updateProject(request, project_name):
-    print("test")
     if request.method == "POST":
         project = Project.objects.get(owner=request.user, name=project_name)
         if project.owner == request.user:
             form = UpdateProjectForm(request.POST, instance=project)
             if form.is_valid:
-                if project.name != project_name:
+                allProjects = Project.objects.all()
+                nameUnique = True
+                nameNotChanged = False
+                if project_name == form["name"].value():
+                    nameNotChanged = True
+                for existingProject in allProjects:
+                    if form["name"].value() == existingProject.name:
+                        nameUnique = False
+                if nameUnique or nameNotChanged:
                     project.last_edited = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     form.save()
                     return HttpResponseRedirect(reverse("projects"))
                 return redirect("projects")
-    return render(request, "project", {"form": form, project_name: project_name})
+    return render(
+        request,
+        "project_management/projects.html",
+        {"form": form, project_name: project_name},
+    )
 
 
 # Deleting a project
