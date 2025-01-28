@@ -10,13 +10,15 @@ export class ProjectSettingsManager {
     #saveAndLoadHandler;
 
     constructor() {
+        this.#editor = new Editor();
+        this.#saveAndLoadHandler = new SaveAndLoadHandler();
         this.initialize();
     }
 
+    /**
+     * Method to initialize the project settings manager
+     */
     async initialize() {
-        this.#editor = new Editor();
-        this.#saveAndLoadHandler = new SaveAndLoadHandler();
-
         await this.#getPresets();
 
         this.#graphicsSettingsButton = document.getElementById(
@@ -105,7 +107,7 @@ export class ProjectSettingsManager {
 
         //Event listener for changes in the checkbox
         checkbox.addEventListener("change", (event) => {
-            onChange(event.target.checked);
+            onChange(checkbox.checked);
         });
 
         wrapper.appendChild(checkbox);

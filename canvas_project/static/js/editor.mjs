@@ -289,6 +289,7 @@ export class Editor {
      */
     setShadows(mode) {
         this.#renderer.shadowMap.enabled = mode;
+        this.#directionalLight.castShadow = mode;
         this.#saveAndLoadHandler.updateSettings("shadows", mode);
         return this;
     }
