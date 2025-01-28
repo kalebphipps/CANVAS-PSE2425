@@ -50,8 +50,11 @@
     <div class="d-flex flex-column gap-2 overflow-auto px-2 mt-3 h-100">
         {% if not projects %}
         <div class="d-flex flex-column justify-content-center gap-4 h-100">
-            <img src="{% static 'img/noProjects.svg' %}" class="h-50 w-auto" />
-            <i class="text-center fs-4 p-3 mb-2 text-secondary">
+            <img
+                src="{% static 'img/noProjects.svg' %}"
+                class="h-50 w-auto opacity-50"
+            />
+            <i class="text-center fs-4 p-3 mb-2 text-secondary opacity-75">
                 You currently have no projects to work on. Create one to get
                 started!
             </i>
