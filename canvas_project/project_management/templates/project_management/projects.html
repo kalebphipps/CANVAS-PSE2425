@@ -31,7 +31,7 @@
 {% include "settings.html" %}
 
 <!--project overview-->
-<div class="d-flex flex-column w-100 align-items-center vh-100 gap-2">
+<div class="d-flex flex-column w-100 align-items-center vh-100 gap-2 pt-2">
     <div class="p-2 pt-3">
         <h1 style="font-size: 3rem; font-weight: 900">My projects</h1>
     </div>
@@ -48,6 +48,15 @@
         <div class="w-100 d-flex justify-content-center gap-4"></div>
     </div>
     <div class="d-flex flex-column gap-2 overflow-auto px-2 mt-3 h-100">
+        {% if not projects %}
+        <div class="d-flex flex-column justify-content-center gap-4 h-100">
+            <img src="{% static 'img/noProjects.svg' %}" class="h-50 w-auto" />
+            <i class="text-center fs-4 p-3 mb-2 text-secondary">
+                You currently have no projects to work on. Create one to get
+                started!
+            </i>
+        </div>
+        {% else %}
         <div class="form-check form-switch position-relative mx-auto">
             <input
                 class="form-check-input"
@@ -59,12 +68,7 @@
                 >Only favorites</label
             >
         </div>
-        {% if not projects %}
-        <p class="text-center p-3 mb-2 bg-secondary text-white">
-            You currently have no projects to work on. Create one to get
-            started!
-        </p>
-        {% else %} {% for project in projects %}
+        {% for project in projects %}
         <div class="px-2">
             <div
                 class="card mb-3 rounded-4 bg-body-tertiary overflow-hidden mx-auto"
