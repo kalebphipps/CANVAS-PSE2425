@@ -101,7 +101,6 @@ export class OverviewHandler {
     }
 
     #render() {
-        console.log("render");
         // clear the list
         this.#heliostatList.innerHTML = "";
         this.#receiverList.innerHTML = "";
