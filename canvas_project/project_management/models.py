@@ -70,8 +70,9 @@ class Receiver(models.Model):
     project = models.ForeignKey(
         Project, related_name="receivers", on_delete=models.CASCADE
     )
+    name = models.CharField(max_length=200, blank=True, null=True, default=None)
     position_x = models.FloatField(default=0)
-    position_y = models.FloatField(default=0)
+    position_y = models.FloatField(default=50)
     position_z = models.FloatField(default=0)
 
     normal_x = models.FloatField(default=0)
@@ -81,8 +82,8 @@ class Receiver(models.Model):
     rotation_y = models.FloatField(default=0)
 
     # optional fields
-    curvature_e = models.FloatField(blank=True, null=True, default=None)
-    curvature_u = models.FloatField(blank=True, null=True, default=None)
+    curvature_e = models.FloatField(default=0)
+    curvature_u = models.FloatField(default=0)
 
     # normal_vector
     plane_e = models.FloatField(default=8.629666667)
@@ -102,6 +103,7 @@ class Lightsource(models.Model):
     project = models.ForeignKey(
         Project, related_name="lightsources", on_delete=models.CASCADE
     )
+    name = models.CharField(max_length=200, blank=True, null=True, default=None)
     number_of_rays = models.IntegerField(default=100)
     lightsource_type = models.CharField(max_length=300, default="sun")
     distribution_type = models.CharField(max_length=300, default="normal")

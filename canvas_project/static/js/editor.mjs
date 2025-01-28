@@ -7,15 +7,15 @@ import { TransformControls } from "transformControls";
 import { UndoRedoHandler } from "undoRedoHandler";
 import { SaveAndLoadHandler } from "saveAndLoadHandler";
 //import { Navbar } from "navbar";
-//import { Overview } from "overview";
+import { OverviewHandler } from "overview";
 //import { ModeSelector } from "modeSelector";
 import { Picker } from "picker";
-//import { ProjectSettingManager } from "projectSettingManager";
+import { ProjectSettingsManager } from "projectSettingsManager";
 //import { QuickSelector } from "quickSelector";
 //import { JobInterface } from "jobInterface";
-//import { Inspector } from "inspector";
+import { Inspector } from "inspectorClass";
 
-import { Heliostat, Receiver, LightSource, Terrain, ObjectType } from "objects";
+import { Heliostat, Receiver, LightSource, Terrain } from "objects";
 
 let editorInstance = null;
 export class Editor {
@@ -45,6 +45,9 @@ export class Editor {
     #scene;
     #selectableGroup = new THREE.Group();
     #terrain;
+    #heliostatList = [];
+    #receiverList = [];
+    #lightsourceList = [];
 
     constructor(projectId) {
         // singleton
@@ -68,11 +71,11 @@ export class Editor {
             this.#selectionBox,
             this.#selectableGroup
         );
-        //this.#overview = new Overview(this.#picker);
-        //this.#projectSettingManager = new ProjectSettingManager();
+        this.#overview = new OverviewHandler(this.#picker);
+        this.#projectSettingManager = new ProjectSettingsManager();
         //this.#quickSelector = new QuickSelector();
         //this.#jobInterface = new JobInterface();
-        //this.#inspector = new Inspector(this.#picker);
+        this.#inspector = new Inspector(this.#picker);
 
         window.addEventListener("resize", () => this.onWindowResize());
 
@@ -148,7 +151,7 @@ export class Editor {
         this.#scene.add(this.#terrain);
 
         this.#directionalLight = new THREE.DirectionalLight(0xffffff, 5);
-        this.#directionalLight.position.set(200, 100, 200);
+        this.#directionalLight.position.set(90 * 4, 400, 200 * 4);
         this.#directionalLight.castShadow = true;
         this.#scene.add(this.#directionalLight);
 
@@ -159,7 +162,7 @@ export class Editor {
         this.#directionalLight.shadow.camera.bottom = -200;
         this.#directionalLight.shadow.camera.left = 400;
         this.#directionalLight.shadow.camera.right = -400;
-        this.#directionalLight.shadow.camera.far = 1000;
+        this.#directionalLight.shadow.camera.far = 2000;
 
         // Helpers
         this.#compass = new ViewHelper(
@@ -211,62 +214,65 @@ export class Editor {
         const settingsList = projectJson["settings"];
 
         heliostatList.forEach((heliostat) => {
-            this.#selectableGroup.add(
-                new Heliostat(
-                    heliostat.id,
-                    new THREE.Vector3(
-                        heliostat.position_x,
-                        heliostat.position_y,
-                        heliostat.position_z
-                    ),
-                    new THREE.Vector3(
-                        heliostat.aimpoint_x,
-                        heliostat.aimpoint_y,
-                        heliostat.aimpoint_z
-                    ),
-                    heliostat.number_of_facets,
-                    heliostat.kinematic_type
-                )
+            const tmp = new Heliostat(
+                heliostat.name,
+                new THREE.Vector3(
+                    heliostat.position_x,
+                    heliostat.position_y,
+                    heliostat.position_z
+                ),
+                new THREE.Vector3(
+                    heliostat.aimpoint_x,
+                    heliostat.aimpoint_y,
+                    heliostat.aimpoint_z
+                ),
+                heliostat.number_of_facets,
+                heliostat.kinematic_type,
+                heliostat.id
             );
+            this.#selectableGroup.add(tmp);
+            this.#heliostatList.push(tmp);
         });
 
         receiverList.forEach((receiver) => {
-            this.#selectableGroup.add(
-                new Receiver(
-                    receiver.id,
-                    new THREE.Vector3(
-                        receiver.position_x,
-                        receiver.position_y,
-                        receiver.position_z
-                    ),
-                    receiver.rotation_y,
-                    new THREE.Vector3(
-                        receiver.normal_x,
-                        receiver.normal_y,
-                        receiver.normal_z
-                    ),
-                    receiver.towerType,
-                    receiver.plane_e,
-                    receiver.plane_u,
-                    receiver.resolution_e,
-                    receiver.resolution_u,
-                    receiver.curvature_e,
-                    receiver.curvature_u
-                )
+            const tmp = new Receiver(
+                receiver.name,
+                new THREE.Vector3(
+                    receiver.position_x,
+                    receiver.position_y,
+                    receiver.position_z
+                ),
+                receiver.rotation_y,
+                new THREE.Vector3(
+                    receiver.normal_x,
+                    receiver.normal_y,
+                    receiver.normal_z
+                ),
+                receiver.towerType,
+                receiver.plane_e,
+                receiver.plane_u,
+                receiver.resolution_e,
+                receiver.resolution_u,
+                receiver.curvature_e,
+                receiver.curvature_u,
+                receiver.id
             );
+            this.#selectableGroup.add(tmp);
+            this.#receiverList.push(tmp);
         });
 
         lightsourceList.forEach((lightsource) => {
-            this.#selectableGroup.add(
-                new LightSource(
-                    lightsource.id,
-                    lightsource.number_of_rays,
-                    lightsource.lightsource_type,
-                    lightsource.distribution_type,
-                    lightsource.mean,
-                    lightsource.covariance
-                )
+            const tmp = new LightSource(
+                lightsource.name,
+                lightsource.number_of_rays,
+                lightsource.lightsource_type,
+                lightsource.distribution_type,
+                lightsource.mean,
+                lightsource.covariance,
+                lightsource.id
             );
+            this.#selectableGroup.add(tmp);
+            this.#lightsourceList.push(tmp);
         });
 
         // set the settings
@@ -283,6 +289,7 @@ export class Editor {
      */
     setShadows(mode) {
         this.#renderer.shadowMap.enabled = mode;
+        this.#directionalLight.castShadow = mode;
         this.#saveAndLoadHandler.updateSettings("shadows", mode);
         return this;
     }
@@ -298,79 +305,82 @@ export class Editor {
     }
 
     /**
-     * Adds an object to the scene and saves it inside of the database.
-     * Only allows adding of heliostat, receivers or lightsources.
-     * @param {THREE.Object3D} object the object you want to add.
+     * Adds the given heliostat to the scene and saves it.
+     * @param {Heliostat} heliostat the heliostat you want to add.
      */
-    async addObject(object) {
-        const objectType = object.objectType;
-        if (!objectType) {
-            return this;
-        }
-
-        switch (objectType) {
-            case ObjectType.HELIOSTAT:
-                this.#selectableGroup.add(object);
-                object.apiID = (
-                    await this.#saveAndLoadHandler.createHeliostat(object)
-                )["id"];
-                break;
-            case ObjectType.RECEIVER:
-                this.#selectableGroup.add(object);
-                object.apiID = (
-                    await this.#saveAndLoadHandler.createReceiver(object)
-                )["id"];
-                break;
-            case ObjectType.LIGHTSOURCE:
-                this.#selectableGroup.add(object);
-                object.apiID = (
-                    await this.#saveAndLoadHandler.createLightSource(object)
-                )["id"];
-                break;
-            default:
-                console.warn(`Unknown object type: ${objectType}`);
-                break;
-        }
-
-        return this;
+    async addHeliostat(heliostat) {
+        this.#selectableGroup.add(heliostat);
+        this.#heliostatList.push(heliostat);
+        heliostat.apiID = (
+            await this.#saveAndLoadHandler.createHeliostat(heliostat)
+        )["id"];
     }
 
     /**
-     * Deletes the given object from the scene and from the database.
-     * Only allows deletion of heliostat, receivers and lightsources.
-     * @param {THREE.Object3D} object the object you want to delete.
+     * Adds the given receiver to the scene and saves it.
+     * @param {Receiver} receiver the receiver you want to add.
      */
-    async deleteObject(object) {
-        const objectType = object.objectType;
-        if (!objectType) {
-            return this;
-        }
-
-        switch (objectType) {
-            case ObjectType.HELIOSTAT:
-                this.#selectableGroup.remove(object);
-                await this.#saveAndLoadHandler.deleteHeliostat(object);
-                break;
-            case ObjectType.RECEIVER:
-                this.#selectableGroup.remove(object);
-                await this.#saveAndLoadHandler.deleteReceiver(object);
-                break;
-            case ObjectType.LIGHTSOURCE:
-                this.#selectableGroup.remove(object);
-                await this.#saveAndLoadHandler.deleteLightsource(object);
-                break;
-            default:
-                console.warn(`Unknown object type: ${objectType}`);
-                break;
-        }
-
-        return this;
+    async addReceiver(receiver) {
+        this.#selectableGroup.add(receiver);
+        this.#receiverList.push(receiver);
+        receiver.apiID = (
+            await this.#saveAndLoadHandler.createReceiver(receiver)
+        )["id"];
     }
 
     /**
-     * @returns {Array<THREE.Object3D>} an array containing all placed objects.
+     * Adds the given light source to the scene and saves it.
+     * @param {LightSource} lightsource the lightsource you want to add.
+     */
+    async addLightsource(lightsource) {
+        this.#selectableGroup.add(lightsource);
+        this.#lightsourceList.push(lightsource);
+        lightsource.apiID = (
+            await this.#saveAndLoadHandler.createLightSource(lightsource)
+        )["id"];
+    }
+
+    /**
+     * Deletes the heliostat from the scene and from the database
+     * @param {Heliostat} heliostat the heliostat you want to delete
+     */
+    async deleteHeliostat(heliostat) {
+        this.#selectableGroup.remove(heliostat);
+        this.#heliostatList.splice(this.#heliostatList.indexOf(heliostat), 1);
+        this.#saveAndLoadHandler.deleteHeliostat(heliostat);
+    }
+
+    /**
+     * Deletes the receiver from the scene and from the database
+     * @param {Receiver} receiver the receiver you want to delete
+     */
+    async deleteReceiver(receiver) {
+        this.#selectableGroup.remove(receiver);
+        this.#receiverList.splice(this.#receiverList.indexOf(receiver), 1);
+        this.#saveAndLoadHandler.deleteReceiver(receiver);
+    }
+
+    /**
+     * Deletes the light source from the scene and from the database
+     * @param {LightSource} lightsource the light source you want to delete
+     */
+    async deleteLightsource(lightsource) {
+        this.#selectableGroup.remove(lightsource);
+        this.#lightsourceList.splice(
+            this.#lightsourceList.indexOf(lightsource),
+            1
+        );
+        this.#saveAndLoadHandler.deleteLightsource(lightsource);
+    }
+
+    /**
+     * @return {{heliostatList: Heliostat[], receiverList: Receiver[], lightsourceList: LightSource[]}} an array containing all placed objects.
      */
     get objects() {
-        return this.#selectableGroup.children;
+        return Object.freeze({
+            heliostatList: this.#heliostatList,
+            receiverList: this.#receiverList,
+            lightsourceList: this.#lightsourceList,
+        });
     }
 }

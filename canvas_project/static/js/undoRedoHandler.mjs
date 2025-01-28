@@ -1,5 +1,5 @@
 import { Command } from "command";
-
+let undoRedoHandlerInstance = null;
 /**
  * This class manages the execution of commands and provides undo/redo functionality.
  * It maintains two stacks to keep track of executed and undone commands, allowing users to reverse or reapply actions seamlessly.
@@ -25,9 +25,15 @@ export class UndoRedoHandler {
      * Sets up the undo and redo stacks with a maximum size of 100 commands each.
      */
     constructor() {
+        if (undoRedoHandlerInstance) {
+            return undoRedoHandlerInstance;
+        }
+        undoRedoHandlerInstance = this;
+
         this.#undoStack = [];
         this.#redoStack = [];
         this.#initializeKeyBindings();
+        this.#initializeButtons();
     }
 
     /**
@@ -95,6 +101,19 @@ export class UndoRedoHandler {
                 event.preventDefault();
                 this.redo();
             }
+        });
+    }
+
+    /**
+     * Creates listeners for the undo and redo buttons to execute the undo and redo function.
+     */
+    #initializeButtons() {
+        document.getElementById("undo").addEventListener("click", () => {
+            this.undo();
+        });
+
+        document.getElementById("redo").addEventListener("click", () => {
+            this.redo();
         });
     }
 }
