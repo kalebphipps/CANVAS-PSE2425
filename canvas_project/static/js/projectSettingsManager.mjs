@@ -2,13 +2,20 @@ import { Editor } from "editor";
 import { SaveAndLoadHandler } from "saveAndLoadHandler";
 
 export class ProjectSettingsManager {
-    #graphicsSettingsButton;
+    #environmentSettingsButton;
+    #environmentSettingsEntry;
     #graphicsSettingsEntry;
+    #otherSettingsButton;
+    #otherSettingsEntry;
+
     #shadowEnabled;
     #fogEnabled;
     #editor;
     #saveAndLoadHandler;
 
+    /**
+     * Constructor for the project settings manager
+     */
     constructor() {
         this.#editor = new Editor();
         this.#saveAndLoadHandler = new SaveAndLoadHandler();
@@ -21,15 +28,47 @@ export class ProjectSettingsManager {
     async initialize() {
         await this.#getPresets();
 
-        this.#graphicsSettingsButton = document.getElementById(
-            "graphic-settings-button"
+        //initialize the elements
+        this.#initializeElements();
+
+        //render the graphics settings
+        this.#render();
+
+        //add event listeners for the other buttons
+        this.#addEventListeners();
+    }
+
+    /**
+     * Method to initialize the elements of the project settings manager
+     */
+    #initializeElements() {
+        this.#environmentSettingsButton = document.getElementById(
+            "enviroment-settings-button"
         );
+        this.#environmentSettingsEntry = document.getElementById(
+            "enviroment-settings"
+        );
+
         this.#graphicsSettingsEntry =
             document.getElementById("graphic-settings");
 
-        //Event listener for the button
-        this.#graphicsSettingsButton.addEventListener("click", () => {
-            this.#render();
+        this.#otherSettingsButton = document.getElementById(
+            "other-settings-button"
+        );
+        this.#otherSettingsEntry = document.getElementById("other-settings");
+    }
+
+    /**
+     * Method to add event listeners to the evironment settings and other settings buttons
+     */
+    #addEventListeners() {
+        this.#environmentSettingsButton.addEventListener("click", () => {
+            this.#environmentSettingsEntry.textContent =
+                "No settings available";
+        });
+
+        this.#otherSettingsButton.addEventListener("click", () => {
+            this.#otherSettingsEntry.textContent = "No settings available";
         });
     }
 
