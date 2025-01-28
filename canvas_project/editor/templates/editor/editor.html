@@ -29,6 +29,7 @@
                 "deleteCommands": "{% static 'js/deleteCommands.mjs' %}",
                 "inspectorComponents": "{% static 'js/inspectorComponents.mjs' %}",
                 "inspectorClass": "{% static 'js/inspector.mjs' %}",
+                "projectSettingsManager": "{% static 'js/projectSettingsManager.mjs' %}",
                 "createCommands": "{% static 'js/createCommands.mjs' %}"
             }
         }
@@ -37,7 +38,7 @@
         import { Editor } from "{% static 'js/editor.mjs' %}";
 
         window.addEventListener('DOMContentLoaded', (_) => {
-            new Editor({{ project_id }});
+            new Editor("{{ project_id }}");
         });
     </script>
 {% endblock %}
@@ -391,11 +392,11 @@
                                     <button class="accordion-button"
                                             type="button"
                                             data-bs-toggle="collapse"
-                                            data-bs-target="#collapseOne"
+                                            data-bs-target="#overviewCollapseOne"
                                             aria-expanded="true"
-                                            aria-controls="collapseOne">Heliostats</button>
+                                            aria-controls="overviewCollapseOne">Heliostats</button>
                                 </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show">
+                                <div id="overviewCollapseOne" class="accordion-collapse collapse show">
                                     <div class="accordion-body d-flex flex-column gap-2" id="heliostatList"></div>
                                 </div>
                             </div>
@@ -404,11 +405,11 @@
                                     <button class="accordion-button collapsed"
                                             type="button"
                                             data-bs-toggle="collapse"
-                                            data-bs-target="#collapseTwo"
+                                            data-bs-target="#overviewCollapseTwo"
                                             aria-expanded="false"
-                                            aria-controls="collapseTwo">Receivers</button>
+                                            aria-controls="overviewCollapseTwo">Receivers</button>
                                 </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse">
+                                <div id="overviewCollapseTwo" class="accordion-collapse collapse">
                                     <div class="accordion-body d-flex flex-column gap-2" id="receiverList"></div>
                                 </div>
                             </div>
@@ -417,11 +418,11 @@
                                     <button class="accordion-button collapsed"
                                             type="button"
                                             data-bs-toggle="collapse"
-                                            data-bs-target="#collapseThree"
+                                            data-bs-target="#overviewCollapseThree"
                                             aria-expanded="false"
-                                            aria-controls="collapseThree">Light Sources</button>
+                                            aria-controls="overviewCollapseThree">Light Sources</button>
                                 </h2>
-                                <div id="collapseThree" class="accordion-collapse collapse">
+                                <div id="overviewCollapseThree" class="accordion-collapse collapse">
                                     <div class="accordion-body d-flex flex-column gap-2" id="lightsourceList"></div>
                                 </div>
                             </div>
@@ -436,33 +437,36 @@
                         <div class="accordion w-100" id="accordionExample">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button"
+                                    <button id="enviroment-settings-button" 
+                                            class="accordion-button collapsed"
                                             type="button"
                                             data-bs-toggle="collapse"
                                             data-bs-target="#collapseOne"
-                                            aria-expanded="true"
+                                            aria-expanded="false"
                                             aria-controls="collapseOne">Enviroment Settings</button>
                                 </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show">
-                                    <div class="accordion-body"></div>
+                                <div id="collapseOne" class="accordion-collapse collapse">
+                                    <div class="accordion-body" id="enviroment-settings"></div>
                                 </div>
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed"
+                                    <button id="graphic-settings-button"
+                                            class="accordion-button"
                                             type="button"
                                             data-bs-toggle="collapse"
                                             data-bs-target="#collapseTwo"
-                                            aria-expanded="false"
+                                            aria-expanded="true"
                                             aria-controls="collapseTwo">Graphic Settings</button>
                                 </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse">
-                                    <div class="accordion-body"></div>
+                                <div id="collapseTwo" class="accordion-collapse collapse show">
+                                    <div class="accordion-body" id="graphic-settings"></div>
                                 </div>
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed"
+                                    <button id="other-settings-button"
+                                            class="accordion-button collapsed"
                                             type="button"
                                             data-bs-toggle="collapse"
                                             data-bs-target="#collapseThree"
@@ -470,7 +474,7 @@
                                             aria-controls="collapseThree">Other</button>
                                 </h2>
                                 <div id="collapseThree" class="accordion-collapse collapse">
-                                    <div class="accordion-body"></div>
+                                    <div class="accordion-body" id="other-settings"></div>
                                 </div>
                             </div>
                         </div>
