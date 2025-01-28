@@ -151,6 +151,23 @@
         </a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
+                <!--undo redo buttons-->
+                <li class="nav-item">
+                    <div class="d-flex px-2">
+                        <div class="shadow-sm bg-body-secondary rounded-4 border d-flex">
+                            <button class="btn text-reset rounded-4"
+                                    id="undo"
+                                    style="--bs-btn-hover-bg: var(--bs-tertiary-bg)">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </button>
+                            <button class="btn text-reset rounded-4"
+                                    id="redo"
+                                    style="--bs-btn-hover-bg: var(--bs-tertiary-bg)">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </div>
+                    </div>
+                </li>
                 <!-- file -->
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle"
@@ -259,7 +276,7 @@
                 <ul class="nav nav-pills flex-column p-2 gap-1 shadow-sm small bg-body-secondary bg-opacity-75 rounded-4 border" id="pillNav2" role="tablist" style="backdrop-filter: blur(0.7rem)"
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active rounded-3"
-                                id="home-tab2"
+                                id="modeSelect"
                                 data-bs-toggle="tab"
                                 type="button"
                                 role="tab"
@@ -269,17 +286,7 @@
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link rounded-3"
-                                id="contact-tab2"
-                                data-bs-toggle="tab"
-                                type="button"
-                                role="tab"
-                                aria-selected="false">
-                            <i class="bi bi-bounding-box-circles"></i>
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link rounded-3"
-                                id="profile-tab2"
+                                id="modeMove"
                                 data-bs-toggle="tab"
                                 type="button"
                                 role="tab"
@@ -289,7 +296,7 @@
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link rounded-3"
-                                id="profile-tab2"
+                                id="modeRotate"
                                 data-bs-toggle="tab"
                                 type="button"
                                 role="tab"
@@ -303,16 +310,19 @@
             <div class="position-absolute bottom-0 mb-4 fs-5 d-flex justify-content-center w-100">
                 <div class="p-2 gap-2 shadow-sm bg-body-secondary bg-opacity-75 rounded-4 border d-flex"
                      style="backdrop-filter: blur(0.7rem)">
-                    <button class="btn btn-primary custom-btn d-flex gap-1 text-reset">
+                    <button class="btn btn-primary custom-btn d-flex gap-1 text-reset"
+                            id="quickSettingsHeliostat">
                         <i class="bi bi-arrow-up-right-square"></i>
                     </button>
-                    <button class="btn btn-primary custom-btn d-flex gap-1 text-reset">
+                    <button class="btn btn-primary custom-btn d-flex gap-1 text-reset"
+                            id="quickSettingsReceiver">
                         <i class="bi bi-align-bottom"></i>
                     </button>
-                    <button class="btn btn-primary custom-btn d-flex gap-1 text-reset">
-                        <i class="bi bi-lightbulb"></i>
+                    <button class="btn btn-primary custom-btn d-flex gap-1 text-reset"
+                            id="quickSettingsLightsource">
+                        <i class="bi bi-lightbulb text-white"></i>
                     </button>
-                    <button class="btn btn-primary rounded-3 fw-bolder">Render</button>
+                    <button class="btn btn-primary rounded-3 fw-bolder" id="quickSettingsRender">Render</button>
                 </div>
             </div>
         </div>
