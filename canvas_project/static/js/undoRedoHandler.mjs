@@ -33,6 +33,7 @@ export class UndoRedoHandler {
         this.#undoStack = [];
         this.#redoStack = [];
         this.#initializeKeyBindings();
+        this.#initializeButtons();
     }
 
     /**
@@ -100,6 +101,19 @@ export class UndoRedoHandler {
                 event.preventDefault();
                 this.redo();
             }
+        });
+    }
+
+    /**
+     * Creates listeners for the undo and redo buttons to execute the undo and redo function.
+     */
+    #initializeButtons() {
+        document.getElementById("undo").addEventListener("click", () => {
+            this.undo();
+        });
+
+        document.getElementById("redo").addEventListener("click", () => {
+            this.redo();
         });
     }
 }

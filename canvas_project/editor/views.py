@@ -1,12 +1,6 @@
 from django.shortcuts import render
-
-from django.http import HttpResponse
-
-
-def editor(request):
-    return render(request, "editor/editor.html")
-
-
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from project_management.models import Project
 from django.http import FileResponse
@@ -15,6 +9,7 @@ import os
 from django.conf import settings
 
 
+@login_required
 def editor(request, project_name):
     """
     Handles the editor view for a given project.
@@ -34,6 +29,8 @@ def editor(request, project_name):
 
     # Return 404 not found if user has no project with this id
     project = get_object_or_404(Project, name=project_name, owner=request.user)
+    project.last_edited = timezone.now()
+    project.save()
 
     return render(
         request,
@@ -42,6 +39,7 @@ def editor(request, project_name):
     )
 
 
+@login_required
 def download(request, project_name):
     """
     Converts the specified project into a hdf5 file and downloads it.
