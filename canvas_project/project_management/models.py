@@ -40,7 +40,7 @@ class Heliostat(models.Model):
         related_name="heliostats",
         on_delete=models.CASCADE,
     )
-    name = models.CharField(max_length=200, blank=True, null=True, default=None)
+    name = models.CharField(max_length=200, blank=True, default="Heliostat")
     position_x = models.FloatField(default=0)
     position_y = models.FloatField(default=0)
     position_z = models.FloatField(default=0)
@@ -69,7 +69,7 @@ class Receiver(models.Model):
     project = models.ForeignKey(
         Project, related_name="receivers", on_delete=models.CASCADE
     )
-    name = models.CharField(max_length=200, blank=True, null=True, default=None)
+    name = models.CharField(max_length=200, blank=True, default="Receiver")
     position_x = models.FloatField(default=0)
     position_y = models.FloatField(default=50)
     position_z = models.FloatField(default=0)
@@ -102,7 +102,7 @@ class Lightsource(models.Model):
     project = models.ForeignKey(
         Project, related_name="lightsources", on_delete=models.CASCADE
     )
-    name = models.CharField(max_length=200, blank=True, null=True, default=None)
+    name = models.CharField(max_length=200, blank=True, default="Light source")
     number_of_rays = models.IntegerField(default=100)
     lightsource_type = models.CharField(max_length=300, default="sun")
     distribution_type = models.CharField(max_length=300, default="normal")

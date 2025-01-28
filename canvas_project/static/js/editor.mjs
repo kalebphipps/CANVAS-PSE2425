@@ -10,7 +10,7 @@ import { SaveAndLoadHandler } from "saveAndLoadHandler";
 import { OverviewHandler } from "overview";
 //import { ModeSelector } from "modeSelector";
 import { Picker } from "picker";
-//import { ProjectSettingManager } from "projectSettingManager";
+import { ProjectSettingsManager } from "projectSettingsManager";
 //import { QuickSelector } from "quickSelector";
 //import { JobInterface } from "jobInterface";
 import { Inspector } from "inspectorClass";
@@ -74,7 +74,7 @@ export class Editor {
             this.#selectableGroup
         );
         this.#overview = new OverviewHandler(this.#picker);
-        //this.#projectSettingManager = new ProjectSettingManager();
+        this.#projectSettingManager = new ProjectSettingsManager();
         //this.#quickSelector = new QuickSelector();
         //this.#jobInterface = new JobInterface();
         this.#inspector = new Inspector(this.#picker);
@@ -297,6 +297,7 @@ export class Editor {
      */
     setShadows(mode) {
         this.#renderer.shadowMap.enabled = mode;
+        this.#directionalLight.castShadow = mode;
         this.#saveAndLoadHandler.updateSettings("shadows", mode);
         return this;
     }
