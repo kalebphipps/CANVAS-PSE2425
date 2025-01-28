@@ -57,15 +57,21 @@ export class Picker {
         this.#originalParents = new Map();
 
         // Mouse event listeners on the canvas
-        this.#canvas.addEventListener("mousedown", (event) =>
-            this.#onMouseDown(event)
-        );
-        this.#canvas.addEventListener("mousemove", (event) =>
-            this.#onMouseMove(event)
-        );
-        this.#canvas.addEventListener("mouseup", (event) =>
-            this.#onMouseUp(event)
-        );
+        this.#canvas.addEventListener("mousedown", (event) => {
+            if (!this.#isMouseOverNavElements(event)) {
+                this.#onMouseDown(event);
+            }
+        });
+        this.#canvas.addEventListener("mousemove", (event) => {
+            if (!this.#isMouseOverNavElements(event)) {
+                this.#onMouseMove(event);
+            }
+        });
+        this.#canvas.addEventListener("mouseup", (event) => {
+            if (!this.#isMouseOverNavElements(event)) {
+                this.#onMouseUp(event);
+            }
+        });
 
         // TODO: Event listener for Rectangular selection (not yet implemented)
     }
@@ -302,6 +308,18 @@ export class Picker {
         return new THREE.Vector2(
             ((position.x - rect.left) / rect.width) * 2 - 1,
             -((position.y - rect.top) / rect.height) * 2 + 1
+        );
+    }
+
+    // Helper method to check if the mouse is over the nav elements or their children
+    #isMouseOverNavElements(event) {
+        const elementUnderMouse = document.elementFromPoint(
+            event.clientX,
+            event.clientY
+        );
+        return (
+            elementUnderMouse.closest("#pillNav1") !== null ||
+            elementUnderMouse.closest("#pillNav2") !== null
         );
     }
 }
