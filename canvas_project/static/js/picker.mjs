@@ -176,6 +176,24 @@ export class Picker {
         // Raycast to find the clicked object
         this.#selectedObject = this.#select(this.#mouse, this.#camera);
 
+        console.log(this.#selectedObject.isMovable);
+
+        // Check if the selected object is movable or rotatable
+        if (this.#selectedObject) { 
+            if (this.#transformControls.mode === "rotate") {
+                if (!this.#selectedObject.isRotatable) {
+                    console.error("selected Object is not rotatable");
+                    return;
+                }
+            } else if (this.#transformControls.mode === "translate") {
+                console.log(this.#selectedObject.isMovable);
+                if (!this.#selectedObject.isMovable) { 
+                    console.error("selected Object is not movable");
+                    return;
+                }
+            }
+        }
+
         // Update selection (handles shift-key and multi-selection)
         this.#updateSelection(event.shiftKey);
 

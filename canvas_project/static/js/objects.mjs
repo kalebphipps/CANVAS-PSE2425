@@ -55,6 +55,38 @@ export class SelectableObject extends Object3D {
     updateAndSaveObjectName(name) {
         throw new Error("This method must be implemented in all subclasses");
     }
+
+    /**
+     * Updates the position of the object
+     * @param {THREE.Vector3} position
+     */
+    updatePosition(position) {
+        throw new Error("This method must be implemented in all subclasses");
+    }
+
+    /**
+     * Updates the rotation of the object
+     * @param {THREE.Euler} rotation
+     */
+    updateRotation(rotation) {
+        throw new Error("This method must be implemented in all subclasses");
+    }
+
+    /**
+     * Returns whether the object is rotatable or not
+     * @returns {Boolean}
+     */
+    get isRotatable() {
+        throw new Error("This method must be implemented in all subclasses");
+    }
+
+    /**
+     * Returns whether the object is movable or not
+     * @returns {Boolean}
+     */
+    get isMovable() {
+        throw new Error("This method must be implemented in all subclasses");
+    }
 }
 
 /**
@@ -71,6 +103,8 @@ export class Heliostat extends SelectableObject {
     #numberOfFacetsComponent;
     #kinematicTypeComponent;
     #undoRedoHandler = new UndoRedoHandler();
+    #isMovable = true;
+    #isRotatable = false;
 
     /**
      * Creates a Heliostat object
@@ -256,6 +290,22 @@ export class Heliostat extends SelectableObject {
     }
 
     /**
+     * Returns whether the heliostat is rotatable or not
+     * @returns {Boolean} false, as the heliostat is not rotatable
+     */
+    get isRotatable() {
+        return this.#isRotatable;
+    }
+
+    /**
+     * Returns whether the heliostat is movable or not
+     * @returns {Boolean} true, as the heliostat is movable
+     */
+    get isMovable() {
+        return this.#isMovable;
+    }
+
+    /**
      * Updates the position of the heliostat
      * @param {THREE.Vector3} position the new position
      */
@@ -348,6 +398,8 @@ export class Receiver extends SelectableObject {
     #curvatureComponent;
     #planeComponent;
     #resolutionComponent;
+    #isMovable = true;
+    #isRotatable = true;
 
     /**
      * Creates a Receiver object
@@ -644,6 +696,22 @@ export class Receiver extends SelectableObject {
     }
 
     /**
+     * Returns whether the receiver is rotatable or not
+     * @returns {Boolean} true, as the receiver is rotatable
+     */
+    get isRotatable() {
+        return true;
+    }
+
+    /**
+     * Returns whether the reciever is movable or not
+     * @returns {Boolean} true, as the receiver is movable
+     */
+    get isMovable() {
+        return true;
+    }
+
+    /**
      * Updates the receiver’s position by adjusting both the base and the top, ensuring that the base remains on the ground.
      * @param {THREE.Vector3} position the new position of the receiver
      */
@@ -741,7 +809,7 @@ export class Receiver extends SelectableObject {
         return this.#rotationY;
     }
 
-    set rotationY(rotation) {
+    updateRotation(rotation) {
         this.#rotationY = rotation;
         this.#base.rotation.y = rotation;
         this.#top.rotation.y = rotation;
@@ -818,6 +886,8 @@ export class LightSource extends SelectableObject {
     #distributionCovarianceComponent;
 
     #undoRedoHandler = new UndoRedoHandler();
+    #isMovable = false;
+    #isRotatable = false;
 
     /**
      * @param {Number} [apiID=null] the id for api usage
@@ -924,6 +994,22 @@ export class LightSource extends SelectableObject {
                     );
                 }
             );
+    }
+
+    /**
+     * Returns whether the lightsource is rotatable or not
+     * @returns {Boolean} false, as the lightsource is not rotatable
+     */
+    get isRotatable() {
+        return false;
+    }
+
+    /**
+     * Returns whether the lightsource is movable or not
+     * @returns {Boolean} false, as the lightsource is movable
+     */
+    get isMovable() {
+        return false;
     }
 
     /**
