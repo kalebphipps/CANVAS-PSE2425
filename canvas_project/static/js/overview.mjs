@@ -101,6 +101,7 @@ export class OverviewHandler {
     }
 
     #render() {
+        console.log("render");
         // clear the list
         this.#heliostatList.innerHTML = "";
         this.#receiverList.innerHTML = "";
@@ -380,7 +381,9 @@ export class OverviewHandler {
         inputField.addEventListener("keyup", (event) => {
             if (event.key == "Escape") {
                 inputField.value = object.objectName;
-                inputField.blur();
+                this.#render();
+            } else if (event.key == "Enter") {
+                this.#render();
             }
         });
 
@@ -417,10 +420,6 @@ export class OverviewHandler {
                         break;
                 }
             }
-        });
-
-        inputField.addEventListener("blur", () => {
-            this.#render();
         });
     }
 }
