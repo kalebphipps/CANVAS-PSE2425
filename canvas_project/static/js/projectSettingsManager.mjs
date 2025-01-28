@@ -115,7 +115,7 @@ export class ProjectSettingsManager {
         checkboxLabel.textContent = label;
 
         //Event listener for changes in the checkbox
-        checkbox.addEventListener("change", (event) => {
+        checkbox.addEventListener("change", () => {
             onChange(checkbox.checked);
         });
 
