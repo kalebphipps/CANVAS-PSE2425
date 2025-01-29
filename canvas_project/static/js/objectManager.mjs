@@ -8,13 +8,23 @@ import {
     CreateHeliostatCommand,
     CreateLightSourceCommand,
 } from "createCommands";
-import { Inspector } from "inspectorClass";
+import {
+    DeleteHeliostatCommand,
+    DeleteLightSourceCommand,
+    DeleteReceiverCommand,
+} from "deleteCommands";
+import {
+    DuplicateHeliostatCommand,
+    DuplicateReceiverCommand,
+    DuplicateLightSourceCommand,
+} from "duplicateCommands";
 
 export class ObjectManager {
     #picker;
     #undoRedoHandler;
     #editor;
     #inspector;
+    #objectList;
 
     /**
      *
@@ -26,6 +36,8 @@ export class ObjectManager {
         this.#undoRedoHandler = undoRedoHandler;
         this.#editor = new Editor();
         this.#inspector = inspector;
+
+        this.#addEventListener();
     }
 
     createHeliostat() {
@@ -49,7 +61,7 @@ export class ObjectManager {
         const id = String(this.#editor.objects.receiverList.length + 1);
         const receiver = new Receiver(
             id,
-            new Vector3(0, 0, 0),
+            new Vector3(0, 50, 0),
             50,
             new Vector3(0, 0, 0),
             "round",
@@ -78,5 +90,51 @@ export class ObjectManager {
         let selectedObject = [lightSource];
         this.#picker.setSelection(selectedObject);
         this.#inspector.openPane();
+    }
+
+    #addEventListener() {
+        window.addEventListener("keydown", (event) => {
+            this.#objectList = this.#picker.getSelectedObjects();
+
+            if (
+                event.key === "Delete" ||
+                event.keyCode === 46 ||
+                event.code === "Delete"
+            ) {
+                if (this.#objectList.length === 1) {
+                    if (this.#objectList[0] instanceof Heliostat) {
+                        this.#undoRedoHandler.executeCommand(
+                            new DeleteHeliostatCommand(this.#objectList[0])
+                        );
+                    } else if (this.#objectList[0] instanceof Receiver) {
+                        this.#undoRedoHandler.executeCommand(
+                            new DeleteReceiverCommand(this.#objectList[0])
+                        );
+                    } else if (this.#objectList[0] instanceof LightSource) {
+                        this.#undoRedoHandler.executeCommand(
+                            new DeleteLightSourceCommand(this.#objectList[0])
+                        );
+                    }
+                }
+            }
+        });
+
+        window.addEventListener("keydown", (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === "b") {
+                if (this.#objectList[0] instanceof Heliostat) {
+                    this.#undoRedoHandler.executeCommand(
+                        new DuplicateHeliostatCommand(this.#objectList[0])
+                    );
+                } else if (this.#objectList[0] instanceof Receiver) {
+                    this.#undoRedoHandler.executeCommand(
+                        new DuplicateReceiverCommand(this.#objectList[0])
+                    );
+                } else if (this.#objectList[0] instanceof LightSource) {
+                    this.#undoRedoHandler.executeCommand(
+                        new DuplicateLightSourceCommand(this.#objectList[0])
+                    );
+                }
+            }
+        });
     }
 }
