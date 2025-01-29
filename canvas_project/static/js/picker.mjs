@@ -20,7 +20,6 @@ export class Picker {
     #canvas;
     #mouse;
     #mouseDownPos;
-    #isTransformDragging;
     #isDragging;
     #selectedObject;
     // A helper group for multi-selection
@@ -47,7 +46,6 @@ export class Picker {
         this.#canvas = document.getElementById("canvas");
         this.#mouse = new THREE.Vector2();
         this.#mouseDownPos = { x: 0, y: 0 };
-        this.#isTransformDragging = false;
         this.#isDragging = false;
         this.#selectedObject = null;
 
@@ -72,8 +70,6 @@ export class Picker {
                 this.#onMouseUp(event);
             }
         });
-
-        // TODO: Event listener for Rectangular selection (not yet implemented)
     }
 
     /**
@@ -154,8 +150,17 @@ export class Picker {
 
     #onMouseUp(event) {
         // Only calls onClick if it was a real click  and not a drag
-        if (!this.#isDragging && !this.#isTransformDragging) {
+        if (!this.#isDragging) {
             this.#onClick(event);
+        } else if (this.#transformControls.object) {
+            console.log(this.#transformControls.object.position);
+            if (this.#transformControls.mode === "translate") {
+                this.#selectedObject.updatePosition(this.#transformControls.object.position);
+                this.#itemSelectedEvent();
+            } else if (this.#transformControls.mode === "rotate") {
+                this.#selectedObject.updateRotation();
+                this.#itemSelectedEvent();
+            }
         }
     }
 
@@ -175,8 +180,6 @@ export class Picker {
 
         // Raycast to find the clicked object
         this.#selectedObject = this.#select(this.#mouse, this.#camera);
-
-        console.log(this.#selectedObject.isMovable);
 
         // Check if the selected object is movable or rotatable
         if (this.#selectedObject) { 
