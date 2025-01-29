@@ -11,6 +11,9 @@ REDIRECT_LOGIN_URL = "login"
 
 
 def register_view(request):
+    """
+    Register a new user and redirect to the login page upon success.
+    """
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -33,6 +36,9 @@ def register_view(request):
 
 
 def login_view(request):
+    """
+    Log in the user and redirect to the projects page upon success.
+    """
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
