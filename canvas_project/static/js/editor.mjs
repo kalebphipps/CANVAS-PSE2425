@@ -16,6 +16,7 @@ import { ProjectSettingsManager } from "projectSettingsManager";
 import { Inspector } from "inspectorClass";
 
 import { Heliostat, Receiver, LightSource, Terrain } from "objects";
+import { CommandPrompt } from "commandPrompt";
 
 let editorInstance = null;
 export class Editor {
@@ -29,6 +30,7 @@ export class Editor {
     #quickSelector;
     #jobInterface;
     #inspector;
+    #commandPrompt;
 
     #projectId;
     #canvas;
@@ -76,6 +78,7 @@ export class Editor {
         //this.#quickSelector = new QuickSelector();
         //this.#jobInterface = new JobInterface();
         this.#inspector = new Inspector(this.#picker);
+        this.#commandPrompt = new CommandPrompt();
 
         window.addEventListener("resize", () => this.onWindowResize());
 

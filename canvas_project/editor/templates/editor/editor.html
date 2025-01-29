@@ -30,7 +30,10 @@
                 "inspectorComponents": "{% static 'js/inspectorComponents.mjs' %}",
                 "inspectorClass": "{% static 'js/inspector.mjs' %}",
                 "projectSettingsManager": "{% static 'js/projectSettingsManager.mjs' %}",
-                "createCommands": "{% static 'js/createCommands.mjs' %}"
+                "createCommands": "{% static 'js/createCommands.mjs' %}",
+                "commandPrompt": "{% static 'js/commandPrompt.mjs' %}",
+                "bootstrap": "{% static 'js/bootstrap.esm.js' %}",
+                "@popperjs/core": "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/esm/popper.min.js"
             }
         }
     </script>
@@ -47,6 +50,21 @@
     {% include "settings.html" %}
     <!--job interface modal-->
     {% include "editor/jobInterface.html" %}
+    <!-- command prompt modal-->
+    <div class="modal" id="commandPrompt">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header p-1 px-3">
+                    <div id="commandInput"></div>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="commandList"></div>
+            </div>
+        </div>
+    </div>
     <!-- keybindings modal -->
     <div class="modal modal-lg fade"
          id="keyboardModal"
@@ -437,7 +455,7 @@
                         <div class="accordion w-100" id="accordionExample">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button id="enviroment-settings-button" 
+                                    <button id="enviroment-settings-button"
                                             class="accordion-button collapsed"
                                             type="button"
                                             data-bs-toggle="collapse"
