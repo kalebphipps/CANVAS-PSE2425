@@ -490,12 +490,12 @@
                     <div class="rounded-circle bg-primary me-2"
                          style="width: 32px;
                                 height: 32px"></div>
-                    <strong class="me-2">Max</strong>
+                    <strong class="me-2">{{ request.user.first_name }}</strong>
                 </a>
                 <ul class="dropdown-menu text-small">
                     <div class="px-3 gap-1">
-                        <p class="m-0">Max Mustermann</p>
-                        <p class="text-secondary m-0">max.muster@example.com</p>
+                        <p class="m-0">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                        <p class="text-secondary m-0">{{ request.user.email }}</p>
                     </div>
                     <li>
                         <hr class="dropdown-divider">
@@ -506,7 +506,12 @@
                                 data-bs-target="#settings">Settings</button>
                     </li>
                     <li>
-                        <a class="dropdown-item" href"/">Sign out</a>
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item">
+                                Sign out
+                            </button>
+                        </form>
                     </li>
                 </ul>
             </div>

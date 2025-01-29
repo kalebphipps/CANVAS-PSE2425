@@ -13,8 +13,13 @@ REDIRECT_LOGIN_URL = "login"
 def register_view(request):
     """
     Register a new user and redirect to the login page upon success.
+    If the user is already logged in, redirect to the projects page.
     """
     if request.method == "POST":
+
+        if request.user.is_authenticated:
+            return redirect(REDIRECT_PROJECTS_URL)
+
         form = RegisterForm(request.POST)
         if form.is_valid():
             first_name = form.cleaned_data.get("first_name")
