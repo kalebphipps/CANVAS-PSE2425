@@ -28,6 +28,31 @@ class RegisterForm(forms.Form):
             )
         return email
 
+    def clean_password(self):
+        """
+        Validates the password based on security criteria.
+        """
+        password = self.cleaned_data.get("password")
+
+        if len(password) < 8:
+            self.add_error("password", "Password must be at least 8 characters long.")
+        if not any(char.isdigit() for char in password):
+            self.add_error("password", "Password must contain at least one digit.")
+        if not any(char.isupper() for char in password):
+            self.add_error(
+                "password", "Password must contain at least one uppercase letter."
+            )
+        if not any(char.islower() for char in password):
+            self.add_error(
+                "password", "Password must contain at least one lowercase letter."
+            )
+        if not any(char in "!@#$%^&*()-_+=<>?/" for char in password):
+            self.add_error(
+                "password",
+                "Password must contain at least one special character (!@#$%^&*()-_+=<>?/).",
+            )
+        return password
+
     def clean(self):
         """
         Validates that the two passwords match. If they do not, a validation error
