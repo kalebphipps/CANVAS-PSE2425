@@ -29,7 +29,8 @@ def register_view(request):
             )
             user.set_password(password)
             user.save()
-            return redirect(REDIRECT_LOGIN_URL)
+            login(request, user)
+            return redirect(REDIRECT_PROJECTS_URL)
     else:
         form = RegisterForm()
     return render(request, "register.html", {"form": form})
@@ -38,7 +39,12 @@ def register_view(request):
 def login_view(request):
     """
     Log in the user and redirect to the projects page upon success.
+    If the user is already logged in, redirect to the projects page.
     """
+
+    if request.user.is_authenticated:
+        return redirect(REDIRECT_PROJECTS_URL)
+
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
