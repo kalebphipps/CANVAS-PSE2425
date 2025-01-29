@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
-from django.contrib import messages
 from .forms import RegisterForm, LoginForm
+from django.contrib.auth import logout
+from django.views.decorators.http import require_POST
 
 REDIRECT_PROJECTS_URL = "projects"
 REDIRECT_LOGIN_URL = "login"
@@ -41,3 +41,12 @@ def login_view(request):
     else:
         form = LoginForm()
     return render(request, "login.html", {"form": form})
+
+
+@require_POST
+def logout_view(request):
+    """
+    Log out the current user and redirect to the login page.
+    """
+    logout(request)
+    return redirect(REDIRECT_LOGIN_URL)

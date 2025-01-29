@@ -232,7 +232,12 @@
                     </button>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="/">Sign out</a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item">
+                            Sign out
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>
