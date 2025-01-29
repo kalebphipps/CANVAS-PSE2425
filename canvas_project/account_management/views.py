@@ -6,6 +6,9 @@ from django.contrib.auth import login
 from django.contrib import messages
 from .forms import RegisterForm, LoginForm
 
+REDIRECT_PROJECTS_URL = "projects"
+REDIRECT_LOGIN_URL = "login"
+
 
 def register_view(request):
     if request.method == "POST":
@@ -15,16 +18,15 @@ def register_view(request):
             last_name = form.cleaned_data.get("last_name")
             email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password")
-            user = User.objects.create(
+            user = User(
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
                 username=email,
-                password=password,
             )
             user.set_password(password)
             user.save()
-            return redirect("login")
+            return redirect(REDIRECT_LOGIN_URL)
     else:
         form = RegisterForm()
     return render(request, "register.html", {"form": form})
@@ -34,10 +36,8 @@ def login_view(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            user = form.get_user()  # Hier holen wir den Benutzer
-            login(request, user)  # Benutzer anmelden
-            return redirect("projects")  # Weiterleitung auf die "projects"-Seite
+            login(request, form.get_user())
+            return redirect(REDIRECT_PROJECTS_URL)
     else:
         form = LoginForm()
-
     return render(request, "login.html", {"form": form})

@@ -46,15 +46,26 @@ class RegisterForm(forms.Form):
 
 
 class LoginForm(forms.Form):
+    """
+    A form for logging in an existing user. It includes fields for email and
+    password. It also validates that the email exists and that the password is
+    correct.
+    """
+
     email = forms.EmailField(label="Email")
     password = forms.CharField(label="Password", widget=forms.PasswordInput)
 
     def clean(self):
+        """
+        Validates that the email exists and that the password is correct. If the
+        email does not exist or the password is incorrect, a validation error is
+        raised.
+        """
         email = self.cleaned_data.get("email")
         password = self.cleaned_data.get("password")
-
-        # Check if the user with this email exists
         user = User.objects.filter(email=email).first()
+
+        # Check if the user with this email exists and the password is correct.
         if not user:
             self.add_error("email", "This email address is not registered.")
         elif not user.check_password(password):
@@ -65,4 +76,7 @@ class LoginForm(forms.Form):
         return self.cleaned_data
 
     def get_user(self):
+        """
+        Returns the user object if the form is valid.
+        """
         return self.user
