@@ -11,7 +11,8 @@ import { OverviewHandler } from "overview";
 //import { ModeSelector } from "modeSelector";
 import { Picker } from "picker";
 import { ProjectSettingsManager } from "projectSettingsManager";
-//import { QuickSelector } from "quickSelector";
+import { ObjectManager } from "objectManager";
+import { QuickSelector } from "quickSelector";
 //import { JobInterface } from "jobInterface";
 import { Inspector } from "inspectorClass";
 
@@ -26,6 +27,7 @@ export class Editor {
     #overview;
     #modeSelector;
     #projectSettingManager;
+    #objectManager;
     #quickSelector;
     #jobInterface;
     #inspector;
@@ -71,11 +73,16 @@ export class Editor {
             this.#selectionBox,
             this.#selectableGroup
         );
+        this.#inspector = new Inspector(this.#picker);
         this.#overview = new OverviewHandler(this.#picker);
         this.#projectSettingManager = new ProjectSettingsManager();
-        //this.#quickSelector = new QuickSelector();
+        this.#objectManager = new ObjectManager(
+            this.#picker,
+            this.#undoRedoHandler,
+            this.#inspector
+        );
+        this.#quickSelector = new QuickSelector(this.#objectManager);
         //this.#jobInterface = new JobInterface();
-        this.#inspector = new Inspector(this.#picker);
 
         window.addEventListener("resize", () => this.onWindowResize());
 

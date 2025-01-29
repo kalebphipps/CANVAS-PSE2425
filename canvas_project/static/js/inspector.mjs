@@ -10,6 +10,10 @@ export class Inspector {
      */
     #objectList;
     #inspectorElem;
+    #inspectorTabButton;
+    #inspectorPane;
+    #overviwButton;
+    #settingsButton;
 
     /**
      * Creates a new inspector
@@ -48,6 +52,22 @@ export class Inspector {
         );
 
         this.#render();
+    }
+
+    openPane() {
+        this.#render();
+
+        this.#inspectorPane = document.getElementById("object-tab-pane");
+        this.#inspectorPane.classList.add("show", "active");
+
+        this.#inspectorTabButton = document.getElementById("object-tab");
+        this.#inspectorTabButton.classList.add("show", "active", "clicked");
+
+        this.#overviwButton = document.getElementById("overview-tab");
+        this.#overviwButton.classList.remove("show", "active", "clicked");
+
+        this.#settingsButton = document.getElementById("project-tab");
+        this.#settingsButton.classList.remove("show", "active", "clicked");
     }
 
     #render() {
