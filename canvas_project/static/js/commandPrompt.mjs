@@ -132,6 +132,7 @@ export class CommandPrompt {
 
 class PromptCommand extends HTMLElement {
     #commandName;
+    #currentLevenshteinDistance = 0;
     /**
      *
      * @param {String} name the name of the command
@@ -163,6 +164,14 @@ class PromptCommand extends HTMLElement {
 
     get commandName() {
         return this.#commandName;
+    }
+
+    get currentLevenshteinDistance() {
+        return this.#currentLevenshteinDistance;
+    }
+
+    set currentLevenshteinDistance(distance) {
+        this.#currentLevenshteinDistance = distance;
     }
 
     select() {
