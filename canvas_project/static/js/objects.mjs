@@ -716,12 +716,12 @@ export class Receiver extends SelectableObject {
      * @param {THREE.Vector3} position the new position of the receiver
      */
     updatePosition(position) {
-        this.#base.position.set(position.x, 0, position.z);
-        this.#top.position.set(position.x, position.y, position.z);
+        this.position.copy(position);
+        this.#base.position.y = -position.y;
     }
 
     getPosition() {
-        return this.#top.position;
+        return this.position;
     }
 
     /**
