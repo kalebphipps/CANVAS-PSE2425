@@ -37,7 +37,13 @@ export class CommandPrompt {
                         .getElementById("commandPrompt")
                         .classList.contains("show")
                 ) {
-                    this.#initializeCommandPrompt();
+                    this.#commandInput.value = "";
+                    this.#commandInput.focus();
+                    this.#commandList.forEach((command) => {
+                        this.#commandListElem.appendChild(command);
+                    });
+                    this.#selectedIndex = 0;
+                    this.#selectCommand();
                 }
             }
         });
@@ -97,17 +103,6 @@ export class CommandPrompt {
         document.getElementById("commandInput").appendChild(this.#commandInput);
     }
 
-    #initializeCommandPrompt() {
-        this.#commandList.forEach((command) => {
-            this.#commandListElem.appendChild(command);
-        });
-
-        this.#selectedIndex = 0;
-        this.#selectCommand();
-        this.#commandInput.value = "";
-        this.#commandInput.focus();
-    }
-
     #selectCommand() {
         if (this.#selectedCommand) {
             this.#selectedCommand.classList.remove("text-white");
@@ -121,12 +116,103 @@ export class CommandPrompt {
     }
 
     #updateCommandPrompt() {
-        this.#selectedIndex = 0;
-        this.#selectCommand();
+        this.#commandInput.focus();
+        this.#currentlyAvailabeCommands = [];
+        this.#commandListElem.innerHTML = "";
 
-        // calculate the new available commands
-        // via Levenshtein-Distanz
-        console.log("updatedCommands");
+        if (this.#commandInput.value.length == 0) {
+            this.#commandList.forEach((command) => {
+                this.#commandListElem.appendChild(command);
+            });
+        } else {
+            // split the input at spaces
+            const splittedInput = this.#commandInput.value.split(" ");
+
+            // calculate the distance for every combination
+
+            // calculate the new available commands
+            this.#commandList.forEach((command) => {
+                command.currentLevenshteinDistance =
+                    this.#calculateLevenshteinDisctance(
+                        this.#commandInput.value.toLowerCase(),
+                        command.commandName.toLowerCase()
+                    ) -
+                    Math.abs(
+                        command.commandName.length -
+                            this.#commandInput.value.length
+                    );
+
+                if (command.currentLevenshteinDistance <= 2) {
+                    this.#currentlyAvailabeCommands.push(command);
+                }
+            });
+
+            // render new command selection
+            this.#currentlyAvailabeCommands.forEach((command) => {
+                this.#commandListElem.appendChild(command);
+            });
+        }
+
+        if (this.#commandListElem.children.length > 0) {
+            this.#selectedIndex = 0;
+            this.#selectCommand();
+        } else {
+            const noCommands = document.createElement("i");
+            noCommands.classList.add("text-secondary");
+            noCommands.innerHTML = "No commands available";
+
+            this.#commandListElem.appendChild(noCommands);
+        }
+    }
+
+    /**
+     * Calculates the amount of changes you have to perform to one word to get to the other one.
+     * @param {String} word1 first word
+     * @param {String} word2 second word
+     * @link [Levenshtein distance](https://de.wikipedia.org/wiki/Levenshtein-Distanz#:~:text=Mathematisch%20ist%20die%20Levenshtein%2DDistanz,auf%20dem%20Raum%20der%20Symbolsequenzen.&text=In%20der%20Praxis%20wird%20die,oder%20bei%20der%20Duplikaterkennung%20angewandt.)
+     */
+    #calculateLevenshteinDisctance(word1, word2) {
+        // initialize matrix
+        const matrix = Array(word1.length + 1)
+            .fill(null)
+            .map(() => Array(word2.length + 1).fill(null));
+
+        // initialize first line
+        for (let i = 0; i <= word2.length; i++) {
+            matrix[0][i] = i;
+        }
+        // initialize first column
+        for (let j = 0; j <= word1.length; j++) {
+            matrix[j][0] = j;
+        }
+
+        // backtrace
+        for (let i = 1; i <= word1.length; i++) {
+            for (let j = 1; j <= word2.length; j++)
+                this.#backtraceLevenshtein(i, j, matrix, word1, word2);
+        }
+
+        return matrix[word1.length][word2.length];
+    }
+
+    /**
+     * Calculates the given entry for the levenshtein matrix.
+     * @param {Number} i the line index
+     * @param {Number} j the column index
+     * @param {Array<Array>} matrix the matrix used for the levenshtein distance
+     * @param {String} word1 the first word
+     * @param {String} word2 the second word
+     */
+    #backtraceLevenshtein(i, j, matrix, word1, word2) {
+        let equal = Number.MAX_SAFE_INTEGER;
+
+        if (word1.charAt(i - 1) === word2.charAt(j - 1)) {
+            equal = matrix[i - 1][j - 1];
+        }
+        const replaced = matrix[i - 1][j - 1] + 1;
+        const added = matrix[i][j - 1] + 1;
+        const deleted = matrix[i - 1][j] + 1;
+        matrix[i][j] = Math.min(equal, replaced, added, deleted);
     }
 }
 
