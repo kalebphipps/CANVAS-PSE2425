@@ -29,7 +29,7 @@ export class CommandPrompt {
 
         // open and close the command prompt
         document.addEventListener("keydown", (event) => {
-            if (event.ctrlKey && event.key === "p") {
+            if (event.ctrlKey && event.key.toLowerCase() === "p") {
                 event.preventDefault();
                 this.#modal.toggle();
                 if (
@@ -38,6 +38,7 @@ export class CommandPrompt {
                         .classList.contains("show")
                 ) {
                     this.#commandInput.value = "";
+                    this.#commandListElem.innerHTML = "";
                     this.#commandInput.focus();
                     this.#commandList.forEach((command) => {
                         this.#commandListElem.appendChild(command);
@@ -73,7 +74,10 @@ export class CommandPrompt {
                 }
 
                 if (event.key === "Enter") {
-                    this.#selectedCommand.execute();
+                    this.#modal.hide();
+                    if (this.#selectedCommand) {
+                        this.#selectedCommand.execute();
+                    }
                 }
             }
         });
@@ -86,11 +90,20 @@ export class CommandPrompt {
         this.#commandList = [
             new LightModePromptCommand(),
             new DarkModePromptCommand(),
+            new AutoModePromptCommand(),
             new AddHeliostatPromptCommand(),
             new AddReceiverPromptCommand(),
             new AddLightSourcePromptCommand(),
             new ToggleFullscreenPromptCommand(),
+            new ExportProjectPromptCommand(),
+            new RenderProjectPromptCommand(),
+            new OpenSettingsPromptCommand(),
+            new OpenJobInterfacePromptCommand(),
         ];
+
+        this.#commandList.sort((command1, command2) =>
+            command1.commandName.localeCompare(command2.commandName)
+        );
     }
     #createInputField() {
         this.#commandInput = document.createElement("input");
@@ -125,11 +138,6 @@ export class CommandPrompt {
                 this.#commandListElem.appendChild(command);
             });
         } else {
-            // split the input at spaces
-            const splittedInput = this.#commandInput.value.split(" ");
-
-            // calculate the distance for every combination
-
             // calculate the new available commands
             this.#commandList.forEach((command) => {
                 command.currentLevenshteinDistance =
@@ -157,6 +165,10 @@ export class CommandPrompt {
             this.#selectedIndex = 0;
             this.#selectCommand();
         } else {
+            if (this.#selectedCommand) {
+                this.#selectedCommand.unselect();
+                this.#selectedCommand = null;
+            }
             const noCommands = document.createElement("i");
             noCommands.classList.add("text-secondary");
             noCommands.innerHTML = "No commands available";
@@ -276,21 +288,52 @@ class PromptCommand extends HTMLElement {
 }
 
 class LightModePromptCommand extends PromptCommand {
+    #themeSwitcher;
     constructor() {
         super("Use light mode");
+        this.#themeSwitcher = document.getElementById("mode-toggle");
     }
 
     execute() {
-        console.log("light mode");
+        document.documentElement.setAttribute("data-bs-theme", "light");
+        localStorage.setItem("theme", "light");
+        this.#themeSwitcher.innerHTML =
+            "<i class='bi bi-brightness-high'></i> light";
     }
 }
 
 class DarkModePromptCommand extends PromptCommand {
+    #themeSwitcher;
     constructor() {
         super("Use dark mode");
+        this.#themeSwitcher = document.getElementById("mode-toggle");
     }
 
-    execute() {}
+    execute() {
+        document.documentElement.setAttribute("data-bs-theme", "dark");
+        localStorage.setItem("theme", "dark");
+        this.#themeSwitcher.innerHTML = "<i class='bi bi-moon-stars'></i> dark";
+    }
+}
+
+class AutoModePromptCommand extends PromptCommand {
+    #themeSwitcher;
+    constructor() {
+        super("Use auto mode");
+        this.#themeSwitcher = document.getElementById("mode-toggle");
+    }
+
+    execute() {
+        document.documentElement.setAttribute(
+            "data-bs-theme",
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+        );
+        localStorage.setItem("theme", "auto");
+        this.#themeSwitcher.innerHTML =
+            "<i class='bi bi-circle-half'></i> auto";
+    }
 }
 
 class AddHeliostatPromptCommand extends PromptCommand {
@@ -333,8 +376,53 @@ class ToggleFullscreenPromptCommand extends PromptCommand {
     }
 }
 
+class ExportProjectPromptCommand extends PromptCommand {
+    constructor() {
+        super("Export project");
+    }
+
+    execute() {
+        console.log("export");
+    }
+}
+
+class RenderProjectPromptCommand extends PromptCommand {
+    constructor() {
+        super("Render project");
+    }
+
+    execute() {
+        console.log("render");
+    }
+}
+
+class OpenSettingsPromptCommand extends PromptCommand {
+    constructor() {
+        super("Open settings");
+    }
+
+    execute() {
+        const settingsModal = new Modal(document.getElementById("settings"));
+        settingsModal.show();
+    }
+}
+
+class OpenJobInterfacePromptCommand extends PromptCommand {
+    constructor() {
+        super("Open job interface");
+    }
+
+    execute() {
+        const jobInterfaceModal = new Modal(
+            document.getElementById("jobInterface")
+        );
+        jobInterfaceModal.show();
+    }
+}
+
 customElements.define("light-mode-prompt-command", LightModePromptCommand);
 customElements.define("dark-mode-prompt-command", DarkModePromptCommand);
+customElements.define("auto-mode-prompt-command", AutoModePromptCommand);
 customElements.define(
     "add-heliostat-prompt-command",
     AddHeliostatPromptCommand
@@ -350,4 +438,20 @@ customElements.define(
 customElements.define(
     "toggle-fullscreen-prompt-command",
     ToggleFullscreenPromptCommand
+);
+customElements.define(
+    "export-project-prompt-command",
+    ExportProjectPromptCommand
+);
+customElements.define(
+    "render-project-prompt-command",
+    RenderProjectPromptCommand
+);
+customElements.define(
+    "open-settings-prompt-command",
+    OpenSettingsPromptCommand
+);
+customElements.define(
+    "open-job-interface-prompt-command",
+    OpenJobInterfacePromptCommand
 );
