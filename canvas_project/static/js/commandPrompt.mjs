@@ -55,6 +55,12 @@ export class CommandPrompt {
         document.addEventListener("keydown", (event) => {
             if (event.ctrlKey && event.key.toLowerCase() === "p") {
                 event.preventDefault();
+                // Close all other modals
+                document.querySelectorAll(".modal.show").forEach((modal) => {
+                    if (modal !== document.getElementById("commandPrompt")) {
+                        Modal.getInstance(modal).hide();
+                    }
+                });
                 this.#modal.toggle();
                 if (
                     document
