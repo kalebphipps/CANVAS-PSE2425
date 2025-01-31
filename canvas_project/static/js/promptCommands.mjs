@@ -296,7 +296,9 @@ export class LogoutPromptCommand extends PromptCommand {
     }
 
     execute() {
-        window.location.href = "/logout";
+        fetch(window.location.origin + "/logout", {
+            method: "POST",
+        });
     }
 }
 
