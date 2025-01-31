@@ -20,7 +20,6 @@ import {
     TorusGeometry,
     Vector3,
 } from "three";
-import { Receiver } from "objects";
 
 const _raycaster = new Raycaster();
 
@@ -598,56 +597,29 @@ class TransformControls extends Controls {
 
             // Apply rotate
 
-            if (object instanceof Receiver && axis !== "Y") {
-              // Nur die Y-Achse verschieben
-              if (space === "local" && axis !== "E" && axis !== "XYZE") {
-                  object.quaternion.copy(this._quaternionStart);
-          
-                  object.quaternion
-                      .multiply(
-                          _tempQuaternion.setFromAxisAngle(
-                              new Vector3(0, 1, 0), // Nur Y-Achse
-                              this.rotationAngle
-                          )
-                      )
-                      .normalize();
-              } else {
-                  this.rotationAxis.applyQuaternion(this._parentQuaternionInv);
-          
-                  object.quaternion.copy(
-                      _tempQuaternion.setFromAxisAngle(
-                          new Vector3(0, 1, 0), // Nur Y-Achse
-                          this.rotationAngle
-                      )
-                  );
-          
-                  object.quaternion.multiply(this._quaternionStart).normalize();
-              }
-          } else {
-              if (space === "local" && axis !== "E" && axis !== "XYZE") {
-                  object.quaternion.copy(this._quaternionStart);
-          
-                  object.quaternion
-                      .multiply(
-                          _tempQuaternion.setFromAxisAngle(
-                              this.rotationAxis,
-                              this.rotationAngle
-                          )
-                      )
-                      .normalize();
-              } else {
-                  this.rotationAxis.applyQuaternion(this._parentQuaternionInv);
-          
-                  object.quaternion.copy(
-                      _tempQuaternion.setFromAxisAngle(
-                          this.rotationAxis,
-                          this.rotationAngle
-                      )
-                  );
-          
-                  object.quaternion.multiply(this._quaternionStart).normalize();
-              }
-          }
+            if (space === "local" && axis !== "E" && axis !== "XYZE") {
+                object.quaternion.copy(this._quaternionStart);
+
+                object.quaternion
+                    .multiply(
+                        _tempQuaternion.setFromAxisAngle(
+                            this.rotationAxis,
+                            this.rotationAngle
+                        )
+                    )
+                    .normalize();
+            } else {
+                this.rotationAxis.applyQuaternion(this._parentQuaternionInv);
+
+                object.quaternion.copy(
+                    _tempQuaternion.setFromAxisAngle(
+                        this.rotationAxis,
+                        this.rotationAngle
+                    )
+                );
+
+                object.quaternion.multiply(this._quaternionStart).normalize();
+            }
         }
 
         this.dispatchEvent(_changeEvent);

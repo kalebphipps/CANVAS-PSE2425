@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { SelectableObject } from "objects";
+import { Receiver, SelectableObject } from "objects";
 
 export const Mode = Object.freeze({
     NONE: "none",
@@ -24,8 +24,6 @@ export class Picker {
     #selectedObject;
     // A helper group for multi-selection
     #multiSelectionGroup;
-    // A map to store each object's original parent when moved into multiSelectionGroup
-    #originalParents;
 
     /**
      * Creates a new Picker object
@@ -50,11 +48,6 @@ export class Picker {
         this.#mouseDownPos = { x: 0, y: 0 };
         this.#isDragging = false;
         this.#selectedObject = null;
-
-        // Group used to move multiple selected objects together
-        this.#multiSelectionGroup = new THREE.Group();
-        this.#selectableGroup.add(this.#multiSelectionGroup);
-        this.#originalParents = new Map();
 
         // Mouse event listeners on the canvas
         this.#canvas.children[
@@ -242,6 +235,8 @@ export class Picker {
         if (this.#selectedObjects.length === 0) {
             return;
         }
+        this.#transformControls.showX = true;
+        this.#transformControls.showZ = true;
         this.#selectionBox.visible = false;
         this.#selectedObjects = [];
     }
@@ -289,6 +284,10 @@ export class Picker {
                 if (!this.#selectedObject.isRotatable) {
                     this.#transformControls.detach();
                     return;
+                }
+                if (this.#selectedObject instanceof Receiver) {
+                    this.#transformControls.showX = false;
+                    this.#transformControls.showZ = false;
                 }
             } else if (this.#transformControls.mode === "translate") {
                 if (!this.#selectedObject.isMovable) {
