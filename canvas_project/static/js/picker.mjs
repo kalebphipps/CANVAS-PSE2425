@@ -336,6 +336,9 @@ export class Picker {
             event.clientX,
             event.clientY
         );
+        if (!elementUnderMouse) {
+            return false;
+        }
         return (
             elementUnderMouse.closest("#pillNav1") !== null ||
             elementUnderMouse.closest("#pillNav2") !== null
