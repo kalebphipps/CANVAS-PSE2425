@@ -433,11 +433,10 @@ export class Receiver extends SelectableObject {
         super(receiverName);
         // place the 3D object
         this.#base = new ReceiverBase();
-        this.#base.position.copy(new THREE.Vector3(position.x, 0, position.z));
+        this.#base.position.copy(new THREE.Vector3(0, -position.y, 0));
         this.add(this.#base);
 
         this.#top = new ReceiverTop();
-        this.#top.position.copy(position);
         this.add(this.#top);
 
         this.#base.rotation.y = rotationY;

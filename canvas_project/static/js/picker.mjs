@@ -153,7 +153,6 @@ export class Picker {
         if (!this.#isDragging) {
             this.#onClick(event);
         } else if (this.#transformControls.object) {
-            console.log(this.#transformControls.object.position);
             if (this.#transformControls.mode === "translate") {
                 this.#selectedObject.updatePosition(this.#transformControls.object.position);
                 this.#itemSelectedEvent();
@@ -189,7 +188,6 @@ export class Picker {
                     return;
                 }
             } else if (this.#transformControls.mode === "translate") {
-                console.log(this.#selectedObject.isMovable);
                 if (!this.#selectedObject.isMovable) { 
                     console.error("selected Object is not movable");
                     return;
