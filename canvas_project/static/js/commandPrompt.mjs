@@ -11,8 +11,12 @@ import {
     RenderProjectPromptCommand,
     OpenSettingsPromptCommand,
     OpenJobInterfacePromptCommand,
+    PromptCommand,
 } from "promptCommands";
 
+/**
+ * Manages the command prompt in the editor
+ */
 export class CommandPrompt {
     /**
      * @type {HTMLInputElement}
@@ -34,6 +38,9 @@ export class CommandPrompt {
      */
     #selectedCommand;
 
+    /**
+     * Creates the new command prompt handler
+     */
     constructor() {
         this.#commandListElem = document.getElementById("commandList");
         this.#modal = new Modal(document.getElementById("commandPrompt"));
@@ -65,7 +72,7 @@ export class CommandPrompt {
             }
         });
 
-        // handle command selection
+        // handle command navigation and execution
         document.addEventListener("keydown", (event) => {
             if (
                 document
@@ -121,6 +128,10 @@ export class CommandPrompt {
             command1.commandName.localeCompare(command2.commandName)
         );
     }
+
+    /**
+     * Creates the input field for the command prompt
+     */
     #createInputField() {
         this.#commandInput = document.createElement("input");
         this.#commandInput.classList.add(
@@ -132,6 +143,9 @@ export class CommandPrompt {
         document.getElementById("commandInput").appendChild(this.#commandInput);
     }
 
+    /**
+     * Selects the command specified by the selectedIndex
+     */
     #selectCommand() {
         if (this.#selectedCommand) {
             this.#selectedCommand.classList.remove("text-white");
@@ -144,6 +158,9 @@ export class CommandPrompt {
         this.#selectedCommand.scrollIntoView({ block: "nearest" });
     }
 
+    /**
+     * Updates the command prompt for the updated input given by the user.
+     */
     #updateCommandPrompt() {
         this.#currentlyAvailabeCommands = [];
         this.#commandListElem.innerHTML = "";
@@ -203,9 +220,10 @@ export class CommandPrompt {
     }
 
     /**
-     *
+     * Calculates the first occuring intervall that contains all letters in the input in the correct order
      * @param {String} input the input
      * @param {String} compareTo the string you want to compare against
+     * @returns {Number[] | null} containing all the indexes of the letter in the 'compareTo' parameter, or null if no match is found
      */
     #calculateFirstOccuringIntervall(input, compareTo) {
         const indexList = [];

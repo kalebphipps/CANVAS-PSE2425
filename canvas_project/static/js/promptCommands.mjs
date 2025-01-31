@@ -1,5 +1,8 @@
 import { Modal } from "bootstrap";
 
+/**
+ * Parent class of all prompt commands
+ */
 export class PromptCommand extends HTMLElement {
     #commandName;
     #occurenceLength = null;
@@ -9,7 +12,7 @@ export class PromptCommand extends HTMLElement {
     #selectedChars = null;
     #commandElem;
     /**
-     *
+     * Creates a new prompt command
      * @param {String} name the name of the command
      * @param {String} [keybind=null] the keybind of the command
      */
@@ -49,6 +52,9 @@ export class PromptCommand extends HTMLElement {
         this.#occurenceLength = length;
     }
 
+    /**
+     * @param {Number[]} chars is an array of char indexes you want to be selected
+     */
     set selectedChars(chars) {
         this.#selectedChars = chars;
         if (this.#selectedChars !== null) {
@@ -62,6 +68,9 @@ export class PromptCommand extends HTMLElement {
         }
     }
 
+    /**
+     * Makes all the characters specified by 'selectedChars' bold.
+     */
     formatCommandName() {
         if (this.#selectedChars) {
             let formattedName = "";
@@ -86,6 +95,9 @@ export class PromptCommand extends HTMLElement {
         this.classList.remove("bg-primary");
     }
 
+    /**
+     * Executes the prompt command.
+     */
     execute() {
         throw new Error(
             "This method needs to be implemented in all subclasses"
@@ -93,6 +105,9 @@ export class PromptCommand extends HTMLElement {
     }
 }
 
+/**
+ * Prompt command to enable light mode
+ */
 export class LightModePromptCommand extends PromptCommand {
     #themeSwitcher;
     constructor() {
@@ -108,6 +123,9 @@ export class LightModePromptCommand extends PromptCommand {
     }
 }
 
+/**
+ * Prompt command to enable dark mode
+ */
 export class DarkModePromptCommand extends PromptCommand {
     #themeSwitcher;
     constructor() {
@@ -122,6 +140,9 @@ export class DarkModePromptCommand extends PromptCommand {
     }
 }
 
+/**
+ * Prompt command to enable auto mode
+ */
 export class AutoModePromptCommand extends PromptCommand {
     #themeSwitcher;
     constructor() {
@@ -142,6 +163,9 @@ export class AutoModePromptCommand extends PromptCommand {
     }
 }
 
+/**
+ * Prompt command to add a heliostat to the scene
+ */
 export class AddHeliostatPromptCommand extends PromptCommand {
     constructor() {
         super("Add heliostat");
@@ -152,6 +176,9 @@ export class AddHeliostatPromptCommand extends PromptCommand {
     }
 }
 
+/**
+ * Prompt command to add a receiver to the scene
+ */
 export class AddReceiverPromptCommand extends PromptCommand {
     constructor() {
         super("Add receiver");
@@ -162,6 +189,9 @@ export class AddReceiverPromptCommand extends PromptCommand {
     }
 }
 
+/**
+ * Prompt command to add a lightsource to the scene
+ */
 export class AddLightSourcePromptCommand extends PromptCommand {
     constructor() {
         super("Add light source");
@@ -172,9 +202,12 @@ export class AddLightSourcePromptCommand extends PromptCommand {
     }
 }
 
+/**
+ * Prompt command to toggle fullscreen
+ */
 export class ToggleFullscreenPromptCommand extends PromptCommand {
     constructor() {
-        super("Toggle fullscreen");
+        super("Toggle fullscreen", "F11");
     }
 
     execute() {
@@ -182,16 +215,22 @@ export class ToggleFullscreenPromptCommand extends PromptCommand {
     }
 }
 
+/**
+ * Prompt command to export the current project
+ */
 export class ExportProjectPromptCommand extends PromptCommand {
     constructor() {
         super("Export project");
     }
 
     execute() {
-        console.log("export");
+        window.location.href = window.location + "/hdf5";
     }
 }
 
+/**
+ * Prompt command to render the current project
+ */
 export class RenderProjectPromptCommand extends PromptCommand {
     constructor() {
         super("Render project");
@@ -202,6 +241,9 @@ export class RenderProjectPromptCommand extends PromptCommand {
     }
 }
 
+/**
+ * Prompt command to open the settings pane
+ */
 export class OpenSettingsPromptCommand extends PromptCommand {
     constructor() {
         super("Open settings");
@@ -213,6 +255,9 @@ export class OpenSettingsPromptCommand extends PromptCommand {
     }
 }
 
+/**
+ * Prompt command to open the job interface pane
+ */
 export class OpenJobInterfacePromptCommand extends PromptCommand {
     constructor() {
         super("Open job interface");
