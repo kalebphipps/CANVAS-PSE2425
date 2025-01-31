@@ -35,7 +35,7 @@ export class PromptCommand extends HTMLElement {
         if (keybind) {
             const keybindElem = document.createElement("div");
             keybindElem.innerHTML = keybind;
-            keybindElem.classList.add("key", "border", "p-1", "px-2");
+            keybindElem.classList.add("key", "border", "p-0", "px-2");
             this.appendChild(keybindElem);
         }
     }
@@ -271,6 +271,73 @@ export class OpenJobInterfacePromptCommand extends PromptCommand {
     }
 }
 
+/**
+ * Prompt command to open the keybindings help page
+ */
+export class OpenKeybindsPromptCommand extends PromptCommand {
+    constructor() {
+        super("Open keybindings help page");
+    }
+
+    execute() {
+        const keybindingsModal = new Modal(
+            document.getElementById("keyboardModal")
+        );
+        keybindingsModal.show();
+    }
+}
+
+/**
+ * Prompt command to logout the user
+ */
+export class LogoutPromptCommand extends PromptCommand {
+    constructor() {
+        super("Logout");
+    }
+
+    execute() {
+        window.location.href = "/logout";
+    }
+}
+
+/**
+ * Prompt command to create a new project
+ */
+export class NewProjectPromptCommand extends PromptCommand {
+    constructor() {
+        super("Create new project");
+    }
+
+    execute() {
+        const newProjectModal = new Modal(
+            document.getElementById("createNewProject")
+        );
+        newProjectModal.show();
+
+        document
+            .getElementById("createNewProject")
+            .addEventListener("shown.bs.modal", function () {
+                document.getElementById("createProjectNameInput").focus();
+            });
+    }
+}
+
+/**
+ * Prompt command to open an existing project
+ */
+export class OpenProjectPromptCommand extends PromptCommand {
+    constructor() {
+        super("Open exisiting project");
+    }
+
+    execute() {
+        const newProjectModal = new Modal(
+            document.getElementById("openProject")
+        );
+        newProjectModal.show();
+    }
+}
+
 // define the new HTML elements
 customElements.define("light-mode-prompt-command", LightModePromptCommand);
 customElements.define("dark-mode-prompt-command", DarkModePromptCommand);
@@ -307,3 +374,10 @@ customElements.define(
     "open-job-interface-prompt-command",
     OpenJobInterfacePromptCommand
 );
+customElements.define(
+    "open-keybings-prompt-command",
+    OpenKeybindsPromptCommand
+);
+customElements.define("logout-prompt-command", LogoutPromptCommand);
+customElements.define("new-project-prompt-command", NewProjectPromptCommand);
+customElements.define("open-project-prompt-command", OpenProjectPromptCommand);

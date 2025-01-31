@@ -12,6 +12,10 @@ import {
     OpenSettingsPromptCommand,
     OpenJobInterfacePromptCommand,
     PromptCommand,
+    OpenKeybindsPromptCommand,
+    LogoutPromptCommand,
+    NewProjectPromptCommand,
+    OpenProjectPromptCommand,
 } from "promptCommands";
 
 /**
@@ -122,6 +126,10 @@ export class CommandPrompt {
             new RenderProjectPromptCommand(),
             new OpenSettingsPromptCommand(),
             new OpenJobInterfacePromptCommand(),
+            new OpenKeybindsPromptCommand(),
+            new LogoutPromptCommand(),
+            new NewProjectPromptCommand(),
+            new OpenProjectPromptCommand(),
         ];
 
         this.#commandList.sort((command1, command2) =>

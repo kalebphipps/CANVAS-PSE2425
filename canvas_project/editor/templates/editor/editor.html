@@ -5,7 +5,7 @@
     <link href="{% static 'css/editor.css' %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 {% block script %}
-    {{ block.super }}
+    <script src="{% static 'js/darkmode.js' %}"></script>
     <script type="importmap">
         {
             "imports": {
@@ -47,6 +47,25 @@
     </script>
 {% endblock %}
 {% block body %}
+    <!-- error message -->
+    {% if errorMessage %}
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div class="toast show"
+                 style="backdrop-filter: blur(0.7rem)"
+                 role="alert"
+                 aria-live="assertive"
+                 aria-atomic="true">
+                <div class="toast-header text-bg-danger">
+                    <strong class="me-auto">Warning</strong>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="toast"
+                            aria-label="Close"></button>
+                </div>
+                <div class="toast-body">{{ errorMessage }}</div>
+            </div>
+        </div>
+    {% endif %}
     <!--settings modal-->
     {% include "settings.html" %}
     <!--job interface modal-->
@@ -77,6 +96,78 @@
                             To dismiss
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- create new project modal -->
+    <div class="modal fade"
+         id="createNewProject"
+         tabindex="-1"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4">
+                <div class="modal-body">
+                    <p class="font-italic">
+                        Projects will only be saved if they have a name unique to
+                        your already existing projects!
+                    </p>
+                    <form action="" method="POST" class="d-flex flex-column gap-2">
+                        {% csrf_token %} {{ createProjectForm }}
+                        <br />
+                        <button class="btn btn-primary rounded-3" type="submit">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- open existing project modal -->
+    <div class="modal modal-lg fade"
+         id="openProject"
+         tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Projects</h5>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex flex-column gap-1">
+                    {% for project in projects %}
+                        <div class="px-2">
+                            <div class="card mb-3 rounded-4 bg-body-tertiary overflow-hidden mx-auto w-100">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <a class="col-md-4" href="{% url 'editor' project.name %}">
+                                            <img src="{{ project.preview.url }}"
+                                                 alt="{{ project.name }}"
+                                                 class="img-fluid h-100" />
+                                        </a>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <div class="d-flex gap-1">
+                                                <div class="d-flex flex-column">
+                                                    <h1 class="fw-bolder">{{ project.name }}</h1>
+                                                    <p class="fw-light">{{ project.description }}</p>
+                                                    <p class="text-start">Last edited: {{ project.last_edited }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <a role="button"
+                                                   href="{% url 'editor' project_name=project.name %}"
+                                                   class="btn btn-primary">Open</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
