@@ -68,3 +68,10 @@ def logout_view(request):
     """
     logout(request)
     return redirect(REDIRECT_LOGIN_URL)
+
+
+def update_account(request):
+    return render(request, "settings.html")
+
+def delete_account(request):
+    return render(request, "settings.html")
