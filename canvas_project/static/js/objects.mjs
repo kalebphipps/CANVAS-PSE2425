@@ -699,15 +699,15 @@ export class Receiver extends SelectableObject {
      * @returns {Boolean} true, as the receiver is rotatable
      */
     get isRotatable() {
-        return true;
+        return this.#isRotatable;
     }
 
     /**
-     * Returns whether the reciever is movable or not
+     * Returns whether the receiver is movable or not
      * @returns {Boolean} true, as the receiver is movable
      */
     get isMovable() {
-        return true;
+        return this.#isMovable;
     }
 
     /**

@@ -3,7 +3,7 @@ import { SelectableObject } from "objects";
 
 export const Mode = Object.freeze({
     NONE: "none",
-    SINGLE: "single",
+    MOVE: "move",
     ROTATE: "rotate",
 });
 
@@ -41,7 +41,9 @@ export class Picker {
         this.#selectableGroup = selectableGroup;
         this.#selectedObjects = [];
         this.#raycaster = new THREE.Raycaster();
-        this.#mode = "single";
+        this.#mode = "rotate";
+        this.#transformControls.setMode(this.#mode);
+
 
         this.#canvas = document.getElementById("canvas");
         this.#mouse = new THREE.Vector2();
@@ -55,32 +57,32 @@ export class Picker {
         this.#originalParents = new Map();
 
         // Mouse event listeners on the canvas
-        this.#canvas.addEventListener("mousedown", (event) => {
-            if (!this.#isMouseOverNavElements(event)) {
-                this.#onMouseDown(event);
-            }
+        this.#canvas.children[
+            this.#canvas.children.length - 1
+        ].addEventListener("mousedown", (event) => {
+            this.#onMouseDown(event);
         });
-        this.#canvas.addEventListener("mousemove", (event) => {
-            if (!this.#isMouseOverNavElements(event)) {
-                this.#onMouseMove(event);
-            }
+        this.#canvas.children[
+            this.#canvas.children.length - 1
+        ].addEventListener("mousemove", (event) => {
+            this.#onMouseMove(event);
         });
-        this.#canvas.addEventListener("mouseup", (event) => {
-            if (!this.#isMouseOverNavElements(event)) {
-                this.#onMouseUp(event);
-            }
+        this.#canvas.children[
+            this.#canvas.children.length - 1
+        ].addEventListener("mouseup", (event) => {
+            this.#onMouseUp(event);
         });
     }
 
     /**
      * Sets the mode for the picker.
-     * @param {"none" | "single" | "rotate"} mode - The mode to set.
+     * @param {"none" | "move" | "rotate"} mode - The mode to set.
      */
     setMode(mode) {
         this.#mode = mode;
         if (mode === Mode.NONE) {
             this.#transformControls.detach();
-        } else if (mode === Mode.SINGLE) {
+        } else if (mode === Mode.MOVE) {
             this.#transformControls.setMode("translate");
         } else {
             this.#transformControls.setMode("rotate");
@@ -114,19 +116,8 @@ export class Picker {
             this.#selectedObject = objectList[0];
             this.#attachTransform();
 
-            // 1. Possibility using Boxhelper
             this.#selectionBox.setFromObject(this.#selectedObject);
             this.#selectionBox.visible = true;
-            /*
-            // 2. Possibility using emissive color
-            for (const object of objectList) {
-                object.traverse((child) => {
-                    if (child.type === "Mesh") {
-                        child.material.emissive.set(0xff0000);
-                    }
-                });
-            }
-            */
         }
 
         this.#itemSelectedEvent();
@@ -154,10 +145,17 @@ export class Picker {
             this.#onClick(event);
         } else if (this.#transformControls.object) {
             if (this.#transformControls.mode === "translate") {
-                this.#selectedObject.updatePosition(this.#transformControls.object.position);
+                this.#selectedObject.updatePosition(
+                    this.#transformControls.object.position
+                );
                 this.#itemSelectedEvent();
             } else if (this.#transformControls.mode === "rotate") {
-                this.#selectedObject.updateRotation();
+                //TODO: auch mit Commands Updaten
+                /*
+                this.#selectedObject.updateRotation(
+                    this.#transformControls.object.rotation
+                );
+                */
                 this.#itemSelectedEvent();
             }
         }
@@ -167,7 +165,7 @@ export class Picker {
      * Handles the click event on the canvas
      */
     #onClick(event) {
-        if (this.#mode !== Mode.SINGLE) {
+        if (this.#mode !== Mode.MOVE && this.#mode !== Mode.ROTATE) {
             this.#deselectAll();
             return;
         }
@@ -181,22 +179,24 @@ export class Picker {
         this.#selectedObject = this.#select(this.#mouse, this.#camera);
 
         // Check if the selected object is movable or rotatable
-        if (this.#selectedObject) { 
+        /*
+        if (this.#selectedObject) {
             if (this.#transformControls.mode === "rotate") {
                 if (!this.#selectedObject.isRotatable) {
                     console.error("selected Object is not rotatable");
                     return;
                 }
             } else if (this.#transformControls.mode === "translate") {
-                if (!this.#selectedObject.isMovable) { 
+                if (!this.#selectedObject.isMovable) {
                     console.error("selected Object is not movable");
                     return;
                 }
             }
         }
+        */
 
-        // Update selection (handles shift-key and multi-selection)
-        this.#updateSelection(event.shiftKey);
+        // Update selection (handles strg-key and multi-selection)
+        this.#updateSelection(event.strgKey);
 
         this.#itemSelectedEvent();
     }
@@ -242,39 +242,25 @@ export class Picker {
         if (this.#selectedObjects.length === 0) {
             return;
         }
-        // 1. Possibility using Boxhelper
         this.#selectionBox.visible = false;
-
-        /*
-        // 2. Possibility using emissive color
-        for (const obj of this.#selectedObjects) {
-            if (obj) {
-                obj.traverse((child) => {
-                    if (child.type === "Mesh") {
-                        child.material.emissive.set(0x000000);
-                    }
-                });
-            }
-        }
-        */
         this.#selectedObjects = [];
     }
 
     /*
-     * Updates the selection based on the shift key
-     * @param {Boolean} shiftKey The state of the shift key
+     * Updates the selection based on the strgKey
+     * @param {Boolean} strgKey The state of the strgKey
      */
-    #updateSelection(shiftKey) {
+    #updateSelection(strgKey) {
         // No object was clicked
         if (!this.#selectedObject) {
-            if (!shiftKey) {
+            if (!strgKey) {
                 this.#deselectAll();
             }
             return;
         }
 
         // Object was clicked
-        if (shiftKey) {
+        if (strgKey) {
             // If object is already in the selection, just attach transformControls
             if (this.#selectedObjects.includes(this.#selectedObject)) {
                 this.#attachTransform();
@@ -299,19 +285,21 @@ export class Picker {
         if (this.#selectedObjects.length === 0) {
             this.#transformControls.detach();
         } else if (this.#selectedObjects.length === 1) {
+            if (this.#transformControls.mode === "rotate") {
+                if (!this.#selectedObject.isRotatable) {
+                    this.#transformControls.detach();
+                    return;
+                }
+            } else if (this.#transformControls.mode === "translate") {
+                if (!this.#selectedObject.isMovable) {
+                    this.#transformControls.detach();
+                    return;
+                }
+            }
+
             this.#transformControls.attach(this.#selectedObjects[0]);
-            // 1. Posibility using Boxhelper
             this.#selectionBox.setFromObject(this.#selectedObject);
             this.#selectionBox.visible = true;
-
-            /*
-            // 2. Possibility using emissive color
-            this.#selectedObject.traverse((child) => {
-                if (child.type === "Mesh") {
-                    child.material.emissive.set(0xff0000);
-                }
-            });
-            */
         } else {
             // TODO: Implement multi-selection
         }
@@ -327,21 +315,6 @@ export class Picker {
         return new THREE.Vector2(
             ((position.x - rect.left) / rect.width) * 2 - 1,
             -((position.y - rect.top) / rect.height) * 2 + 1
-        );
-    }
-
-    // Helper method to check if the mouse is over the nav elements or their children
-    #isMouseOverNavElements(event) {
-        const elementUnderMouse = document.elementFromPoint(
-            event.clientX,
-            event.clientY
-        );
-        if (!elementUnderMouse) {
-            return false;
-        }
-        return (
-            elementUnderMouse.closest("#pillNav1") !== null ||
-            elementUnderMouse.closest("#pillNav2") !== null
         );
     }
 }
