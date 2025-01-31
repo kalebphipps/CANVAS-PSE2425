@@ -278,7 +278,7 @@
     <div class="d-flex w-100 justify-content-end p-2">
         <div class="d-flex justify-content-between mx-3 py-1">
             <a
-                class="dropdown-toggle d-flex align-items-center link-bo dy-emphasis text-decoration-none py-2"
+                class="dropdown-toggle d-flex align-items-center link-bo dy-emphasis text-decoration-none py-2 text-reset"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
             >
@@ -286,12 +286,14 @@
                     class="rounded-circle bg-primary me-2"
                     style="width: 32px; height: 32px"
                 ></div>
-                <strong class="me-2">Max</strong>
+                <strong class="me-2">{{ request.user.first_name }}</strong>
             </a>
             <ul class="dropdown-menu text-small shadow">
                 <div class="px-3 gap-1">
-                    <p class="m-0">Max Mustermann</p>
-                    <p class="text-secondary m-0">max.muster@example.com</p>
+                    <p class="m-0">
+                        {{ request.user.first_name }} {{request.user.last_name}}
+                    </p>
+                    <p class="text-secondary m-0">{{ request.user.email }}</p>
                 </div>
                 <li>
                     <hr class="dropdown-divider" />
@@ -306,7 +308,12 @@
                     </button>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="/">Sign out</a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item">
+                            Sign out
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>
