@@ -1,5 +1,11 @@
 import * as THREE from "three";
-import { Receiver, SelectableObject } from "objects";
+import { UndoRedoHandler } from "undoRedoHandler";
+import { Heliostat, Receiver, SelectableObject } from "objects";
+import {
+    UpdateHeliostatCommand,
+    UpdateLightsourceCommand,
+    UpdateReceiverCommand,
+} from "updateCommands";
 
 export const Mode = Object.freeze({
     NONE: "none",
@@ -14,6 +20,7 @@ export class Picker {
     #selectableGroup;
     #selectedObjects;
     #raycaster;
+    #undoRedoHandler;
     #mode;
 
     // Additional fields
@@ -22,8 +29,6 @@ export class Picker {
     #mouseDownPos;
     #isDragging;
     #selectedObject;
-    // A helper group for multi-selection
-    #multiSelectionGroup;
 
     /**
      * Creates a new Picker object
@@ -39,8 +44,8 @@ export class Picker {
         this.#selectableGroup = selectableGroup;
         this.#selectedObjects = [];
         this.#raycaster = new THREE.Raycaster();
-        this.#mode = "rotate";
-        this.#transformControls.setMode(this.#mode);
+        this.#undoRedoHandler = new UndoRedoHandler();
+        this.#mode = Mode.MOVE;
 
 
         this.#canvas = document.getElementById("canvas");
@@ -103,6 +108,7 @@ export class Picker {
      * @param {Array<THREE.Object3D>} objectList
      */
     setSelection(objectList) {
+        console.log("Setting selection");
         this.#deselectAll();
         this.#selectedObjects = objectList;
         if (objectList) {
@@ -110,18 +116,27 @@ export class Picker {
             this.#attachTransform();
 
             this.#selectionBox.setFromObject(this.#selectedObject);
-            this.#selectionBox.visible = true;
+            // Only show the selection box if the object has a position in the scene
+            if (this.#selectedObjects.position !== undefined) {
+                this.#selectionBox.visible = true;
+            }
         }
 
         this.#itemSelectedEvent();
     }
 
+    /**
+     * @param {MouseEvent} event
+     */
     #onMouseDown(event) {
         this.#isDragging = false;
         this.#mouseDownPos.x = event.clientX;
         this.#mouseDownPos.y = event.clientY;
     }
 
+    /**
+     * @param {MouseEvent} event
+     */
     #onMouseMove(event) {
         if (event.buttons !== 0) {
             const x = event.clientX - this.#mouseDownPos.x;
@@ -132,6 +147,9 @@ export class Picker {
         }
     }
 
+    /**
+     * @param {MouseEvent} event
+     */
     #onMouseUp(event) {
         // Only calls onClick if it was a real click  and not a drag
         if (!this.#isDragging) {
@@ -156,6 +174,7 @@ export class Picker {
 
     /**
      * Handles the click event on the canvas
+     * @param {MouseEvent} event
      */
     #onClick(event) {
         if (this.#mode !== Mode.MOVE && this.#mode !== Mode.ROTATE) {
@@ -171,25 +190,8 @@ export class Picker {
         // Raycast to find the clicked object
         this.#selectedObject = this.#select(this.#mouse, this.#camera);
 
-        // Check if the selected object is movable or rotatable
-        /*
-        if (this.#selectedObject) {
-            if (this.#transformControls.mode === "rotate") {
-                if (!this.#selectedObject.isRotatable) {
-                    console.error("selected Object is not rotatable");
-                    return;
-                }
-            } else if (this.#transformControls.mode === "translate") {
-                if (!this.#selectedObject.isMovable) {
-                    console.error("selected Object is not movable");
-                    return;
-                }
-            }
-        }
-        */
-
-        // Update selection (handles strg-key and multi-selection)
-        this.#updateSelection(event.strgKey);
+        // Update selection (handles ctrl-key and multi-selection)
+        this.#updateSelection(event.ctrlKey);
 
         this.#itemSelectedEvent();
     }
@@ -231,31 +233,28 @@ export class Picker {
     #deselectAll() {
         // Detach transformControls
         this.#transformControls.detach();
-
-        if (this.#selectedObjects.length === 0) {
-            return;
-        }
         this.#transformControls.showX = true;
         this.#transformControls.showZ = true;
+        this.#transformControls.showY = true;
         this.#selectionBox.visible = false;
         this.#selectedObjects = [];
     }
 
     /*
-     * Updates the selection based on the strgKey
-     * @param {Boolean} strgKey The state of the strgKey
+     * Updates the selection based on the ctrlKey
+     * @param {Boolean} ctrlKey The state of the ctrlKey
      */
-    #updateSelection(strgKey) {
+    #updateSelection(ctrlKey) {
         // No object was clicked
         if (!this.#selectedObject) {
-            if (!strgKey) {
+            if (!ctrlKey) {
                 this.#deselectAll();
             }
             return;
         }
 
         // Object was clicked
-        if (strgKey) {
+        if (ctrlKey) {
             // If object is already in the selection, just attach transformControls
             if (this.#selectedObjects.includes(this.#selectedObject)) {
                 this.#attachTransform();
@@ -278,20 +277,30 @@ export class Picker {
      */
     #attachTransform() {
         if (this.#selectedObjects.length === 0) {
-            this.#transformControls.detach();
+            this.#deselectAll();
         } else if (this.#selectedObjects.length === 1) {
             if (this.#transformControls.mode === "rotate") {
-                if (!this.#selectedObject.isRotatable) {
-                    this.#transformControls.detach();
+                if (!this.#selectedObject.rotatableAxis) {
+                    this.#deselectAll();
                     return;
                 }
-                if (this.#selectedObject instanceof Receiver) {
+                this.#selectedObject.rotatableAxis.forEach((axis) => {
                     this.#transformControls.showX = false;
                     this.#transformControls.showZ = false;
-                }
+                    this.#transformControls.showY = false;
+                    if (axis === "X") {
+                        this.#transformControls.showX = true;
+                    }
+                    if (axis === "Y") {
+                        this.#transformControls.showY = true;
+                    }
+                    if (axis === "Z") {
+                        this.#transformControls.showZ = true;
+                    }
+                });
             } else if (this.#transformControls.mode === "translate") {
                 if (!this.#selectedObject.isMovable) {
-                    this.#transformControls.detach();
+                    this.#deselectAll();
                     return;
                 }
             }

@@ -73,10 +73,10 @@ export class SelectableObject extends Object3D {
     }
 
     /**
-     * Returns whether the object is rotatable or not
+     * Returns the axis on which the object is rotatable
      * @returns {Boolean}
      */
-    get isRotatable() {
+    get rotatableAxis() {
         throw new Error("This method must be implemented in all subclasses");
     }
 
@@ -104,7 +104,7 @@ export class Heliostat extends SelectableObject {
     #kinematicTypeComponent;
     #undoRedoHandler = new UndoRedoHandler();
     #isMovable = true;
-    #isRotatable = false;
+    #rotatableAxis = null;
 
     /**
      * Creates a Heliostat object
@@ -293,8 +293,8 @@ export class Heliostat extends SelectableObject {
      * Returns whether the heliostat is rotatable or not
      * @returns {Boolean} false, as the heliostat is not rotatable
      */
-    get isRotatable() {
-        return this.#isRotatable;
+    get rotatableAxis() {
+        return this.#rotatableAxis;
     }
 
     /**
@@ -387,6 +387,7 @@ export class Receiver extends SelectableObject {
     #rotationY = 0;
     #undoRedoHandler = new UndoRedoHandler();
 
+    #position;
     #top;
     #base;
 
@@ -399,7 +400,7 @@ export class Receiver extends SelectableObject {
     #planeComponent;
     #resolutionComponent;
     #isMovable = true;
-    #isRotatable = true;
+    #rotatableAxis = ["Y"];
 
     /**
      * Creates a Receiver object
@@ -431,13 +432,15 @@ export class Receiver extends SelectableObject {
         apiID = null
     ) {
         super(receiverName);
+        console.log("position", position);
         // place the 3D object
         this.#base = new ReceiverBase();
-        this.#base.position.copy(new THREE.Vector3(0, -position.y, 0));
         this.add(this.#base);
 
         this.#top = new ReceiverTop();
         this.add(this.#top);
+
+        this.updatePosition(position);
 
         this.#base.rotation.y = rotationY;
         this.#top.rotation.y = rotationY;
@@ -698,8 +701,8 @@ export class Receiver extends SelectableObject {
      * Returns whether the receiver is rotatable or not
      * @returns {Boolean} true, as the receiver is rotatable
      */
-    get isRotatable() {
-        return this.#isRotatable;
+    get rotatableAxis() {
+        return this.#rotatableAxis;
     }
 
     /**
@@ -886,7 +889,7 @@ export class LightSource extends SelectableObject {
 
     #undoRedoHandler = new UndoRedoHandler();
     #isMovable = false;
-    #isRotatable = false;
+    #rotatableAxis = null;
 
     /**
      * @param {Number} [apiID=null] the id for api usage
@@ -999,8 +1002,8 @@ export class LightSource extends SelectableObject {
      * Returns whether the lightsource is rotatable or not
      * @returns {Boolean} false, as the lightsource is not rotatable
      */
-    get isRotatable() {
-        return false;
+    get rotatableAxis() {
+        return this.#rotatableAxis;
     }
 
     /**
@@ -1008,7 +1011,7 @@ export class LightSource extends SelectableObject {
      * @returns {Boolean} false, as the lightsource is movable
      */
     get isMovable() {
-        return false;
+        return this.#isMovable;
     }
 
     /**
