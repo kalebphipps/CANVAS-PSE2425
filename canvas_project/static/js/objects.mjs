@@ -49,10 +49,18 @@ export class SelectableObject extends Object3D {
     }
 
     /**
-     * Updates an saves the new name through a command
+     * Updates and saves the new name through a command
      * @param {String} name the new name you want to save and update
      */
     updateAndSaveObjectName(name) {
+        throw new Error("This method must be implemented in all subclasses");
+    }
+
+    /**
+     * Updates and saves the new position through a command
+     * @param {Vector3} position 
+     */
+    updateAndSaveObjectPosition(position) {
         throw new Error("This method must be implemented in all subclasses");
     }
 
@@ -334,6 +342,15 @@ export class Heliostat extends SelectableObject {
         );
     }
 
+    /**
+     * Updates the position of the heliostat
+     * @param {Vector3} position 
+     */
+    updateAndSaveObjectPosition(position) {
+        this.#undoRedoHandler.executeCommand(
+            new UpdateHeliostatCommand(this, "position", position)
+        );
+    }
     /**
      * Updates the aimPoint of the Heliostat and updates rotation of the Heliostat accordingly
      * @param {THREE.Vector3} aimPoint
@@ -743,6 +760,16 @@ export class Receiver extends SelectableObject {
     updateAndSaveObjectName(name) {
         this.#undoRedoHandler.executeCommand(
             new UpdateReceiverCommand(this, "objectName", name)
+        );
+    }
+
+    /**
+     * Updates the position of the receiver
+     * @param {Vector3} position 
+     */
+    updateAndSaveObjectPosition(position) {
+        this.#undoRedoHandler.executeCommand(
+            new UpdateReceiverCommand(this, "position", position)
         );
     }
 

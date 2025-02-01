@@ -1,11 +1,6 @@
 import * as THREE from "three";
-import { UndoRedoHandler } from "undoRedoHandler";
-import { Heliostat, Receiver, SelectableObject } from "objects";
-import {
-    UpdateHeliostatCommand,
-    UpdateLightsourceCommand,
-    UpdateReceiverCommand,
-} from "updateCommands";
+import { SelectableObject } from "objects";
+
 
 export const Mode = Object.freeze({
     NONE: "none",
@@ -20,7 +15,6 @@ export class Picker {
     #selectableGroup;
     #selectedObjects;
     #raycaster;
-    #undoRedoHandler;
     #mode;
 
     // Additional fields
@@ -44,7 +38,6 @@ export class Picker {
         this.#selectableGroup = selectableGroup;
         this.#selectedObjects = [];
         this.#raycaster = new THREE.Raycaster();
-        this.#undoRedoHandler = new UndoRedoHandler();
         this.#mode = Mode.MOVE;
 
         this.#canvas = document.getElementById("canvas");
@@ -107,7 +100,6 @@ export class Picker {
      * @param {Array<THREE.Object3D>} objectList
      */
     setSelection(objectList) {
-        console.log("Setting selection");
         this.#deselectAll();
         this.#selectedObjects = objectList;
         if (objectList) {
@@ -155,23 +147,7 @@ export class Picker {
             this.#onClick(event);
         } else if (this.#transformControls.object) {
             if (this.#transformControls.mode === "translate") {
-                if (this.#selectedObject instanceof Heliostat) {
-                    this.#undoRedoHandler.executeCommand(
-                        new UpdateHeliostatCommand(
-                            this.#selectedObject,
-                            "position",
-                            this.#transformControls.object.position.clone()
-                        )
-                    );
-                } else if (this.#selectedObject instanceof Receiver) {
-                    this.#undoRedoHandler.executeCommand(
-                        new UpdateReceiverCommand(
-                            this.#selectedObject,
-                            "position",
-                            this.#transformControls.object.position.clone()
-                        )
-                    );
-                }
+                this.#selectedObject.updateAndSaveObjectPosition(this.#transformControls.object.position.clone())
                 this.#itemSelectedEvent();
             } else if (this.#transformControls.mode === "rotate") {
                 //TODO: auch mit Commands Updaten

@@ -71,9 +71,6 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
                 this.#heliostat.kinematicType = this.#newParameter;
                 break;
                 case "position":
-                console.log("paremeter",this.#newParameter);
-                console.log("oldPosition",this.#heliostat.oldPosition);
-                console.log("position",this.#heliostat.position);
                 this.#heliostat.updatePosition(this.#newParameter);
                 break;
             case "aimPoint":
