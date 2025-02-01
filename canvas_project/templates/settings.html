@@ -172,28 +172,28 @@
                                     </div>
                                     <div class="mb-3">
                                         <label
-                                            for="new_password1"
+                                            for="new_password"
                                             class="form-label"
                                             >New Password</label
                                         >
                                         <input
                                             type="password"
                                             class="form-control"
-                                            id="new_password1"
-                                            name="new_password1"
+                                            id="new_password"
+                                            name="new_password"
                                         />
                                     </div>
                                     <div class="mb-3">
                                         <label
-                                            for="new_password2"
+                                            for="password_confirmation"
                                             class="form-label"
                                             >Confirm New Password</label
                                         >
                                         <input
                                             type="password"
                                             class="form-control"
-                                            id="new_password2"
-                                            name="new_password2"
+                                            id="password_confirmation"
+                                            name="password_confirmation"
                                         />
                                     </div>
                                 </div>
@@ -264,4 +264,49 @@
         </div>
     </div>
 </div>
+
+
+<!-- Fehler-/Erfolgsmeldungen Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Messages</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul id="message-list"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var messageList = document.getElementById('message-list');
+            var messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
+
+            {% for message in messages %}
+                var listItem = document.createElement('li');
+                listItem.textContent = "{{ message|escapejs }}";
+
+                {% if message.tags == "success" %}
+                    listItem.style.color = "green";
+                {% elif message.tags == "error" %}
+                    listItem.style.color = "red";
+                {% else %}
+                    listItem.style.color = "black";
+                {% endif %}
+
+                messageList.appendChild(listItem);
+            {% endfor %}
+
+            if (messageList.children.length > 0) {
+                messageModal.show();
+            }
+        });
+    </script>
+{% endif %}
+
 {% endblock body %}
