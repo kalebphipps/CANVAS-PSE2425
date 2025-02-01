@@ -10,8 +10,8 @@
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
 >
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content rounded-4">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="height:80vh;">
+        <div class="modal-content rounded-4 h-100 overflow-auto">
             <div class="modal-header">
                 <h5 class="modal-title">Settings</h5>
                 <button
@@ -21,10 +21,7 @@
                     aria-label="Close"
                 ></button>
             </div>
-            <div
-                class="modal-body gap-2 d-flex flex-column h-100"
-                style="min-height: 80vh" 
-            >
+            <div class="modal-body gap-2 d-flex flex-column h-100">
                 <div class="d-flex flex-fill">
                     <div
                         class="nav flex-column nav-pills me-3 sticky-top"
@@ -115,6 +112,7 @@
                             >
                                 {% csrf_token %}
                                 <div class="flex-grow-1 overflow-auto">
+                                    <h5 class="fw-bold">Account Details</h5>
                                     <div class="mb-3 d-flex">
                                         <div class="me-2 w-50">
                                             <label
@@ -156,7 +154,7 @@
                                         />
                                     </div>
                                     <hr />
-                                    <h6>Change Password</h6>
+                                    <h5 class="fw-bold">Change Password</h5>
                                     <div class="mb-3">
                                         <label
                                             for="old_password"
