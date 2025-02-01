@@ -3,6 +3,7 @@ import { Heliostat, LightSource, Receiver } from "objects";
 import { SingleObjectCommand } from "singleObjectCommands";
 import { ItemCreatedEvent } from "createCommands";
 import { ItemDeletedEvent } from "deleteCommands";
+import * as THREE from "three";
 
 /**
  * Command to duplicate a heliostat.
@@ -18,11 +19,17 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
      */
     constructor(heliostat) {
         super();
+        const position = heliostat.position();
+        const offsetPosition = new THREE.Vector3(
+            position.x + 1,
+            position.y,
+            position.z
+        );
         this.#heliostatCopy = new Heliostat(
             this.#heliostat.objectName == "" || !this.#heliostat.objectName
                 ? "Heliostat_Copy"
                 : this.#heliostat.objectName + "_Copy",
-            this.#heliostat.position,
+            offsetPosition,
             this.#heliostat.aimPoint,
             this.#heliostat.numberOfFacets,
             this.#heliostat.kinematicType
@@ -61,11 +68,17 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
      */
     constructor(receiver) {
         super();
+        const position = receiver.getPosition();
+        const offsetPosition = new THREE.Vector3(
+            position.x + 1,
+            position.y,
+            position.z
+        );
         this.#receiverCopy = new Receiver(
             this.#receiver.objectName == "" || !this.#receiver.objectName
                 ? "Receiver_Copy"
                 : this.#receiver.objectName + "_Copy",
-            this.#receiver.getPosition(),
+            offsetPosition,
             this.#receiver.rotationY,
             this.#receiver.normalVector,
             this.#receiver.towerType,
