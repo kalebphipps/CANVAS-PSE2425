@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from project_management.models import Project
@@ -68,6 +69,7 @@ def editor(request, project_name):
                 form.owner = request.user
                 form.last_edited = timezone.now()
                 form.save()
+                messages.success(request, "Successfully created the new project")
                 return redirect("/editor/" + new_project_name)
 
         # if not render error message
@@ -80,6 +82,11 @@ def editor(request, project_name):
             "-last_edited"
         )
 
+        messages.error(
+            request,
+            "A project with this name already exists. Please choose a different name.",
+        )
+
         return render(
             request,
             "editor/editor.html",
@@ -88,7 +95,6 @@ def editor(request, project_name):
                 "project_name": project.name,
                 "createProjectForm": createProjectForm,
                 "projects": allProjects,
-                "errorMessage": "A project with this name already exists",
             },
         )
 
