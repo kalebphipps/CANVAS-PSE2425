@@ -70,7 +70,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
             case "kinematicType":
                 this.#heliostat.kinematicType = this.#newParameter;
                 break;
-            case "position":
+                case "position":
                 this.#heliostat.updatePosition(this.#newParameter);
                 break;
             case "aimPoint":
@@ -131,7 +131,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
             case "kinematicType":
                 return this.#heliostat.kinematicType;
             case "position":
-                return this.#heliostat.position.clone();
+                return this.#heliostat.oldPosition;
             case "aimPoint":
                 return this.#heliostat.aimPoint.clone();
             default:
@@ -306,7 +306,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
             case "rotationY":
                 return this.#receiver.rotationY;
             case "position":
-                return this.#receiver.getPosition().clone();
+                return this.#receiver.oldPosition;
             default:
                 throw new Error(`Invalid attribute: ${this.#attribute}`);
         }
