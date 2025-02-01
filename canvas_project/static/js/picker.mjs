@@ -160,7 +160,7 @@ export class Picker {
                         new UpdateHeliostatCommand(
                             this.#selectedObject,
                             "position",
-                            this.#transformControls.object.position
+                            this.#transformControls.object.position.clone()
                         )
                     );
                 } else if (this.#selectedObject instanceof Receiver) {
@@ -168,7 +168,7 @@ export class Picker {
                         new UpdateReceiverCommand(
                             this.#selectedObject,
                             "position",
-                            this.#transformControls.object.position
+                            this.#transformControls.object.position.clone()
                         )
                     );
                 }

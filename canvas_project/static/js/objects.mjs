@@ -398,7 +398,6 @@ export class Receiver extends SelectableObject {
     #rotationY = 0;
     #undoRedoHandler = new UndoRedoHandler();
 
-    #position;
     #top;
     #base;
 
@@ -412,6 +411,7 @@ export class Receiver extends SelectableObject {
     #resolutionComponent;
     #isMovable = true;
     #rotatableAxis = ["Y"];
+    #oldPosition;
 
     /**
      * Creates a Receiver object
@@ -443,7 +443,6 @@ export class Receiver extends SelectableObject {
         apiID = null
     ) {
         super(receiverName);
-        console.log("position", position);
         // place the 3D object
         this.#base = new ReceiverBase();
         this.add(this.#base);
@@ -730,6 +729,7 @@ export class Receiver extends SelectableObject {
      */
     updatePosition(position) {
         this.position.copy(position);
+        this.#oldPosition = new Vector3(position.x, position.y, position.z);
         this.#base.position.y = -position.y;
     }
 
@@ -744,6 +744,10 @@ export class Receiver extends SelectableObject {
         this.#undoRedoHandler.executeCommand(
             new UpdateReceiverCommand(this, "objectName", name)
         );
+    }
+
+    get oldPosition() {
+        return this.#oldPosition;
     }
 
     get apiID() {
