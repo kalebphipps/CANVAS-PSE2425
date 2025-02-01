@@ -105,6 +105,7 @@ export class Heliostat extends SelectableObject {
     #undoRedoHandler = new UndoRedoHandler();
     #isMovable = true;
     #rotatableAxis = null;
+    #oldPosition;
 
     /**
      * Creates a Heliostat object
@@ -137,6 +138,7 @@ export class Heliostat extends SelectableObject {
             this.add(this.mesh);
         });
         this.position.copy(position);
+        this.#oldPosition = new Vector3(position.x, position.y, position.z);
         this.#apiID = apiID;
         this.#aimPoint = aimPoint;
         this.#numberOfFacets = numberOfFacets;
@@ -290,7 +292,7 @@ export class Heliostat extends SelectableObject {
     }
 
     /**
-     * Returns whether the heliostat is rotatable or not
+     * Returns the axis on which the heliostat is rotatable
      * @returns {Boolean} false, as the heliostat is not rotatable
      */
     get rotatableAxis() {
@@ -306,11 +308,20 @@ export class Heliostat extends SelectableObject {
     }
 
     /**
+     * Returns the old position of the heliostat
+     * @returns {THREE.Vector3} the old position of the heliostat
+     */
+    get oldPosition() {
+        return this.#oldPosition;
+    }
+
+    /**
      * Updates the position of the heliostat
      * @param {THREE.Vector3} position the new position
      */
     updatePosition(position) {
         this.position.copy(position);
+        this.#oldPosition = new Vector3(position.x, position.y, position.z);
         this.lookAt(this.#aimPoint.x, 0, this.#aimPoint.z);
     }
 

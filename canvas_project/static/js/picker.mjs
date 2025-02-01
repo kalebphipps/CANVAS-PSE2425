@@ -47,7 +47,6 @@ export class Picker {
         this.#undoRedoHandler = new UndoRedoHandler();
         this.#mode = Mode.MOVE;
 
-
         this.#canvas = document.getElementById("canvas");
         this.#mouse = new THREE.Vector2();
         this.#mouseDownPos = { x: 0, y: 0 };
@@ -156,9 +155,23 @@ export class Picker {
             this.#onClick(event);
         } else if (this.#transformControls.object) {
             if (this.#transformControls.mode === "translate") {
-                this.#selectedObject.updatePosition(
-                    this.#transformControls.object.position
-                );
+                if (this.#selectedObject instanceof Heliostat) {
+                    this.#undoRedoHandler.executeCommand(
+                        new UpdateHeliostatCommand(
+                            this.#selectedObject,
+                            "position",
+                            this.#transformControls.object.position
+                        )
+                    );
+                } else if (this.#selectedObject instanceof Receiver) {
+                    this.#undoRedoHandler.executeCommand(
+                        new UpdateReceiverCommand(
+                            this.#selectedObject,
+                            "position",
+                            this.#transformControls.object.position
+                        )
+                    );
+                }
                 this.#itemSelectedEvent();
             } else if (this.#transformControls.mode === "rotate") {
                 //TODO: auch mit Commands Updaten
