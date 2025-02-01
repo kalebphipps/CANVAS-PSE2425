@@ -1,5 +1,3 @@
-import { ObjectManager } from "objectManager";
-
 export class QuickSelector {
     #objectManager;
     #createHeliostatButton;

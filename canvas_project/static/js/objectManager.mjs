@@ -120,11 +120,7 @@ export class ObjectManager {
             }
 
             // Delete object
-            if (
-                event.key === "Delete" ||
-                event.keyCode === 46 ||
-                event.code === "Delete"
-            ) {
+            if (event.key === "Delete") {
                 if (this.#objectList.length === 1) {
                     if (this.#objectList[0] instanceof Heliostat) {
                         this.#undoRedoHandler.executeCommand(
