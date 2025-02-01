@@ -107,6 +107,13 @@ class LoginForm(forms.Form):
         return self.user
 
 class UpdateAccountForm(forms.ModelForm):
+    """
+    A form for updating the user's account information. It includes fields for
+    first_name, last_name, and email. It also includes fields for the old password,
+    new password, and password_confirmation. It validates that the old password is
+    correct, that the new password passes the security criteria, and that the two
+    new passwords match.
+    """
     
     first_name = forms.CharField(label="First name", required=False)
     last_name = forms.CharField(label="Last name", required=False)
@@ -182,6 +189,9 @@ class UpdateAccountForm(forms.ModelForm):
         return password_confirmation
     
     def clean(self):
+        """
+        Validates that the old password is entered when a new password is entered.
+        """
         old_password = self.cleaned_data.get("old_password")
         new_password = self.cleaned_data.get("new_password")
 

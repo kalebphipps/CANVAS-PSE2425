@@ -70,8 +70,12 @@ def logout_view(request):
     logout(request)
     return redirect(REDIRECT_LOGIN_URL)
 
+@require_POST
 @login_required
 def update_account(request):
+    """
+    Update the user's account information.
+    """
     user = request.user
     if request.method == 'POST':
         form = UpdateAccountForm(instance=request.user, data=request.POST)
@@ -79,6 +83,7 @@ def update_account(request):
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name'] 
             user.email = form.cleaned_data['email']
+            # Set the username to the email for consistency
             user.username = user.email
 
             old_password = form.cleaned_data['old_password']
@@ -96,12 +101,17 @@ def update_account(request):
                     messages.error(request, f"Error in {field.label}: {error}")
         return redirect(request.META.get("HTTP_REFERER", "index"))
 
-
+@require_POST
+@login_required
 def delete_account(request):
+    """
+    Delete the user's account.
+    """
     if request.method == 'POST':
         form = DeleteAccountForm(request.user, request.POST)
         if form.is_valid():
             request.user.delete()
+            logout(request)
             return redirect(REDIRECT_LOGIN_URL)
         else:
             for field in form:

@@ -266,7 +266,7 @@
 </div>
 
 
-<!-- Fehler-/Erfolgsmeldungen Modal -->
+<!-- Error/Success Messages Modal -->
 <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -311,6 +311,7 @@
 
 {% endblock body %}
 
+<!-- Script to handle custom behavior for Ctrl + S -->
 <script>
     document.addEventListener('keydown', function (event) {
         // Check if Ctrl + S is pressed
@@ -320,7 +321,7 @@
             // Check if we are on the Account settings tab
             const accountTab = document.getElementById('v-pills-profil');
             if (accountTab && accountTab.classList.contains('show')) {
-                const form = document.querySelector('form[action="{% url 'update_account' %}"]');
+                const form = document.querySelector('form[action="{% url "update_account" %}"]');
                 if (form) {
                     form.submit();  // Submit the form
                 }
