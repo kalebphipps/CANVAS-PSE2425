@@ -28,7 +28,6 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
             this.#heliostat.numberOfFacets,
             this.#heliostat.kinematicType
         );
-        console.log(this.#heliostat);
     }
 
     async execute() {

@@ -1,9 +1,15 @@
+import { ObjectManager } from "objectManager";
+
 export class QuickSelector {
     #objectManager;
     #createHeliostatButton;
     #createReceiverButton;
     #createLightSourceButton;
 
+    /**
+     *
+     * @param {ObjectManager} objectManager
+     */
     constructor(objectManager) {
         this.#objectManager = objectManager;
 

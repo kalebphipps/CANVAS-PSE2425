@@ -57,8 +57,8 @@ export class ObjectManager {
             new CreateHeliostatCommand(heliostat)
         );
         let selectedObject = [heliostat];
-        this.#picker.setSelection(selectedObject);
         this.#openInspector();
+        this.#picker.setSelection(selectedObject);
     }
 
     /**
@@ -83,8 +83,8 @@ export class ObjectManager {
         );
 
         let selectedObject = [receiver];
-        this.#picker.setSelection(selectedObject);
         this.#openInspector();
+        this.#picker.setSelection(selectedObject);
     }
 
     /**
@@ -103,8 +103,8 @@ export class ObjectManager {
             new CreateLightSourceCommand(lightSource)
         );
         let selectedObject = [lightSource];
-        this.#picker.setSelection(selectedObject);
         this.#openInspector();
+        this.#picker.setSelection(selectedObject);
     }
 
     /**
@@ -140,17 +140,17 @@ export class ObjectManager {
 
             // Duplicate object
             if (
-                ((event.ctrlKey || event.metaKey) && event.key === "d") ||
+                ((event.ctrlKey || event.metaKey) &&
+                    event.key.toLowerCase() === "d") ||
+                event.key.toUpperCase() === "D" ||
                 event.key === "D"
             ) {
                 event.preventDefault();
-                console.log("Duplicae: ", this.#objectList[0]);
                 if (this.#objectList[0] instanceof Heliostat) {
                     this.#undoRedoHandler.executeCommand(
                         new DuplicateHeliostatCommand(this.#objectList[0])
                     );
                 } else if (this.#objectList[0] instanceof Receiver) {
-                    console.log("Duplicate Receiver");
                     this.#undoRedoHandler.executeCommand(
                         new DuplicateReceiverCommand(this.#objectList[0])
                     );
@@ -167,16 +167,9 @@ export class ObjectManager {
      * Method to open the inspector pane when an object is added
      */
     #openInspector() {
-        this.#inspectorPane = document.getElementById("object-tab-pane");
-        this.#inspectorPane.classList.add("show", "active");
+        const inspectorTabButton = document.querySelector("#object-tab");
 
-        this.#inspectorTabButton = document.getElementById("object-tab");
-        this.#inspectorTabButton.classList.add("show", "active", "clicked");
-
-        this.#overviewButton = document.getElementById("overview-tab");
-        this.#overviewButton.classList.remove("show", "active", "clicked");
-
-        this.#settingsButton = document.getElementById("project-tab");
-        this.#settingsButton.classList.remove("show", "active", "clicked");
+        const tabInstance = new bootstrap.Tab(inspectorTabButton);
+        tabInstance.show();
     }
 }
