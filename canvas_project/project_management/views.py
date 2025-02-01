@@ -220,4 +220,4 @@ def generate_random_string(length=15):
         generatedWord = "".join(random.choice(letters) for _ in range(length))
         if not SharedProject.objects.filter(link=generatedWord).exists():
             return generatedWord
-    raise RuntimeError("Failed to generate a unique string after 1000 attempts")
+    return None
