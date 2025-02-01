@@ -294,7 +294,8 @@ export class Picker {
         } else if (this.#selectedObjects.length === 1) {
             if (this.#transformControls.mode === "rotate") {
                 if (!this.#selectedObject.rotatableAxis) {
-                    this.#deselectAll();
+                    this.#selectionBox.setFromObject(this.#selectedObject);
+                    this.#selectionBox.visible = true;
                     return;
                 }
                 this.#selectedObject.rotatableAxis.forEach((axis) => {
@@ -313,7 +314,8 @@ export class Picker {
                 });
             } else if (this.#transformControls.mode === "translate") {
                 if (!this.#selectedObject.isMovable) {
-                    this.#deselectAll();
+                    this.#selectionBox.setFromObject(this.#selectedObject);
+                    this.#selectionBox.visible = true;
                     return;
                 }
             }
