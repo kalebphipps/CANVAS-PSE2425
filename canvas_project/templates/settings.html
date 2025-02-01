@@ -310,3 +310,21 @@
 {% endif %}
 
 {% endblock body %}
+
+<script>
+    document.addEventListener('keydown', function (event) {
+        // Check if Ctrl + S is pressed
+        if (event.ctrlKey && event.key === 's') {
+            event.preventDefault(); // Prevent default browser "save" action
+
+            // Check if we are on the Account settings tab
+            const accountTab = document.getElementById('v-pills-profil');
+            if (accountTab && accountTab.classList.contains('show')) {
+                const form = document.querySelector('form[action="{% url 'update_account' %}"]');
+                if (form) {
+                    form.submit();  // Submit the form
+                }
+            }
+        }
+    });
+</script>
