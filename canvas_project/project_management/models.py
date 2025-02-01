@@ -30,6 +30,16 @@ class Project(models.Model):
         return self.name
 
 
+class SharedProject(models.Model):
+    """
+    Represents a model that was shared by a user
+    """
+
+    link = models.CharField(max_length=15)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    time_stamp = models.DateTimeField(auto_now_add=True)
+
+
 class Heliostat(models.Model):
     """
     Represents a Heliostat in the database, contains all the necessary fields to configure a heliostat
