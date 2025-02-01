@@ -47,11 +47,11 @@
     </script>
 {% endblock %}
 {% block body %}
-    <!-- error message -->
+    <!-- message system -->
     {% if messages %}
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
         {% for message in messages %}
             {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-            <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div class="toast show"
                      style="backdrop-filter: blur(0.7rem)"
                      role="alert"
@@ -65,12 +65,10 @@
                                 aria-label="Close"></button>
                     </div>
                     <div class="toast-body">
-                        {{ message}}
+                        {{ message }}
                     </div>
                 </div>
-            </div>
             {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
-            <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div class="toast show"
                      style="backdrop-filter: blur(0.7rem)"
                      role="alert"
@@ -89,7 +87,6 @@
                 </div>
             </div>
             {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-            <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div class="toast show"
                      style="backdrop-filter: blur(0.7rem)"
                      role="alert"
@@ -103,13 +100,11 @@
                                 aria-label="Close"></button>
                     </div>
                     <div class="toast-body">
-                        {{ message}}
+                        {{ message }}
                     </div>
-                </div>
-            </div>
-            {% endif %}
-                        
+            {% endif %}            
         {% endfor %}
+    </div>
     {% endif %}
     <!--settings modal-->
     {% include "settings.html" %}
