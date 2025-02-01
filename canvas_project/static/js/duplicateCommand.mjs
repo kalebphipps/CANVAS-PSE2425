@@ -19,6 +19,7 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
      */
     constructor(heliostat) {
         super();
+        this.#heliostat = heliostat;
         const position = heliostat.position();
         const offsetPosition = new THREE.Vector3(
             position.x + 1,
@@ -34,7 +35,6 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
             this.#heliostat.numberOfFacets,
             this.#heliostat.kinematicType
         );
-        this.#heliostat = heliostat;
     }
 
     async execute() {
@@ -68,7 +68,8 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
      */
     constructor(receiver) {
         super();
-        const position = receiver.getPosition();
+        this.#receiver = receiver;
+        const position = this.#receiver.getPosition();
         const offsetPosition = new THREE.Vector3(
             position.x + 1,
             position.y,
@@ -89,7 +90,6 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
             this.#receiver.curvatureE,
             this.#receiver.curvatureU
         );
-        this.#receiver = receiver;
     }
 
     async execute() {
@@ -123,6 +123,7 @@ export class DuplicateLightSourceCommand extends SingleObjectCommand {
      */
     constructor(lightsource) {
         super();
+        this.#lightsource = lightsource;
         this.#lightsourceCopy = new LightSource(
             this.#lightsource.objectName == "" || !this.#lightsource.objectName
                 ? "lightsource_Copy"
@@ -133,7 +134,7 @@ export class DuplicateLightSourceCommand extends SingleObjectCommand {
             this.#lightsource.distributionMean,
             this.#lightsource.distributionCovariance
         );
-        this.#lightsource = lightsource;
+        
     }
 
     async execute() {
