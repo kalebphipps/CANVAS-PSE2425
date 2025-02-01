@@ -96,7 +96,13 @@ export class UndoRedoHandler {
             } else if (
                 event.ctrlKey &&
                 event.shiftKey &&
-                event.key.toLowerCase() === "z"
+                event.key.toLowerCase() === "z" 
+            ) {
+                event.preventDefault();
+                this.redo();
+            } else if (
+                event.ctrlKey &&
+                event.key.toLowerCase() === "y"
             ) {
                 event.preventDefault();
                 this.redo();
