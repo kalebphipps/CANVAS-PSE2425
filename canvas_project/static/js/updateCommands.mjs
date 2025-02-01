@@ -131,7 +131,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
             case "kinematicType":
                 return this.#heliostat.kinematicType;
             case "position":
-                return this.#heliostat.position.clone();
+                return this.#heliostat.oldPosition;
             case "aimPoint":
                 return this.#heliostat.aimPoint.clone();
             default:
