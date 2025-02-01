@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Project(models.Model):
@@ -9,7 +10,7 @@ class Project(models.Model):
 
     name = models.CharField(max_length=300)
     description = models.CharField(max_length=500)
-    last_edited = models.DateTimeField("timezone.now")
+    last_edited = models.DateTimeField(default=timezone.now())
     favorite = models.CharField(max_length=5, default="false")
     preview = models.ImageField(
         upload_to="project_previews/",
@@ -37,7 +38,7 @@ class SharedProject(models.Model):
 
     link = models.CharField(max_length=15)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    time_stamp = models.DateTimeField(auto_now_add=True)
+    time_stamp = models.DateTimeField(default=timezone.now())
 
 
 class Heliostat(models.Model):

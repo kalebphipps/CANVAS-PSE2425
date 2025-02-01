@@ -1,11 +1,11 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.shortcuts import redirect, render
 from .models import Project, SharedProject
 from .forms import ProjectForm, UpdateProjectForm
-from datetime import datetime
+from django.utils import timezone, timesince
 from django.contrib.auth.decorators import login_required
-from django.db.models import CharField, Value
+
 
 import string
 import random
@@ -43,7 +43,7 @@ def projects(request):
             if nameUnique:
                 form = form.save(commit=False)
                 form.owner = request.user
-                form.last_edited = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                form.last_edited = timezone.now()
                 form.save()
                 return HttpResponseRedirect(reverse("projects"))
         context = {
@@ -69,7 +69,7 @@ def updateProject(request, project_name):
                     if form["name"].value() == existingProject.name:
                         nameUnique = False
                 if nameUnique or nameNotChanged:
-                    project.last_edited = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    project.last_edited = timezone.now()
                     form.save()
                     return HttpResponseRedirect(reverse("projects"))
                 return redirect("projects")
@@ -159,47 +159,65 @@ def shareProject(request, project_name, link):
 
 @login_required
 def sharedProjects(request, link):
-    # TODO: Auto delete the shared project model after 72 hours
     # get the shared project
     sharedProject = SharedProject.objects.get(link=link)
+
+    if (timezone.now() - sharedProject.time_stamp).days > 3:
+        sharedProject.delete()
+        raise Http404
+
     project = sharedProject.project
 
-    # copy the associated project to the user
-    fks_to_copy = (
-        list(project.heliostats.all())
-        + list(project.receivers.all())
-        + list(project.lightsources.all())
-    )
-    settings = project.settings
-    project.pk = None
+    # render a preview where the user can choose to add the project
+    if request.method == "GET":
+        return render(
+            request,
+            "project_management/sharedProject.html",
+            context={"project": project},
+        )
 
-    # Finding a new project name unique to user
-    newNameFound = False
-    while not newNameFound:
-        try:
-            project.name = project.name + "_shared"
-            Project.objects.get(name=project.name, owner=request.user)
-        except Project.DoesNotExist:
-            project.name = project.name
-            project.owner = request.user
-            project.save()
-            newNameFound = True
+    # copy the project to the user
+    elif request.method == "POST":
+        # copy the associated project to the user
+        fks_to_copy = (
+            list(project.heliostats.all())
+            + list(project.receivers.all())
+            + list(project.lightsources.all())
+        )
+        settings = project.settings
+        project.pk = None
 
-    # Copy all objects associated to the project via foreign keys
-    for assoc_object in fks_to_copy:
-        assoc_object.pk = None
-        assoc_object.project = project
-        assoc_object.save()
+        # Finding a new project name unique to user
+        newNameFound = False
+        while not newNameFound:
+            try:
+                project.name = project.name + "_shared"
+                Project.objects.get(name=project.name, owner=request.user)
+            except Project.DoesNotExist:
+                project.name = project.name
+                project.owner = request.user
+                project.save()
+                newNameFound = True
 
-    # Copy settings
-    settings.pk = None
-    settings.project = project
-    settings.save()
+        # Copy all objects associated to the project via foreign keys
+        for assoc_object in fks_to_copy:
+            assoc_object.pk = None
+            assoc_object.project = project
+            assoc_object.save()
 
-    return redirect("projects")
+        # Copy settings
+        settings.pk = None
+        settings.project = project
+        settings.save()
+
+        return redirect("projects")
 
 
 def generate_random_string(length=15):
-    # TODO: Assert uniqueness
     letters = string.ascii_letters + string.digits
-    return "".join(random.choice(letters) for i in range(length))
+    max_attempts = 1000
+    for _ in range(max_attempts):
+        generatedWord = "".join(random.choice(letters) for _ in range(length))
+        if not SharedProject.objects.filter(link=generatedWord).exists():
+            return generatedWord
+    raise RuntimeError("Failed to generate a unique string after 1000 attempts")

@@ -160,14 +160,15 @@
                                                                     data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
                                                         </div>
-                                                        <div class="modal-body">
+                                                        <div class="modal-body d-flex flex-column gap-2">
                                                             <div>
                                                                 By clicking
-                                                                <i>Share {{ project.name }}</i>, all people with the link
-                                                                below can view and edit a
+                                                                <i>Share {{ project.name }}</i>, for the next 72 hours anybody with the link
+                                                                below can get his own
                                                                 copy of this project.
-                                                                <br>
-                                                                Please copy this link, because it wont be retrievable after sharing this project
+                                                            </div>
+                                                            <div>
+                                                                <b>Please copy this link, because it wont be retrievable after sharing this project</b>
                                                             </div>
                                                             <div class="input-group mt-3">
                                                                 <input type="text"
@@ -175,8 +176,9 @@
                                                                        value="{{ request.build_absolute_uri }}sharedProjects/{{ project.link }}"
                                                                        readonly />
                                                                 <button class="btn btn-outline-secondary"
+                                                                        id="copyLink-{{ project.name }}"
                                                                         type="button"
-                                                                        onclick="navigator.clipboard.writeText(this.previousElementSibling.value)">
+                                                                        onclick="navigator.clipboard.writeText(this.previousElementSibling.value); document.getElementById('copyLink-{{ project.name }}').innerHTML = 'Copied'; document.getElementById('copyLink-{{ project.name }}').classList.add('active');">
                                                                     Copy Link
                                                                 </button>
                                                             </div>
