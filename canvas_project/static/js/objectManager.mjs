@@ -33,6 +33,7 @@ export class ObjectManager {
      * @param {UndoRedoHandler} undoRedoHandler
      *
      * Constructor for the object manager
+     * Event listener for keyboard shortcuts
      */
     constructor(picker, undoRedoHandler) {
         this.#picker = picker;
