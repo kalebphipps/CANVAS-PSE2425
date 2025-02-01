@@ -1,6 +1,5 @@
 import { Picker } from "picker";
 import { UndoRedoHandler } from "undoRedoHandler";
-import { Editor } from "editor";
 import { Heliostat, Receiver, LightSource } from "objects";
 import { Vector3 } from "three";
 import {
@@ -22,28 +21,27 @@ import {
 export class ObjectManager {
     #picker;
     #undoRedoHandler;
-    #editor;
-    #inspector;
     #objectList;
+    #inspectorPane;
+    #inspectorTabButton;
+    #settingsButton;
+    #overviewButton;
 
     /**
      *
      * @param {Picker} picker
      * @param {UndoRedoHandler} undoRedoHandler
      */
-    constructor(picker, undoRedoHandler, inspector) {
+    constructor(picker, undoRedoHandler) {
         this.#picker = picker;
         this.#undoRedoHandler = undoRedoHandler;
-        this.#editor = new Editor();
-        this.#inspector = inspector;
 
         this.#addEventListener();
     }
 
     createHeliostat() {
-        const id = String(this.#editor.objects.heliostatList.length + 1);
         const heliostat = new Heliostat(
-            id,
+            "Heliostat",
             new Vector3(-15, 0, -15),
             new Vector3(0, 0, 0),
             4,
@@ -54,13 +52,12 @@ export class ObjectManager {
         );
         let selectedObject = [heliostat];
         this.#picker.setSelection(selectedObject);
-        this.#inspector.openPane();
+        this.#openInspector();
     }
 
     createReceiver() {
-        const id = String(this.#editor.objects.receiverList.length + 1);
         const receiver = new Receiver(
-            id,
+            "Receiver",
             new Vector3(0, 50, 0),
             50,
             new Vector3(0, 0, 0),
@@ -78,18 +75,24 @@ export class ObjectManager {
 
         let selectedObject = [receiver];
         this.#picker.setSelection(selectedObject);
-        this.#inspector.openPane();
+        this.#openInspector();
     }
 
     createLightSource() {
-        const id = String(this.#editor.objects.lightsourceList.length + 1);
-        const lightSource = new LightSource(id, 1, "sun", "normal", 1, 1);
+        const lightSource = new LightSource(
+            "Lightsource",
+            1,
+            "sun",
+            "normal",
+            1,
+            1
+        );
         this.#undoRedoHandler.executeCommand(
             new CreateLightSourceCommand(lightSource)
         );
         let selectedObject = [lightSource];
         this.#picker.setSelection(selectedObject);
-        this.#inspector.openPane();
+        this.#openInspector();
     }
 
     #addEventListener() {
@@ -136,5 +139,19 @@ export class ObjectManager {
                 }
             }
         });
+    }
+
+    #openInspector() {
+        this.#inspectorPane = document.getElementById("object-tab-pane");
+        this.#inspectorPane.classList.add("show", "active");
+
+        this.#inspectorTabButton = document.getElementById("object-tab");
+        this.#inspectorTabButton.classList.add("show", "active", "clicked");
+
+        this.#overviewButton = document.getElementById("overview-tab");
+        this.#overviewButton.classList.remove("show", "active", "clicked");
+
+        this.#settingsButton = document.getElementById("project-tab");
+        this.#settingsButton.classList.remove("show", "active", "clicked");
     }
 }
