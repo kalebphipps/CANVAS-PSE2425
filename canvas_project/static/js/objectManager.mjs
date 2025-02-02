@@ -138,6 +138,7 @@ export class ObjectManager {
                             new DeleteLightSourceCommand(this.#objectList[0])
                         );
                     }
+                    this.#picker.deselectObject();
                 }
             }
 

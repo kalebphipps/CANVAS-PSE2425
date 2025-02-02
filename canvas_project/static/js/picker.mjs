@@ -67,6 +67,7 @@ export class Picker {
             this.#onMouseUp(event)
         );
 
+
         // TODO: Event listener for Rectangular selection (not yet implemented)
     }
 
@@ -233,6 +234,11 @@ export class Picker {
         }
         */
         this.#selectedObjects = [];
+    }
+
+    deselectObject() {
+        this.#deselectAll();
+        this.#itemSelectedEvent();
     }
 
     /*
