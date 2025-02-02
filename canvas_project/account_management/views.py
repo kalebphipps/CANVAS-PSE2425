@@ -97,7 +97,7 @@ def update_account(request):
             if old_password and new_password:
                 user.set_password(new_password)
                 update_session_auth_hash(request, user)
-                send_password_change_email(user)
+                send_password_change_email(user, request)
 
             user.save()
             messages.success(request, "Your account has been updated successfully.")
@@ -107,19 +107,20 @@ def update_account(request):
                     messages.error(request, f"Error in {field.label}: {error}")
         return redirect(request.META.get("HTTP_REFERER", "index"))
     
-def send_password_change_email(user):
+def send_password_change_email(user, request):
     """
     Send an email to the user to confirm that their password has been changed.
     """
     subject = 'Password Change Confirmation'
 
 
-    # Erstelle den Token für den Benutzer
+    # Create the token for the user
     uid = urlsafe_base64_encode(str(user.id).encode())
     token = default_token_generator.make_token(user)
     
-    # Erstelle die URL für die Seite zur Passwortänderung
-    password_reset_url = f"http://127.0.0.1:8000/password_reset/{uid}/{token}/"
+    base_url = request.build_absolute_uri('/')
+    # Create the URL for the password change page
+    password_reset_url = f"{base_url}password_reset/{uid}/{token}/"
 
     message = render_to_string('accounts/password_change_confirmation_email.html', {
         'user': user,
@@ -146,18 +147,18 @@ def password_reset_view(request, uidb64, token):
 
     if user is not None and default_token_generator.check_token(user, token):
         if request.method == "POST":
-            form = PasswordResetForm(request.POST)  # Kein user-Argument hier
+            form = PasswordResetForm(request.POST)
             if form.is_valid():
                 user.set_password(form.cleaned_data["new_password"])
                 user.save()
 
-                # Logout from all sessions (this is just an example; implement actual logout logic)
+                # Logout from all sessions
                 logout(request)
 
-                # Redirect to login page or home
+                # Redirect to login page
                 return redirect('login')
         else:
-            form = PasswordResetForm()  # Formular ohne user-Argument
+            form = PasswordResetForm()
 
         return render(request, 'password_reset.html', {'form': form})
     else:
