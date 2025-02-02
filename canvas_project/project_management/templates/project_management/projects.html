@@ -74,16 +74,32 @@
                 class="card rounded-4 bg-body-tertiary overflow-hidden mx-auto"
             >
                 <div class="row g-0">
-                    <div class="col-md-4">
+                    <div class="col-md-4 overflow-hidden">
                         <a
                             class="col-md-4"
                             href="{% url 'editor' project.name %}"
                         >
+                            {% if project.preview %}
                             <img
                                 src="{{ project.preview.url }}"
                                 alt="{{ project.name }}"
                                 class="img-fluid h-100"
+                                style="
+                                    object-fit: cover;
+                                    object-position: center;
+                                "
                             />
+                            {% else %}
+                            <img
+                                src="{% static 'img/emptyEditor.png' %}"
+                                alt="{{ project.name }}"
+                                class="img-fluid h-100"
+                                style="
+                                    object-fit: cover;
+                                    object-position: center;
+                                "
+                            />
+                            {% endif %}
                         </a>
                     </div>
                     <div class="col-md-6">

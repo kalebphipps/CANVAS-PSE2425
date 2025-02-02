@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "project_management",
     "account_management",
     "rest_framework",
+    "django_cleanup.apps.CleanupConfig",
 ]
 
 MIDDLEWARE = [
