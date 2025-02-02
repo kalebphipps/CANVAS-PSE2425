@@ -3,9 +3,8 @@ from django.urls import reverse
 from django.shortcuts import redirect, render
 from .models import Project, SharedProject
 from .forms import ProjectForm, UpdateProjectForm
-from django.utils import timezone, timesince
+from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-
 
 import string
 import random
@@ -20,7 +19,7 @@ def projects(request):
             "-last_edited"
         )
         for project in allProjects:
-            project.link = generate_random_string()
+            project.link = _generate_random_string()
 
         context = {
             "projects": allProjects,
@@ -33,7 +32,7 @@ def projects(request):
             "-last_edited"
         )
         for project in allProjects:
-            project.link = generate_random_string()
+            project.link = _generate_random_string()
 
         if form.is_valid():
             nameUnique = True
@@ -213,7 +212,7 @@ def sharedProjects(request, link):
         return redirect("projects")
 
 
-def generate_random_string(length=15):
+def _generate_random_string(length=15):
     letters = string.ascii_letters + string.digits
     max_attempts = 1000
     for _ in range(max_attempts):
