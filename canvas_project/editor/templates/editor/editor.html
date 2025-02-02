@@ -376,6 +376,7 @@
                         <i class="bi bi-lightbulb text-white"></i>
                     </button>
                     <form
+                        id="renderForm"
                         action="{% url 'renderHDF5' project_name=project_name %}"
                         method="post"
                     >
@@ -387,9 +388,50 @@
                             Render
                         </button>
                     </form>
+                    <script>
+                        document
+                            .getElementById("renderForm")
+                            .addEventListener("submit", function () {
+                                // Show the modal before submitting the form
+                                let modal = new bootstrap.Modal(
+                                    document.getElementById("loadingModal")
+                                );
+                                modal.show();
+                            });
+                    </script>
                 </div>
             </div>
         </div>
+
+        <!-- HDF5 Creation Modal -->
+        <div
+            class="modal fade"
+            id="loadingModal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="loadingModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="loadingModalLabel">
+                            Generating scenario file
+                        </h1>
+                        <div class="d-flex align-items-center ms-auto">
+                            <div class="spinner-border"></div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        A scenario file is generated in the background. This may
+                        take a short moment. This page will be reloaded when the
+                        process is finished.
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- sidebar -->
         <div
             class="d-flex flex-column flex-shrink-0 py-2 border-left m-2 mt-0 bg-body-secondary rounded-3"

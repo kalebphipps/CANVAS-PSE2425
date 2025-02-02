@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from project_management.models import Project
 from django.http import FileResponse
+from django.urls import reverse
 
 import os
 from django.conf import settings
@@ -112,6 +113,11 @@ def renderHDF5(request, project_name):
 
     if request.method == "POST":
         createHDF5(project)
+        return render(
+            request,
+            "editor/editor.html",
+            context={"project_id": project.pk, "project_name": project.name},
+        )
 
     return render(
         request,
@@ -138,7 +144,7 @@ def createHDF5(project):
     # General Setup
     #
 
-    # Set BASE_DIR as CANVAS_ROOT
+    # Set CANVAS_ROOT
     CANVAS_ROOT = settings.BASE_DIR
 
     # Set up logger.
