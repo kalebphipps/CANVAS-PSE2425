@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { SelectableObject } from "objects";
 
-
 export const Mode = Object.freeze({
     NONE: "none",
     MOVE: "move",
@@ -146,11 +145,19 @@ export class Picker {
         if (!this.#isDragging) {
             this.#onClick(event);
         } else if (this.#transformControls.object) {
-            if (this.#transformControls.mode === "translate") {
-                this.#selectedObject.updateAndSaveObjectPosition(this.#transformControls.object.position.clone())
+            // also checks if the object was moved or if the camara was adjusted
+            if (
+                this.#transformControls.mode === "translate" &&
+                !this.#transformControls.object.position.equals(
+                    this.#selectedObject.oldPosition
+                )
+            ) {
+                this.#selectedObject.updateAndSaveObjectPosition(
+                    this.#transformControls.object.position.clone()
+                );
                 this.#itemSelectedEvent();
             } else if (this.#transformControls.mode === "rotate") {
-                //TODO: auch mit Commands Updaten
+                //TODO: auch mit Commands Updaten + denn Camera fall auch abdecken
                 /*
                 this.#selectedObject.updateRotation(
                     this.#transformControls.object.rotation

@@ -151,7 +151,7 @@ export class Heliostat extends SelectableObject {
         this.#aimPoint = aimPoint;
         this.#numberOfFacets = numberOfFacets;
         this.#kinematicType = kinematicType;
-        this.lookAt(this.#aimPoint.x, 0, this.#aimPoint.z);
+        this.lookAt(this.#aimPoint.x, this.oldPosition.y, this.#aimPoint.z);
 
         // create components for inspector
         this.#headerComponent = new HeaderInspectorComponent(
@@ -330,7 +330,7 @@ export class Heliostat extends SelectableObject {
     updatePosition(position) {
         this.position.copy(position);
         this.#oldPosition = new Vector3(position.x, position.y, position.z);
-        this.lookAt(this.#aimPoint.x, 0, this.#aimPoint.z);
+        this.lookAt(this.#aimPoint.x, this.oldPosition.y, this.#aimPoint.z);
     }
 
     /**
@@ -357,7 +357,7 @@ export class Heliostat extends SelectableObject {
      */
     set aimPoint(aimPoint) {
         this.#aimPoint = aimPoint;
-        this.lookAt(aimPoint.x, 0, aimPoint.z);
+        this.lookAt(aimPoint.x, this.oldPosition.y, aimPoint.z);
     }
 
     get aimPoint() {
