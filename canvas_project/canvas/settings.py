@@ -134,3 +134,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'canvas.service.desk@gmail.com'
+EMAIL_FROM = 'canvas.service.desk@gmail.com'
+EMAIL_HOST_PASSWORD = 'mqbz znnw glwe crbu'
+EMAIL_PORT = 587

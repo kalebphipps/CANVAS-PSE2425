@@ -108,11 +108,13 @@ export class ProjectSettingsManager {
         checkbox.type = "checkbox";
         checkbox.classList.add("form-check-input");
         checkbox.checked = isChecked;
+        checkbox.id = label + "Checkbox";
 
         //label for the checkbox
         const checkboxLabel = document.createElement("label");
         checkboxLabel.classList.add("form-check-label");
         checkboxLabel.textContent = label;
+        checkboxLabel.setAttribute("for", checkbox.id);
 
         //Event listener for changes in the checkbox
         checkbox.addEventListener("change", () => {
