@@ -221,3 +221,56 @@ class DeleteAccountForm(forms.Form):
         if not self.user.check_password(password):
             self.add_error("password", "The password you entered is incorrect.")
         return password
+    
+class PasswordResetForm(forms.Form):
+    """
+    A form for resetting the password. It includes fields for the new password
+    and the password confirmation. It validates that the two passwords match.
+    """
+
+    new_password = forms.CharField(label="New password", widget=forms.PasswordInput)
+    password_confirmation = forms.CharField(
+        label="Confirm new password", widget=forms.PasswordInput
+    )
+
+    def clean_new_password(self):
+        """
+        Validates that the new password passes the security criteria.
+        """
+        new_password = self.cleaned_data.get("new_password")
+
+        if len(new_password) < 8:
+            self.add_error("new_password", "Password must be at least 8 characters long.")
+        if not any(char.isdigit() for char in new_password):
+            self.add_error("new_password", "Password must contain at least one digit.")
+        if not any(char.isupper() for char in new_password):
+            self.add_error(
+                "new_password", "Password must contain at least one uppercase letter."
+            )
+        if not any(char.islower() for char in new_password):
+            self.add_error(
+                "new_password", "Password must contain at least one lowercase letter."
+            )
+        if not any(char in "!@#$%^&*()-_+=<>?/" for char in new_password):
+            self.add_error(
+                "new_password",
+                "Password must contain at least one special character (!@#$%^&*()-_+=<>?/).",
+            )
+
+        return new_password
+
+    def clean(self):
+        """
+        Validates that the two passwords match. If they do not, a validation error
+        is raised.
+        """
+        cleaned_data = super().clean()
+        new_password = self.cleaned_data.get("new_password")
+        password_confirmation = self.cleaned_data.get("password_confirmation")
+
+        if new_password != password_confirmation:
+            self.add_error(
+                "password_confirmation", "The passwords you entered do not match. Please try again."
+            )
+
+        return cleaned_data
