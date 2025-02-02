@@ -30,7 +30,7 @@
                 <hr>
                 <form class="d-flex flex-column"
                       method="POST"
-                      action="?next={{ request.GET.next }}">
+                      action="{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">
                     {% csrf_token %}
                     {% if form.errors %}
                         <div class="alert alert-danger">
