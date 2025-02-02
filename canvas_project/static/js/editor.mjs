@@ -80,6 +80,8 @@ export class Editor {
         this.#inspector = new Inspector(this.#picker);
         this.#previewHandler = new PreviewHandler(this.#scene);
 
+        //this.#picker.setMode("rotate");
+
         window.addEventListener("resize", () => this.onWindowResize());
 
         this.animate();

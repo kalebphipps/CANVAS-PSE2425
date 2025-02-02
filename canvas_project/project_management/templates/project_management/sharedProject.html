@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block body %}
+    <div class="d-flex flex-column gap-3 w-100 min-vh-100 justify-content-center align-items-center">
+        <div class="fs-1">
+            {{ project.owner.first_name }} has shared <i class="fw-bolder">{{ project.name }}</i> with you
+        </div>
+        <img src="{{ project.preview.url }}"
+             alt="preview of the project"
+             class="img-fluid w-25 rounded-4">
+        <div class="fs-4">{{ project.description }}</div>
+        <form action="" method="post">
+            {% csrf_token %}
+            <button class="btn btn-primary rounded-4 fs-3" type="submit">Add to own projects</button>
+        </form>
+    </div>
+{% endblock body %}
