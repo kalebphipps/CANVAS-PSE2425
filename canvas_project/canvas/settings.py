@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.github",
+    "django_cleanup.apps.CleanupConfig",
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -171,3 +172,12 @@ LOGIN_REDIRECT_URL = "/projects/"
 LOGOUT_REDIRECT_URL = "/"
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'canvas.service.desk@gmail.com'
+EMAIL_FROM = 'canvas.service.desk@gmail.com'
+EMAIL_HOST_PASSWORD = 'mqbz znnw glwe crbu'
+EMAIL_PORT = 587

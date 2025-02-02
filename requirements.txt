@@ -3,3 +3,4 @@ djangorestframework
 django-allauth
 requests
 PyJWT
+django-cleanup

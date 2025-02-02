@@ -16,6 +16,7 @@ import { ProjectSettingsManager } from "projectSettingsManager";
 import { Inspector } from "inspectorClass";
 
 import { Heliostat, Receiver, LightSource, Terrain } from "objects";
+import { PreviewHandler } from "previewHandler";
 
 let editorInstance = null;
 export class Editor {
@@ -29,6 +30,7 @@ export class Editor {
     #quickSelector;
     #jobInterface;
     #inspector;
+    #previewHandler;
 
     #projectId;
     #canvas;
@@ -76,6 +78,7 @@ export class Editor {
         //this.#quickSelector = new QuickSelector();
         //this.#jobInterface = new JobInterface();
         this.#inspector = new Inspector(this.#picker);
+        this.#previewHandler = new PreviewHandler(this.#scene);
 
         window.addEventListener("resize", () => this.onWindowResize());
 
@@ -113,17 +116,22 @@ export class Editor {
         this.#canvas = document.getElementById("canvas");
 
         this.#scene = new THREE.Scene();
+
         this.#camera = new THREE.PerspectiveCamera(
             75,
             this.#canvas.clientWidth / this.#canvas.clientHeight,
             0.1,
             2000
         );
-        this.#camera.position.set(-7.5, 2.5, 0.75);
+        this.#camera.position.set(130, 50, 0);
 
-        this.#renderer = new THREE.WebGLRenderer({ antialias: true });
-        // since we render multiple times (scene and compass), we need to clear the renderer manually
+        // since we render multiple times (scene and compass), we need to clear the pre#previewRenderer manually
+        this.#renderer = new THREE.WebGLRenderer({
+            antialias: true,
+        });
+
         this.#renderer.autoClear = false;
+
         this.#renderer.shadowMap.enabled = true;
         this.#renderer.setSize(
             this.#canvas.clientWidth,
