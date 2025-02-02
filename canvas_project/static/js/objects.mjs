@@ -503,8 +503,8 @@ export class Receiver extends SelectableObject {
                         "position",
                         new Vector3(
                             newValue,
-                            this.#top.position.y,
-                            this.#top.position.z
+                            this.position.y,
+                            this.position.z
                         )
                     )
                 );
@@ -521,9 +521,9 @@ export class Receiver extends SelectableObject {
                         this,
                         "position",
                         new Vector3(
-                            this.#top.position.x,
+                            this.position.x,
                             newValue,
-                            this.#top.position.z
+                            this.position.z
                         )
                     )
                 );
@@ -540,8 +540,8 @@ export class Receiver extends SelectableObject {
                         this,
                         "position",
                         new Vector3(
-                            this.#top.position.x,
-                            this.#top.position.y,
+                            this.position.x,
+                            this.position.y,
                             newValue
                         )
                     )
