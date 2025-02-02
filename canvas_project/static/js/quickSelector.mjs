@@ -6,6 +6,10 @@ export class QuickSelector {
     #createReceiverButton;
     #createLightSourceButton;
 
+    /**
+     *
+     * @param {ObjectManager} objectManager
+     */
     constructor(objectManager) {
         this.#objectManager = objectManager;
 
