@@ -170,7 +170,7 @@ def sharedProjects(request, uid, token):
 
     project = get_object_or_404(Project, owner=user, name=project_name)
 
-    if project.last_shared == None | (timezone.now() - project.last_shared).days > 3:
+    if project.last_shared is None or (timezone.now() - project.last_shared).days > 3:
         raise Http404
 
     # render a preview where the user can choose to add the project
