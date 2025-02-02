@@ -18,9 +18,13 @@ urlpatterns = [
         name="duplicateProject",
     ),
     path(
-        "shareProject/<str:project_name>/<str:link>",
+        "shareProject/<str:project_name>",
         views.shareProject,
         name="shareProject",
     ),
-    path("sharedProjects/<str:link>", views.sharedProjects, name="sharedProjects"),
+    path(
+        "sharedProjects/<str:uid>/<str:token>",
+        views.sharedProjects,
+        name="sharedProjects",
+    ),
 ]

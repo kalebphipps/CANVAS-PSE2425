@@ -1,13 +1,13 @@
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.urls import reverse
-from django.shortcuts import redirect, render
-from .models import Project, SharedProject
+from django.shortcuts import redirect, render, get_object_or_404
+from .models import Project
 from .forms import ProjectForm, UpdateProjectForm
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-
-import string
-import random
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 
 
 # General project handling
@@ -19,7 +19,8 @@ def projects(request):
             "-last_edited"
         )
         for project in allProjects:
-            project.link = _generate_random_string()
+            project.uid = _generate_uid(request)
+            project.token = _generate_token(project.name)
 
         context = {
             "projects": allProjects,
@@ -32,7 +33,8 @@ def projects(request):
             "-last_edited"
         )
         for project in allProjects:
-            project.link = _generate_random_string()
+            project.uid = _generate_uid(request)
+            project.token = _generate_token(project.name)
 
         if form.is_valid():
             nameUnique = True
@@ -148,24 +150,28 @@ def duplicateProject(request, project_name):
 
 # Share a project
 @login_required
-def shareProject(request, project_name, link):
+def shareProject(request, project_name):
     # create new sharedProject model
-    project = Project.objects.get(owner=request.user, name=project_name)
-    SharedProject.objects.create(link=link, project=project)
-
+    project = get_object_or_404(Project, owner=request.user, name=project_name)
+    project.last_shared = timezone.now()
+    project.save()
     return redirect("projects")
 
 
 @login_required
-def sharedProjects(request, link):
+def sharedProjects(request, uid, token):
     # get the shared project
-    sharedProject = SharedProject.objects.get(link=link)
-
-    if (timezone.now() - sharedProject.time_stamp).days > 3:
-        sharedProject.delete()
+    try:
+        userID = urlsafe_base64_decode(uid).decode()
+        user = get_user_model().objects.get(pk=userID)
+        project_name = urlsafe_base64_decode(token).decode()
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         raise Http404
 
-    project = sharedProject.project
+    project = get_object_or_404(Project, owner=user, name=project_name)
+
+    if (timezone.now() - project.last_shared).days > 3:
+        raise Http404
 
     # render a preview where the user can choose to add the project
     if request.method == "GET":
@@ -212,11 +218,9 @@ def sharedProjects(request, link):
         return redirect("projects")
 
 
-def _generate_random_string(length=15):
-    letters = string.ascii_letters + string.digits
-    max_attempts = 1000
-    for _ in range(max_attempts):
-        generatedWord = "".join(random.choice(letters) for _ in range(length))
-        if not SharedProject.objects.filter(link=generatedWord).exists():
-            return generatedWord
-    return None
+def _generate_uid(request):
+    return urlsafe_base64_encode(str(request.user.id).encode())
+
+
+def _generate_token(project_name):
+    return urlsafe_base64_encode(str(project_name).encode())

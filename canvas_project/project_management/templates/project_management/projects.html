@@ -167,13 +167,10 @@
                                                                 below can get his own
                                                                 copy of this project.
                                                             </div>
-                                                            <div>
-                                                                <b>Please copy this link, because it wont be retrievable after sharing this project</b>
-                                                            </div>
                                                             <div class="input-group mt-3">
                                                                 <input type="text"
                                                                        class="form-control"
-                                                                       value="{{ request.build_absolute_uri }}sharedProjects/{{ project.link }}"
+                                                                       value="{{ request.build_absolute_uri }}sharedProjects/{{ project.uid }}/{{ project.token }}"
                                                                        readonly />
                                                                 <button class="btn btn-outline-secondary"
                                                                         id="copyLink-{{ project.name }}"
@@ -186,7 +183,7 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <a href="{% url 'shareProject' project_name=project.name link=project.link %}"
+                                                            <a href="{% url 'shareProject' project_name=project.name %}"
                                                                class="btn btn-primary">Share {{ project.name }}</a>
                                                         </div>
                                                     </div>

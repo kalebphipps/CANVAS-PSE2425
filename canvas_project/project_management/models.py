@@ -11,6 +11,7 @@ class Project(models.Model):
     name = models.CharField(max_length=300)
     description = models.CharField(max_length=500)
     last_edited = models.DateTimeField(default=timezone.now)
+    last_shared = models.DateTimeField(null=True, blank=True)
     favorite = models.CharField(max_length=5, default="false")
     preview = models.ImageField(
         upload_to="project_previews/",
@@ -29,16 +30,6 @@ class Project(models.Model):
 
     def __str__(self) -> str:
         return self.name
-
-
-class SharedProject(models.Model):
-    """
-    Represents a model that was shared by a user
-    """
-
-    link = models.CharField(max_length=15)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    time_stamp = models.DateTimeField(default=timezone.now)
 
 
 class Heliostat(models.Model):
