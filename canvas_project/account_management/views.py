@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
-from django.contrib.auth import login
-from .forms import RegisterForm, LoginForm
-from django.contrib.auth import logout
+from django.contrib.auth import login, update_session_auth_hash, logout
+from .forms import RegisterForm, LoginForm, UpdateAccountForm, DeleteAccountForm   
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 REDIRECT_PROJECTS_URL = "projects"
 REDIRECT_LOGIN_URL = "login"
@@ -71,3 +72,53 @@ def logout_view(request):
     """
     logout(request)
     return redirect(REDIRECT_LOGIN_URL)
+
+@require_POST
+@login_required
+def update_account(request):
+    """
+    Update the user's account information.
+    """
+    user = request.user
+    if request.method == 'POST':
+        form = UpdateAccountForm(instance=request.user, data=request.POST)
+        if form.is_valid():
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name'] 
+            user.email = form.cleaned_data['email']
+            # Set the username to the email for consistency
+            user.username = user.email
+
+            old_password = form.cleaned_data['old_password']
+            new_password = form.cleaned_data['new_password']
+
+            if old_password and new_password:
+                user.set_password(new_password)
+                update_session_auth_hash(request, user)
+
+            user.save()
+            messages.success(request, "Your account has been updated successfully.")
+        else:
+            for field in form:
+                for error in field.errors:
+                    messages.error(request, f"Error in {field.label}: {error}")
+        return redirect(request.META.get("HTTP_REFERER", "index"))
+
+@require_POST
+@login_required
+def delete_account(request):
+    """
+    Delete the user's account.
+    """
+    if request.method == 'POST':
+        form = DeleteAccountForm(request.user, request.POST)
+        if form.is_valid():
+            request.user.delete()
+            logout(request)
+            return redirect(REDIRECT_LOGIN_URL)
+        else:
+            for field in form:
+                for error in field.errors:
+                    messages.error(request, f"Error in {field.label}: {error}")
+        
+    return redirect(request.META.get("HTTP_REFERER", "index"))
