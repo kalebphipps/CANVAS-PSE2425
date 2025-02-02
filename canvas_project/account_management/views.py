@@ -6,6 +6,10 @@ from .forms import RegisterForm, LoginForm, UpdateAccountForm, DeleteAccountForm
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.conf import settings
+from django.core.mail import EmailMessage
 
 REDIRECT_PROJECTS_URL = "projects"
 REDIRECT_LOGIN_URL = "login"
@@ -92,6 +96,7 @@ def update_account(request):
             if old_password and new_password:
                 user.set_password(new_password)
                 update_session_auth_hash(request, user)
+                send_password_change_email(user)
 
             user.save()
             messages.success(request, "Your account has been updated successfully.")
@@ -100,6 +105,23 @@ def update_account(request):
                 for error in field.errors:
                     messages.error(request, f"Error in {field.label}: {error}")
         return redirect(request.META.get("HTTP_REFERER", "index"))
+    
+def send_password_change_email(user):
+    """
+    Send an email to the user to confirm that their password has been changed.
+    """
+    subject = 'Password Change Confirmation'
+    message = render_to_string('accounts/password_change_confirmation_email.html', {
+        'user': user,
+    })
+
+    to_email = user.email
+    email = EmailMessage(
+        subject,
+        message,
+        to=[to_email]
+    )
+    email.send()
 
 @require_POST
 @login_required
