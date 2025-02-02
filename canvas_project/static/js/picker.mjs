@@ -38,6 +38,7 @@ export class Picker {
         this.#selectedObjects = [];
         this.#raycaster = new THREE.Raycaster();
         this.#mode = Mode.MOVE;
+        this.#transformControls.setMode("rotate");
 
         this.#canvas = document.getElementById("canvas");
         this.#mouse = new THREE.Vector2();
@@ -61,6 +62,10 @@ export class Picker {
         ].addEventListener("mouseup", (event) => {
             this.#onMouseUp(event);
         });
+
+        // Keyboard event listeners for snap-to-grid functionality
+        window.addEventListener("keydown", (event) => { this.#onKeyDown(event); });
+        window.addEventListener("keyup", (event) => { this.#onKeyUp(event); });
     }
 
     /**
@@ -322,6 +327,33 @@ export class Picker {
             ((position.x - rect.left) / rect.width) * 2 - 1,
             -((position.y - rect.top) / rect.height) * 2 + 1
         );
+    }
+
+    /**
+     * Enables grid snapping when the Shift key is pressed.
+     * @param {KeyboardEvent} event 
+     */
+    #onKeyDown(event) {
+        if (event.key === "Shift") {
+            // Enable snapping depending on the transform mode
+            if (this.#transformControls.mode === "translate") {
+                this.#transformControls.translationSnap = 1; // Snap to grid size of 1 unit
+            } else if (this.#transformControls.mode === "rotate") {
+                this.#transformControls.rotationSnap = THREE.MathUtils.degToRad(15); // Snap rotation to 15° increments
+            }
+        }
+    }
+    
+    /**
+     * Disables grid snapping when the Shift key is released.
+     * @param {KeyboardEvent} event 
+     */
+    #onKeyUp(event) {
+        if (event.key === "Shift") {
+            // Disable snapping
+            this.#transformControls.translationSnap = null;
+            this.#transformControls.rotationSnap = null;
+        }
     }
 }
 
