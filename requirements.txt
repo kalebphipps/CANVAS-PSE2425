@@ -1,3 +1,4 @@
 django
 djangorestframework
-
+torch
+git+https://github.com/ARTIST-Association/ARTIST.git@pre-commit-ci-update-config
