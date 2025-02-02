@@ -55,32 +55,15 @@ export class CommandPrompt {
         document.addEventListener("keydown", (event) => {
             if (event.ctrlKey && event.key.toLowerCase() === "p") {
                 event.preventDefault();
-                // Close all other modals
-                document.querySelectorAll(".modal.show").forEach((modal) => {
-                    if (modal !== document.getElementById("commandPrompt")) {
-                        Modal.getInstance(modal).hide();
-                    }
-                });
-                this.#modal.toggle();
-                if (
-                    document
-                        .getElementById("commandPrompt")
-                        .classList.contains("show")
-                ) {
-                    this.#commandInput.value = "";
-                    this.#commandListElem.innerHTML = "";
-                    this.#commandInput.focus();
-                    this.#commandList.forEach((command) => {
-                        command.occurenceLength = null;
-                        command.selectedChars = null;
-                        this.#commandListElem.appendChild(command);
-                        command.formatCommandName();
-                    });
-                    this.#selectedIndex = 0;
-                    this.#selectCommand();
-                }
+                this.#openCommandPrompt();
             }
         });
+
+        document
+            .getElementById("commandPromptToggle")
+            .addEventListener("click", () => {
+                this.#openCommandPrompt();
+            });
 
         // handle command navigation and execution
         document.addEventListener("keydown", (event) => {
@@ -141,6 +124,31 @@ export class CommandPrompt {
         this.#commandList.sort((command1, command2) =>
             command1.commandName.localeCompare(command2.commandName)
         );
+    }
+
+    #openCommandPrompt() {
+        // Close all other modals
+        document.querySelectorAll(".modal.show").forEach((modal) => {
+            if (modal !== document.getElementById("commandPrompt")) {
+                Modal.getInstance(modal).hide();
+            }
+        });
+        this.#modal.toggle();
+        if (
+            document.getElementById("commandPrompt").classList.contains("show")
+        ) {
+            this.#commandInput.value = "";
+            this.#commandListElem.innerHTML = "";
+            this.#commandInput.focus();
+            this.#commandList.forEach((command) => {
+                command.occurenceLength = null;
+                command.selectedChars = null;
+                this.#commandListElem.appendChild(command);
+                command.formatCommandName();
+            });
+            this.#selectedIndex = 0;
+            this.#selectCommand();
+        }
     }
 
     /**
