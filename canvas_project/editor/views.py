@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from project_management.models import Project
 from django.http import FileResponse
-from django.urls import reverse
 
 import os
 from django.conf import settings
@@ -82,12 +81,17 @@ def download(request, project_name):
     # Placeholder for actual download functionality added later
     project = get_object_or_404(Project, name=project_name, owner=request.user)
 
-    path = os.path.join(
-        settings.BASE_DIR, "static/artist/test_scenario_alignment_optimization.h5"
+    # Set CANVAS_ROOT
+    CANVAS_ROOT = settings.BASE_DIR
+
+    path = pathlib.Path(CANVAS_ROOT) / "./hdfCreation/scenarios/scenarioFile.h5"
+
+    createHDF5(project)
+
+    response = FileResponse(
+        open(path, "rb"), as_attachment=True, filename=project.name + ".h5"
     )
-    response = FileResponse(open(path, "rb"))
-    response["Content-Type"] = "application/octet-stream"
-    response["Content-Disposition"] = f'attachment; filename="{project.name}.h5"'
+
     return response
 
 
