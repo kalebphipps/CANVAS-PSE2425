@@ -796,6 +796,16 @@ export class Receiver extends SelectableObject {
         );
     }
 
+    delete() {
+        this.#undoRedoHandler.executeCommand(new DeleteReceiverCommand(this));
+    }
+
+    duplicate() {
+        this.#undoRedoHandler.executeCommand(
+            new DuplicateReceiverCommand(this)
+        );
+    }
+
     get apiID() {
         return this.#apiID;
     }
