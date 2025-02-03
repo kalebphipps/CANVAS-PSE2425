@@ -22,8 +22,9 @@
                     Projects will only be saved if they have a name unique to
                     your already existing projects!
                 </p>
-                <form action="" method="POST" class="d-flex flex-column">
-                    {% csrf_token %} {{form}} <br />
+                <form action="" method="POST" class="d-flex flex-column gap-2">
+                    {% csrf_token %} {{ form }}
+                    <br />
                     <button class="btn btn-primary rounded-3" type="submit">
                         Create
                     </button>
@@ -32,10 +33,8 @@
         </div>
     </div>
 </div>
-
 <!--settings modal-->
 {% include "settings.html" %}
-
 <!--project overview-->
 <div class="d-flex flex-column w-100 align-items-center vh-100 gap-2 pt-2">
     <div class="p-2 pt-3">
@@ -110,13 +109,12 @@
                                         {{ project.name }}
                                     </h1>
                                     <p class="fw-light">
-                                        {{project.description}}
+                                        {{ project.description }}
                                     </p>
                                     <p class="text-start">
                                         Last edited: {{ project.last_edited }}
                                     </p>
                                 </div>
-
                                 <!-- favorites-->
                                 <div class="position-absolute end-0 top-0">
                                     {% if project.favorite == "true" %}
@@ -149,7 +147,6 @@
                                     class="btn btn-primary"
                                     >Open</a
                                 >
-
                                 <!-- Edit Button -->
                                 <button
                                     type="button"
@@ -159,7 +156,6 @@
                                 >
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
-
                                 <div
                                     class="modal fade"
                                     id="updateModal-{{ project.name }}"
@@ -176,7 +172,6 @@
                                                 >
                                                     Edit Project
                                                 </h1>
-
                                                 <button
                                                     type="button"
                                                     class="btn-close"
@@ -193,9 +188,9 @@
                                                 <form
                                                     action="{% url 'updateProject' project_name=project.name %}"
                                                     method="POST"
-                                                    class="d-flex flex-column"
+                                                    class="d-flex flex-column gap-2"
                                                 >
-                                                    {% csrf_token %} {{form}}
+                                                    {% csrf_token %} {{ form }}
                                                     <br />
                                                     <button
                                                         class="btn btn-primary rounded-3"
@@ -208,7 +203,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <!-- Duplicate Button -->
                                 <a
                                     href="{% url 'duplicateProject' project_name=project.name %}"
@@ -216,14 +210,12 @@
                                 >
                                     <i class="bi bi-copy"></i>
                                 </a>
-
                                 <!-- Share Button -->
                                 <button
                                     class="btn btn-primary custom-btn shadow"
                                 >
                                     <i class="bi bi-share"></i>
                                 </button>
-
                                 <!-- Delete Button -->
                                 <button
                                     type="button"
@@ -233,7 +225,6 @@
                                 >
                                     <i class="bi bi-trash"></i>
                                 </button>
-
                                 <div
                                     class="modal fade"
                                     id="deleteModal-{{ project.name }}"
@@ -259,11 +250,11 @@
                                             </div>
                                             <div class="modal-body">
                                                 By clicking
-                                                <i>Delete {{project.name}}</i>,
-                                                this project and all associated
-                                                data will be irretrievably
-                                                removed from the database and
-                                                cannot be restored.
+                                                <i>Delete {{ project.name }}</i
+                                                >, this project and all
+                                                associated data will be
+                                                irretrievably removed from the
+                                                database and cannot be restored.
                                             </div>
                                             <div class="modal-footer">
                                                 <button
@@ -276,9 +267,8 @@
                                                 <a
                                                     href="{% url 'deleteProject' project.name %}"
                                                     class="btn btn-danger"
+                                                    >Delete {{project.name}}</a
                                                 >
-                                                    Delete {{project.name}}
-                                                </a>
                                             </div>
                                         </div>
                                     </div>
