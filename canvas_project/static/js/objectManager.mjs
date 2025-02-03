@@ -122,44 +122,18 @@ export class ObjectManager {
             // Delete object
             if (event.key === "Delete") {
                 if (this.#objectList.length === 1) {
-                    if (this.#objectList[0] instanceof Heliostat) {
-                        this.#undoRedoHandler.executeCommand(
-                            new DeleteHeliostatCommand(this.#objectList[0])
-                        );
-                    } else if (this.#objectList[0] instanceof Receiver) {
-                        this.#undoRedoHandler.executeCommand(
-                            new DeleteReceiverCommand(this.#objectList[0])
-                        );
-                    } else if (this.#objectList[0] instanceof LightSource) {
-                        this.#undoRedoHandler.executeCommand(
-                            new DeleteLightSourceCommand(this.#objectList[0])
-                        );
-                    }
+                    this.#objectList[0].delete();
                     this.#picker.deselectObject();
                 }
             }
 
             // Duplicate object
             if (
-                ((event.ctrlKey || event.metaKey) &&
-                    event.key.toLowerCase() === "d") ||
-                event.key.toUpperCase() === "D" ||
-                event.key === "D"
+                (event.ctrlKey || event.metaKey) &&
+                event.key.toLowerCase() === "d"
             ) {
                 event.preventDefault();
-                if (this.#objectList[0] instanceof Heliostat) {
-                    this.#undoRedoHandler.executeCommand(
-                        new DuplicateHeliostatCommand(this.#objectList[0])
-                    );
-                } else if (this.#objectList[0] instanceof Receiver) {
-                    this.#undoRedoHandler.executeCommand(
-                        new DuplicateReceiverCommand(this.#objectList[0])
-                    );
-                } else if (this.#objectList[0] instanceof LightSource) {
-                    this.#undoRedoHandler.executeCommand(
-                        new DuplicateLightSourceCommand(this.#objectList[0])
-                    );
-                }
+                this.#objectList[0].duplicate();
             }
         });
     }

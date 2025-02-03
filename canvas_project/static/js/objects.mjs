@@ -16,6 +16,16 @@ import {
     UpdateLightsourceCommand,
     UpdateReceiverCommand,
 } from "updateCommands";
+import {
+    DuplicateHeliostatCommand,
+    DuplicateReceiverCommand,
+    DuplicateLightSourceCommand,
+} from "duplicateCommands";
+import {
+    DeleteHeliostatCommand,
+    DeleteLightSourceCommand,
+    DeleteReceiverCommand,
+} from "deleteCommands";
 
 export class SelectableObject extends Object3D {
     #objectName;
@@ -53,6 +63,19 @@ export class SelectableObject extends Object3D {
      * @param {String} name the new name you want to save and update
      */
     updateAndSaveObjectName(name) {
+        throw new Error("This method must be implemented in all subclasses");
+    }
+
+    /**
+     * Duplicates the object
+     */
+    duplicate() {
+        throw new Error("This method must be implemented in all subclasses");
+    }
+    /**
+     * Deletes the object
+     */
+    delete() {
         throw new Error("This method must be implemented in all subclasses");
     }
 }
@@ -271,6 +294,16 @@ export class Heliostat extends SelectableObject {
         this.#undoRedoHandler.executeCommand(
             new UpdateHeliostatCommand(this, "objectName", name)
         );
+    }
+
+    duplicate() {
+        this.#undoRedoHandler.executeCommand(
+            new DuplicateHeliostatCommand(this)
+        );
+    }
+
+    delete() {
+        this.#undoRedoHandler.executeCommand(new DeleteHeliostatCommand(this));
     }
 
     /**
@@ -665,6 +698,16 @@ export class Receiver extends SelectableObject {
         );
     }
 
+    duplicate() {
+        this.#undoRedoHandler.executeCommand(
+            new DuplicateReceiverCommand(this)
+        );
+    }
+
+    delete() {
+        this.#undoRedoHandler.executeCommand(new DeleteReceiverCommand(this));
+    }
+
     get apiID() {
         return this.#apiID;
     }
@@ -932,6 +975,17 @@ export class LightSource extends SelectableObject {
     updateAndSaveObjectName(name) {
         this.#undoRedoHandler.executeCommand(
             new UpdateLightsourceCommand(this, "objectName", name)
+        );
+    }
+
+    duplicate() {
+        this.#undoRedoHandler.executeCommand(
+            new DuplicateLightSourceCommand(this)
+        );
+    }
+    delete() {
+        this.#undoRedoHandler.executeCommand(
+            new DeleteLightSourceCommand(this)
         );
     }
 
