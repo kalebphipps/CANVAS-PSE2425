@@ -29,6 +29,7 @@
             "deleteCommands": ["static/js/deleteCommands.mjs"],
             "inspectorComponents": ["static/js/inspectorComponents.mjs"],
             "inspectorClass": ["static/js/inspector.mjs"],
+            "previewHandler": ["static/js/previewHandler.mjs"],
             "projectSettingsManager": ["static/js/projectSettingsManager.mjs"],
             "createCommands": ["static/js/createCommands.mjs"]
         }
