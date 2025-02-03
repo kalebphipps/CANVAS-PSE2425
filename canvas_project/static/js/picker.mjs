@@ -131,10 +131,9 @@ export class Picker {
             // @ts-ignore
             this.#selectionBox.setFromObject(this.#selectedObject);
             // Only show the selection box if the object has a position in the scene
-            // and if it is selectable
             // @ts-ignore
             if (this.#selectedObjects.position !== undefined) {
-                this.#selectionBox.visible = this.#selectedObject.isSelectable;
+                this.#selectionBox.visible = true;
             }
         }
 
