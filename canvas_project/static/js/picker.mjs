@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { SelectableObject } from "objects";
 
-
 export const Mode = Object.freeze({
     NONE: "none",
     MOVE: "move",
@@ -147,7 +146,9 @@ export class Picker {
             this.#onClick(event);
         } else if (this.#transformControls.object) {
             if (this.#transformControls.mode === "translate") {
-                this.#selectedObject.updateAndSaveObjectPosition(this.#transformControls.object.position.clone())
+                this.#selectedObject.updateAndSaveObjectPosition(
+                    this.#transformControls.object.position.clone()
+                );
                 this.#itemSelectedEvent();
             } else if (this.#transformControls.mode === "rotate") {
                 //TODO: auch mit Commands Updaten
@@ -227,6 +228,11 @@ export class Picker {
         this.#transformControls.showY = true;
         this.#selectionBox.visible = false;
         this.#selectedObjects = [];
+    }
+
+    deselectObject() {
+        this.#deselectAll();
+        this.#itemSelectedEvent();
     }
 
     /*
