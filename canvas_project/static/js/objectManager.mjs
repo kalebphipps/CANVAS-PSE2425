@@ -7,33 +7,25 @@ import {
     CreateHeliostatCommand,
     CreateLightSourceCommand,
 } from "createCommands";
-import {
-    DeleteHeliostatCommand,
-    DeleteLightSourceCommand,
-    DeleteReceiverCommand,
-} from "deleteCommands";
-import {
-    DuplicateHeliostatCommand,
-    DuplicateReceiverCommand,
-    DuplicateLightSourceCommand,
-} from "duplicateCommands";
+import { ItemDeletedEvent } from "deleteCommands";
+import { ItemCreatedEvent } from "createCommands";
+
+/**
+ * Class to manage the objects in the scene
+ */
 
 export class ObjectManager {
     #picker;
     #undoRedoHandler;
     #objectList;
-    #inspectorPane;
-    #inspectorTabButton;
-    #settingsButton;
-    #overviewButton;
 
     /**
+     * Constructor for the object manager
+     * Event listener for keyboard shortcuts
      *
      * @param {Picker} picker
      * @param {UndoRedoHandler} undoRedoHandler
      *
-     * Constructor for the object manager
-     * Event listener for keyboard shortcuts
      */
     constructor(picker, undoRedoHandler) {
         this.#picker = picker;
@@ -123,7 +115,9 @@ export class ObjectManager {
             if (event.key === "Delete") {
                 if (this.#objectList.length === 1) {
                     this.#objectList[0].delete();
-                    this.#picker.deselectObject();
+                    document.dispatchEvent(
+                        new ItemDeletedEvent(this.#objectList[0])
+                    );
                 }
             }
 

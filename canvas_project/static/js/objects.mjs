@@ -29,6 +29,7 @@ import {
 
 export class SelectableObject extends Object3D {
     #objectName;
+    isSelectable;
     /**
      * @type {InspectorComponent[]}
      */
@@ -41,6 +42,7 @@ export class SelectableObject extends Object3D {
     constructor(name, Inspe) {
         super();
         this.#objectName = name;
+        this.isSelectable = true;
     }
 
     get objectName() {
@@ -1067,6 +1069,9 @@ export class LightSource extends SelectableObject {
                     );
                 }
             );
+
+        // light source is not selectable or movable
+        this.isSelectable = false;
     }
 
     /**

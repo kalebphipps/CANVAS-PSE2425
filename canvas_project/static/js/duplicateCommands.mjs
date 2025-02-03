@@ -28,6 +28,8 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
             this.#heliostat.numberOfFacets,
             this.#heliostat.kinematicType
         );
+
+        document.dispatchEvent(new ItemCreatedEvent(this.#heliostatCopy));
     }
 
     async execute() {
@@ -77,6 +79,8 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
             this.#receiver.curvatureE,
             this.#receiver.curvatureU
         );
+
+        document.dispatchEvent(new ItemCreatedEvent(this.#receiverCopy));
     }
 
     async execute() {
@@ -84,7 +88,7 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
 
         document
             .getElementById("canvas")
-            .dispatchEvent(new ItemCreatedEvent(this.#receiver));
+            .dispatchEvent(new ItemCreatedEvent(this.#receiverCopy));
     }
 
     undo() {
@@ -121,6 +125,8 @@ export class DuplicateLightSourceCommand extends SingleObjectCommand {
             this.#lightsource.distributionMean,
             this.#lightsource.distributionCovariance
         );
+
+        document.dispatchEvent(new ItemCreatedEvent(this.#lightsourceCopy));
     }
 
     async execute() {

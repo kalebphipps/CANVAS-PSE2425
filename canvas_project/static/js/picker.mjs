@@ -49,17 +49,39 @@ export class Picker {
         this.#canvas.children[
             this.#canvas.children.length - 1
         ].addEventListener("mousedown", (event) => {
+            // @ts-ignore
             this.#onMouseDown(event);
         });
         this.#canvas.children[
             this.#canvas.children.length - 1
         ].addEventListener("mousemove", (event) => {
+            // @ts-ignore
             this.#onMouseMove(event);
         });
         this.#canvas.children[
             this.#canvas.children.length - 1
         ].addEventListener("mouseup", (event) => {
+            // @ts-ignore
             this.#onMouseUp(event);
+        });
+
+        this.#addEventListenerCustomEvent();
+    }
+
+    /**
+     * Adds event listeners for custom events objectCreated and objectDeleted
+     */
+    #addEventListenerCustomEvent() {
+        // @ts-ignore
+        document.addEventListener("itemDeleted", (event) => {
+            this.#deselectAll();
+            this.#itemSelectedEvent();
+        });
+
+        document.addEventListener("itemCreated", (event) => {
+            // @ts-ignore
+            const createdItem = event.detail.item;
+            this.setSelection([createdItem]);
         });
     }
 
@@ -68,6 +90,7 @@ export class Picker {
      * @param {"none" | "move" | "rotate"} mode - The mode to set.
      */
     setMode(mode) {
+        // @ts-ignore
         this.#mode = mode;
         if (mode === Mode.NONE) {
             this.#transformControls.detach();
@@ -105,10 +128,13 @@ export class Picker {
             this.#selectedObject = objectList[0];
             this.#attachTransform();
 
+            // @ts-ignore
             this.#selectionBox.setFromObject(this.#selectedObject);
             // Only show the selection box if the object has a position in the scene
+            // and if it is selectable
+            // @ts-ignore
             if (this.#selectedObjects.position !== undefined) {
-                this.#selectionBox.visible = true;
+                this.#selectionBox.visible = this.#selectedObject.isSelectable;
             }
         }
 
@@ -230,11 +256,6 @@ export class Picker {
         this.#selectedObjects = [];
     }
 
-    deselectObject() {
-        this.#deselectAll();
-        this.#itemSelectedEvent();
-    }
-
     /*
      * Updates the selection based on the ctrlKey
      * @param {Boolean} ctrlKey The state of the ctrlKey
@@ -276,6 +297,7 @@ export class Picker {
         } else if (this.#selectedObjects.length === 1) {
             if (this.#transformControls.mode === "rotate") {
                 if (!this.#selectedObject.rotatableAxis) {
+                    // @ts-ignore
                     this.#selectionBox.setFromObject(this.#selectedObject);
                     this.#selectionBox.visible = true;
                     return;
@@ -296,6 +318,7 @@ export class Picker {
                 });
             } else if (this.#transformControls.mode === "translate") {
                 if (!this.#selectedObject.isMovable) {
+                    // @ts-ignore
                     this.#selectionBox.setFromObject(this.#selectedObject);
                     this.#selectionBox.visible = true;
                     return;
@@ -303,6 +326,7 @@ export class Picker {
             }
 
             this.#transformControls.attach(this.#selectedObjects[0]);
+            // @ts-ignore
             this.#selectionBox.setFromObject(this.#selectedObject);
             this.#selectionBox.visible = true;
         } else {
